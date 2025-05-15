@@ -1,4 +1,4 @@
-package co.edu.uco.FondaControl.utilitarios;
+package co.edu.uco.FondaControl.crosscutting.utilitarios;
 
 public final class UtilObjeto {
     private static UtilObjeto instancia;

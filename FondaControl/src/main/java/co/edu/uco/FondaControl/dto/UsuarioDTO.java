@@ -1,7 +1,7 @@
 package co.edu.uco.FondaControl.dto;
 
-import co.edu.uco.FondaControl.utilitarios.UtilTexto;
-import co.edu.uco.FondaControl.utilitarios.UtilUUID;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
 import java.util.UUID;
 

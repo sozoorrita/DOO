@@ -1,8 +1,8 @@
 package co.edu.uco.FondaControl.entity;
 
-import co.edu.uco.FondaControl.utilitarios.UtilUUID;
-import co.edu.uco.FondaControl.utilitarios.UtilFecha;
-import co.edu.uco.FondaControl.utilitarios.UtilMoneda;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilFecha;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilMoneda;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

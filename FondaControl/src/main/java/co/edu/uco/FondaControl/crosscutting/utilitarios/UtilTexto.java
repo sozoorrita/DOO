@@ -1,4 +1,4 @@
-package co.edu.uco.FondaControl.utilitarios;
+package co.edu.uco.FondaControl.crosscutting.utilitarios;
 
 public final class UtilTexto {
 
