@@ -1,4 +1,4 @@
-package FondaControl.src.main.java.co.edu.uco.FondaControl.businesslogic.businesslogic.domain;
+package co.edu.uco.FondaControl.businesslogic.businesslogic.domain;
 
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;

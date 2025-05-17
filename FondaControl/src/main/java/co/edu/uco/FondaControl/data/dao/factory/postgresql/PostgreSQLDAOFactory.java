@@ -1,6 +1,5 @@
 package co.edu.uco.FondaControl.data.dao.factory.postgresql;
 
-import co.edu.uco.FondaControl.data.dao.entity.Usuario.UsuarioDAO;
 import co.edu.uco.FondaControl.data.dao.entity.Usuario.imp.postgresql.UsuarioPostgreSQLDAO;
 import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.IndicadorInventarioDAO;
 import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.impl.postgresql.IndicadorInventarioPostgreSQLDAO;
@@ -10,6 +9,7 @@ import co.edu.uco.FondaControl.data.dao.entity.inventario.InventarioDAO;
 import co.edu.uco.FondaControl.data.dao.entity.inventario.imp.postgresql.InventarioPostgreSQLDAO;
 import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.SesionTrabajoDAO;
 import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.imp.postgresql.SesionTrabajoPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.Usuario.UsuarioDAO;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 
 import java.sql.Connection;

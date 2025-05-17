@@ -1,10 +1,10 @@
 package co.edu.uco.FondaControl.data.dao.factory;
 
-import co.edu.uco.FondaControl.data.dao.entity.Usuario.UsuarioDAO;
 import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.IndicadorInventarioDAO;
 import co.edu.uco.FondaControl.data.dao.entity.informecaja.InformeCajaDAO;
 import co.edu.uco.FondaControl.data.dao.entity.inventario.InventarioDAO;
 import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.SesionTrabajoDAO;
+import co.edu.uco.FondaControl.data.dao.entity.Usuario.UsuarioDAO;
 import co.edu.uco.FondaControl.data.dao.factory.postgresql.PostgreSQLDAOFactory;
 
 public abstract class DAOFactory {
