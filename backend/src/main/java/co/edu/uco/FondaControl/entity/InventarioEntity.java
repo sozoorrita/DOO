@@ -2,6 +2,7 @@ package co.edu.uco.FondaControl.entity;
 
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
+import co.edu.uco.FondaControl.entity.IndicadorInventarioEntity;
 
 import java.util.UUID;
 
@@ -12,19 +13,19 @@ public final class InventarioEntity {
     private co.edu.uco.FondaControl.entity.IndicadorInventarioEntity codigoIndicador;
 
     public InventarioEntity() {
-        setId(UtilUUID.obtenerValorDefecto());
+        setCodigo(UtilUUID.obtenerValorDefecto());
         setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
         setCodigoIndicador(new IndicadorInventarioEntity());
     }
 
     public InventarioEntity(final UUID id) {
-        setId(id);
+        setCodigo(id);
         setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
         setCodigoIndicador(IndicadorInventarioEntity.obtenerValorDefecto());
     }
 
     public InventarioEntity(final UUID id, String nombreProducto, int cantidad, final IndicadorInventarioEntity codigoIndicador) {
-        setId(id);
+        setCodigo(id);
         setNombreProducto(nombreProducto);
         setCantidad(cantidad);
         setCodigoIndicador(codigoIndicador);
@@ -34,7 +35,7 @@ public final class InventarioEntity {
         return codigo;
     }
 
-    public void setId(final UUID id) {
+    public void setCodigo(final UUID id) {
         this.codigo = UtilUUID.obtenerValorDefecto(id);
     }
 

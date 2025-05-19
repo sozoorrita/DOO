@@ -3,6 +3,7 @@ package co.edu.uco.FondaControl.entity;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilFecha;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilMoneda;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
+import co.edu.uco.FondaControl.entity.UsuarioEntity;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;

@@ -12,4 +12,8 @@ public interface IndicadorInventarioDAO extends
         RetrieveDAO<IndicadorInventarioEntity, UUID>,
         UpdateDAO<IndicadorInventarioEntity, UUID> {
     IndicadorInventarioEntity findById(UUID codigo);
+
+    void update(UUID codigo, IndicadorInventarioEntity entity);
+
+    void delete(UUID codigo);
 }

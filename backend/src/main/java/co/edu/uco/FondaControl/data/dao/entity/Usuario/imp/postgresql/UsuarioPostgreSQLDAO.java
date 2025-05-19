@@ -25,4 +25,14 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
     public void update(UUID uuid, UsuarioEntity entity) {
 
     }
+
+    @Override
+    public void delete(UUID uuid) {
+
+    }
+
+    @Override
+    public void update(UsuarioEntity usuarioEntity, UUID entity) {
+
+    }
 }

@@ -36,4 +36,19 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
     public void update(UUID uuid, InventarioEntity entity) {
 
     }
+
+    @Override
+    public InventarioEntity findById(UUID codigo) {
+        return null;
+    }
+
+    @Override
+    public void createOrUpdate(InventarioEntity entity) {
+
+    }
+
+    @Override
+    public void update(InventarioEntity inventarioEntity, UUID entity) {
+
+    }
 }

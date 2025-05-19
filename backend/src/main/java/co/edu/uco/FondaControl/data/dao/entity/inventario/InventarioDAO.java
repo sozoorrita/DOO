@@ -22,4 +22,8 @@ public interface InventarioDAO extends
     List<InventarioEntity> listByCodigo(UUID uuid);
 
     void update(UUID uuid, InventarioEntity entity);
+
+    co.edu.uco.FondaControl.entity.InventarioEntity findById(UUID codigo);
+
+    void createOrUpdate(co.edu.uco.FondaControl.entity.InventarioEntity entity);
 }

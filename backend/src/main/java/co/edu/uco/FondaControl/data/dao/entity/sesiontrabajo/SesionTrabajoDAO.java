@@ -10,4 +10,9 @@ import java.util.UUID;
 public interface SesionTrabajoDAO extends
         CreateDAO<SesionTrabajoEntity>,
         UpdateDAO<SesionTrabajoEntity, UUID> {
+    void update(UUID codigo, SesionTrabajoEntity entity);
+
+    co.edu.uco.FondaControl.entity.SesionTrabajoEntity findByUsuario(UUID id);
+
+    co.edu.uco.FondaControl.entity.SesionTrabajoEntity findById(UUID codigo);
 }

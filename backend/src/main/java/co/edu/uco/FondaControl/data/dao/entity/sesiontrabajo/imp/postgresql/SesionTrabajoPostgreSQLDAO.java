@@ -1,6 +1,5 @@
 package co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.imp.postgresql;
 
-import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.SesionTrabajoDAO;
 import co.edu.uco.FondaControl.entity.SesionTrabajoEntity;
 
 import java.sql.Connection;
@@ -18,4 +17,19 @@ public class SesionTrabajoPostgreSQLDAO implements co.edu.uco.FondaControl.data.
     public void update(UUID codigo, SesionTrabajoEntity entity) {
 
     }
+
+    @Override
+    public SesionTrabajoEntity findByUsuario(UUID id) {
+        return null;
     }
+
+    @Override
+    public SesionTrabajoEntity findById(UUID codigo) {
+        return null;
+    }
+
+    @Override
+    public void update(SesionTrabajoEntity sesionTrabajoEntity, UUID entity) {
+
+    }
+}

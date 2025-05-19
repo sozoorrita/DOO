@@ -3,6 +3,7 @@ package co.edu.uco.FondaControl.businesslogic.businesslogic.domain;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.IndicadorInventarioDomain;
 
 import java.util.UUID;
 

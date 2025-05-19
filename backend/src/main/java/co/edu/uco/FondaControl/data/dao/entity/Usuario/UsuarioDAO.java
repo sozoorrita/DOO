@@ -10,5 +10,8 @@ import java.util.UUID;
 public interface UsuarioDAO extends
         CreateDAO<UsuarioEntity>,
         UpdateDAO<UsuarioEntity, UUID>,
-        DeleteDAO<UsuarioEntity, UUID> {
+        DeleteDAO<UUID> {
+    void delete(co.edu.uco.FondaControl.entity.UsuarioEntity entity);
+
+    void update(UUID uuid, UsuarioEntity entity);
 }
