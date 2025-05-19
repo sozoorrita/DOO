@@ -1,4 +1,4 @@
-package backend.src.main.java.co.edu.uco.FondaControl.businesslogic.businesslogic;
+package co.edu.uco.FondaControl.businesslogic.businesslogic;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.InventarioDomain;
 

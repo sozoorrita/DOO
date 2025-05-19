@@ -1,5 +1,5 @@
-package backend.src.main.java.co.edu.uco.FondaControl.businesslogic.businesslogic.impl;
-import backend.src.main.java.co.edu.uco.FondaControl.businesslogic.businesslogic.SesionTrabajoBusinessLogic;
+package co.edu.uco.FondaControl.businesslogic.businesslogic.impl;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.SesionTrabajoBusinessLogic;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.SesionTrabajoDomain;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import co.edu.uco.FondaControl.entity.SesionTrabajoEntity;

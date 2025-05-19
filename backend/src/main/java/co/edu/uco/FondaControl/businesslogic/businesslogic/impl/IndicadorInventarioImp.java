@@ -1,6 +1,6 @@
-package backend.src.main.java.co.edu.uco.FondaControl.businesslogic.businesslogic.impl;
+package co.edu.uco.FondaControl.businesslogic.businesslogic.impl;
 
-import backend.src.main.java.co.edu.uco.FondaControl.businesslogic.businesslogic.IndicadorInventarioBusinessLogic;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.IndicadorInventarioBusinessLogic;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.IndicadorInventarioDomain;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import co.edu.uco.FondaControl.entity.IndicadorInventarioEntity;

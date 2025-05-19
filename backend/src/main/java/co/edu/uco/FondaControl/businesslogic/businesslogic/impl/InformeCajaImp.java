@@ -1,7 +1,7 @@
-package backend.src.main.java.co.edu.uco.FondaControl.businesslogic.businesslogic.impl;
+package co.edu.uco.FondaControl.businesslogic.businesslogic.impl;
 
 
-import backend.src.main.java.co.edu.uco.FondaControl.businesslogic.businesslogic.InformeCajaBusinessLogic;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.InformeCajaBusinessLogic;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.InformeCajaDomain;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 
