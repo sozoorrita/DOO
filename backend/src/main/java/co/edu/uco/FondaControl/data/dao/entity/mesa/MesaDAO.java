@@ -13,7 +13,7 @@ public interface MesaDAO extends
     CreateDAO<MesaEntity>,
     RetrieveDAO<MesaEntity, UUID>,
     UpdateDAO<MesaEntity, UUID>,
-    DeleteDAO<MesaEntity, UUID> {
+    DeleteDAO<UUID> {
 
     List<MesaEntity> listByEstado(UUID codigoEstadoMesa);
 }

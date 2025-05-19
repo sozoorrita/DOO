@@ -10,7 +10,7 @@ import co.edu.uco.FondaControl.data.dao.entity.UpdateDAO;
 import co.edu.uco.FondaControl.entity.TipoVentaEntity;
 
 public interface TipoVentaDAO extends CreateDAO<TipoVentaEntity>, RetrieveDAO<TipoVentaEntity, UUID>,
-		UpdateDAO<TipoVentaEntity, UUID>, DeleteDAO<TipoVentaEntity, UUID> {
+		UpdateDAO<TipoVentaEntity, UUID>, DeleteDAO<UUID> {
 
 	List<TipoVentaEntity> listByNombre(String nombre);
 }

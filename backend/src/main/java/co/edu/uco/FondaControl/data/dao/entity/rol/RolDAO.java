@@ -13,7 +13,7 @@ public interface RolDAO extends
     CreateDAO<RolEntity>,
     RetrieveDAO<RolEntity, UUID>,
     UpdateDAO<RolEntity, UUID>,
-    DeleteDAO<RolEntity, UUID> {
+    DeleteDAO<UUID> {
 
     List<RolEntity> listByNombre(String nombre);
 }
