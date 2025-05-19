@@ -13,7 +13,7 @@ public interface FormaPagoDAO extends
     CreateDAO<FormaPagoEntity>,
     RetrieveDAO<FormaPagoEntity, UUID>,
     UpdateDAO<FormaPagoEntity, UUID>,
-    DeleteDAO<FormaPagoEntity, UUID> {
+    DeleteDAO<UUID> {
 
     List<FormaPagoEntity> listByNombre(String nombre);
 }

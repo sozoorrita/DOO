@@ -16,4 +16,9 @@ public class InformeCajaPostgreSQLDAO implements InformeCajaDAO {
     public void update(UUID uuid, InformeCajaEntity entity) {
 
     }
+	@Override
+	public void update(InformeCajaEntity codigo, UUID entity) {
+		// TODO Auto-generated method stub
+		
+	}
 }

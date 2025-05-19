@@ -13,7 +13,7 @@ public interface EstadoMesaDAO extends
     CreateDAO<EstadoMesaEntity>,
     RetrieveDAO<EstadoMesaEntity, UUID>,
     UpdateDAO<EstadoMesaEntity, UUID>,
-    DeleteDAO<EstadoMesaEntity, UUID> {
+    DeleteDAO<UUID> {
 
     List<EstadoMesaEntity> listByNombre(String nombre);
 }
