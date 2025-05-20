@@ -1,9 +1,8 @@
 package co.edu.uco.FondaControl.businesslogic.businesslogic.domain;
 
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
-import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
-import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.IndicadorInventarioDomain;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
 import java.util.UUID;
 
@@ -11,7 +10,7 @@ public final class InventarioDomain {
     private UUID codigo;
     private String nombreProducto;
     private int cantidad;
-    private IndicadorInventarioDomain codigoIndicador;
+    private UUID codigoIndicador;
 
     InventarioDomain() {
         setCodigo(UtilUUID.obtenerValorDefecto());
@@ -31,7 +30,7 @@ public final class InventarioDomain {
         return new InventarioDomain();
     }
 
-    static InventarioDomain obtenerValorDefecto(final InventarioDomain inventario) {
+    static UUID obtenerValorDefecto(final InventarioDomain inventario) {
         return UtilObjeto.getInstancia().obtenerValorDefecto(inventario, obtenerValorDefecto());
     }
 
@@ -59,7 +58,7 @@ public final class InventarioDomain {
         this.cantidad = Math.max(0, cantidad);
     }
 
-    public IndicadorInventarioDomain getCodigoIndicador() {
+    public UUID getCodigoIndicador() {
         return codigoIndicador;
     }
 

@@ -6,11 +6,14 @@ import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
 import java.util.UUID;
 
+
+import java.util.UUID;
+
 public final class IndicadorInventarioDomain {
     private UUID codigo;
     private String nombre;
 
-     IndicadorInventarioDomain() {
+    IndicadorInventarioDomain() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
 
@@ -23,7 +26,7 @@ public final class IndicadorInventarioDomain {
     public static IndicadorInventarioDomain obtenerValorDefecto() {
         return new IndicadorInventarioDomain();
     }
-    static IndicadorInventarioDomain obtenerValorDefecto(final IndicadorInventarioDomain indicador) {
+    static UUID obtenerValorDefecto(final IndicadorInventarioDomain indicador) {
         return UtilObjeto.getInstancia().obtenerValorDefecto(indicador, obtenerValorDefecto());
     }
 
@@ -44,4 +47,4 @@ public final class IndicadorInventarioDomain {
     }
 
 
-    }
+}
