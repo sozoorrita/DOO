@@ -8,7 +8,7 @@ public final class UtilTexto {
     // Constante para representar un valor vacío
     public static final String VACIO = "";
 
-    // Constructor privado para evitar instanciacion externa
+    // Constructor privado para evitar instanciación externa
     private UtilTexto() {
     }
 
@@ -24,23 +24,20 @@ public final class UtilTexto {
 
     // Devuelve un valor por defecto si el original es nulo o vacío
     public String obtenerValorDefecto(final String valorOriginal, final String valorDefecto) {
-        return UtilObjeto.getInstancia().obtenerValorDefecto(valorOriginal, valorDefecto);
+        return (esNula(valorOriginal) || valorOriginal.trim().isEmpty()) ? valorDefecto : valorOriginal;
     }
 
     // Sobrecarga para usar un valor vacío como valor por defecto
     public String obtenerValorDefecto(final String valor) {
         return obtenerValorDefecto(valor, VACIO);
     }
-    public static String obtenerValorDefecto() {
-        return  VACIO;
+
+    public String obtenerValorDefecto() {
+        return VACIO;
     }
 
     // Quita espacios en blanco al inicio y al final de un valor
     public String quitarEspaciosBlancoInicioFin(final String valor) {
         return obtenerValorDefecto(valor).trim();
     }
-
-
-
-    }
-
+}

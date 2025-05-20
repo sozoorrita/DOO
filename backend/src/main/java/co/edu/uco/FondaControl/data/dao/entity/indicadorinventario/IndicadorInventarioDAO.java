@@ -5,6 +5,7 @@ import co.edu.uco.FondaControl.data.dao.entity.RetrieveDAO;
 import co.edu.uco.FondaControl.data.dao.entity.UpdateDAO;
 import co.edu.uco.FondaControl.entity.IndicadorInventarioEntity;
 
+import java.util.List;
 import java.util.UUID;
 
 public interface IndicadorInventarioDAO extends
@@ -16,4 +17,6 @@ public interface IndicadorInventarioDAO extends
     void update(UUID codigo, IndicadorInventarioEntity entity);
 
     void delete(UUID codigo);
+
+    void update(List<IndicadorInventarioEntity> entities);
 }

@@ -20,10 +20,14 @@ public final class IndicadorInventarioEntity {
         setCodigo(codigo);
         setNombre(nombre);
     }
+
+    public IndicadorInventarioEntity(UUID codigoIndicador) {
+    }
+
     public static IndicadorInventarioEntity obtenerValorDefecto() {
         return new IndicadorInventarioEntity();
     }
-    public static IndicadorInventarioEntity obtenerValorDefecto(final IndicadorInventarioEntity indicador) {
+    public static UUID obtenerValorDefecto(final IndicadorInventarioEntity indicador) {
         return UtilObjeto.getInstancia().obtenerValorDefecto(indicador, obtenerValorDefecto());
     }
 
@@ -44,4 +48,4 @@ public final class IndicadorInventarioEntity {
     }
 
 
-    }
+}

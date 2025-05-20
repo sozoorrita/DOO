@@ -1,8 +1,10 @@
 package co.edu.uco.FondaControl.crosscutting.utilitarios;
 
+import java.util.UUID;
+
 public final class UtilObjeto {
     private static UtilObjeto instancia;
-    private UtilObjeto(){
+    private UtilObjeto (){
 
     }
     public static synchronized UtilObjeto getInstancia(){
@@ -12,14 +14,15 @@ public final class UtilObjeto {
         }
         return instancia;
     }
-    public <o>boolean esNulo(final o objeto){
+    public static <o>boolean esNulo(final o objeto){
         return objeto == null;
     }
 
-    public <o> o obtenerValorDefecto(final o valorOriginal, final o valorDefecto){
+    public <o> UUID obtenerValorDefecto(final o valorOriginal, final o valorDefecto){
 
-        return esNulo(valorOriginal) ? valorDefecto : valorOriginal;
+        return (UUID) (esNulo(valorOriginal) ? valorDefecto : valorOriginal);
     }
 
-    }
+}
+
 
