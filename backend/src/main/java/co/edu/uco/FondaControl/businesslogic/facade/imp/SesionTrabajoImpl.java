@@ -1,0 +1,68 @@
+package co.edu.uco.FondaControl.businesslogic.facade.imp;
+
+import co.edu.uco.FondaControl.businesslogic.businesslogic.SesionTrabajoBusinessLogic;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.SesionTrabajoDomain;
+import co.edu.uco.FondaControl.businesslogic.facade.SesionTrabajoFacade;
+import co.edu.uco.FondaControl.dto.SesionTrabajoDTO;
+import co.edu.uco.FondaControl.entity.UsuarioEntity;
+import co.edu.uco.FondaControl.crosscutting. utilitarios.UtilObjeto;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
+
+public class SesionTrabajoImpl implements SesionTrabajoFacade {
+
+    private final SesionTrabajoBusinessLogic businessLogic;
+
+    public SesionTrabajoImpl(SesionTrabajoBusinessLogic businessLogic) {
+        this.businessLogic = businessLogic;
+    }
+
+    @Override
+    public void iniciarSesionTrabajo(SesionTrabajoDTO sesionTrabajo) {
+        if (UtilObjeto.esNulo(sesionTrabajo)) {
+            throw new IllegalArgumentException("La sesión de trabajo no puede ser nula.");
+        }
+        SesionTrabajoDomain domain = mapToDomain(sesionTrabajo);
+        businessLogic.iniciarSesionTrabajo(domain);
+    }
+
+    @Override
+    public void cerrarSesionTrabajo(SesionTrabajoDTO sesionTrabajo) {
+        if (UtilObjeto.esNulo(sesionTrabajo)) {
+            throw new IllegalArgumentException("La sesión de trabajo no puede ser nula.");
+        }
+        SesionTrabajoDomain domain = mapToDomain(sesionTrabajo);
+        businessLogic.cerrarSesionTrabajo(domain);
+    }
+
+    private SesionTrabajoDomain mapToDomain(SesionTrabajoDTO dto) {
+        if (UtilObjeto.esNulo(dto)) {
+            return null;
+        }
+        UsuarioEntity usuario = new UsuarioEntity(
+                dto.getIdUsuario(),
+                UtilTexto.getInstancia().obtenerValorDefecto(dto.getNombreUsuario()),
+                null,
+                null
+        );
+        return new SesionTrabajoDomain(
+                dto.getCodigo(),
+                usuario,
+                dto.getBaseCaja(),
+                dto.getFechaApertura(),
+                dto.getFechaCierre()
+        );
+    }
+
+    private SesionTrabajoDTO mapToDTO(SesionTrabajoDomain domain) {
+        if (UtilObjeto.esNulo(domain)) {
+            return null;
+        }
+        return new SesionTrabajoDTO(
+                domain.getCodigo(),
+                domain.getIdUsuario().getId(),
+                domain.getBaseCaja(),
+                domain.getFechaApertura(),
+                domain.getFechaCierre()
+        );
+    }
+}

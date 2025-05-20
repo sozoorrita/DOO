@@ -1,4 +1,5 @@
 package co.edu.uco.FondaControl.businesslogic.businesslogic.impl;
+
 import co.edu.uco.FondaControl.businesslogic.businesslogic.SesionTrabajoBusinessLogic;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.SesionTrabajoDomain;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
