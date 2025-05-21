@@ -41,6 +41,10 @@ public final class UsuarioEntity {
         );
     }
 
+    public static UsuarioEntity obtenerDesdeUUID(UUID idUsuario) {
+        return new UsuarioEntity(idUsuario);
+    }
+
     public UUID getId() {
         return id;
     }
@@ -71,5 +75,9 @@ public final class UsuarioEntity {
 
     public void setContrasena(final String contrasena) {
         this.contrasena = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(contrasena);
+    }
+
+    public UUID getCodigo() {
+        return getId();
     }
 }

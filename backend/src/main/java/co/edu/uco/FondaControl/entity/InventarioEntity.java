@@ -2,7 +2,6 @@ package co.edu.uco.FondaControl.entity;
 
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
-import co.edu.uco.FondaControl.entity.IndicadorInventarioEntity;
 
 import java.util.UUID;
 
@@ -10,9 +9,9 @@ public final class InventarioEntity {
     private UUID codigo;
     private String nombreProducto;
     private int cantidad;
-    private co.edu.uco.FondaControl.entity.IndicadorInventarioEntity codigoIndicador;
+    private UUID codigoIndicador;
 
-    public InventarioEntity() {
+    public InventarioEntity(UUID codigo, String nombreproducto, int cantidad, UUID codigoindicador) {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
         setCodigoIndicador(new IndicadorInventarioEntity());
@@ -32,6 +31,10 @@ public final class InventarioEntity {
     }
 
     public UUID getId() {
+        return codigo;
+    }
+
+    public UUID getCodigo() { // Método agregado
         return codigo;
     }
 
@@ -55,14 +58,11 @@ public final class InventarioEntity {
         this.cantidad = Integer.parseInt(UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(String.valueOf(cantidad)));
     }
 
-    public IndicadorInventarioEntity getCodigoIndicador() {
+    public UUID getCodigoIndicador() {
         return codigoIndicador;
     }
 
     public void setCodigoIndicador(final IndicadorInventarioEntity codigoIndicador) {
         this.codigoIndicador = IndicadorInventarioEntity.obtenerValorDefecto(codigoIndicador);
     }
-
-
-
 }
