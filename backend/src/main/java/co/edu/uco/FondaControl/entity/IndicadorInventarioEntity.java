@@ -13,7 +13,6 @@ public final class IndicadorInventarioEntity {
     public IndicadorInventarioEntity() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
-
     }
 
     public IndicadorInventarioEntity(final UUID codigo, final String nombre) {
@@ -22,13 +21,16 @@ public final class IndicadorInventarioEntity {
     }
 
     public IndicadorInventarioEntity(UUID codigoIndicador) {
+        setCodigo(codigoIndicador);
+        setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
     }
 
     public static IndicadorInventarioEntity obtenerValorDefecto() {
         return new IndicadorInventarioEntity();
     }
-    public static UUID obtenerValorDefecto(final IndicadorInventarioEntity indicador) {
-        return UtilObjeto.getInstancia().obtenerValorDefecto(indicador, obtenerValorDefecto());
+
+    public static UUID obtenerCodigoDefecto(final IndicadorInventarioEntity indicador) {
+        return UtilObjeto.getInstancia().obtenerValorDefecto(indicador, obtenerValorDefecto()).getCodigo();
     }
 
     public UUID getCodigo() {
@@ -46,6 +48,4 @@ public final class IndicadorInventarioEntity {
     public void setNombre(final String nombre) {
         this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
     }
-
-
 }

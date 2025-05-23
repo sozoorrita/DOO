@@ -3,6 +3,7 @@ package co.edu.uco.FondaControl.entity;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
+
 import java.util.UUID;
 
 public final class InventarioEntity {
@@ -11,35 +12,26 @@ public final class InventarioEntity {
     private int cantidad;
     private UUID codigoIndicador;
 
-    public InventarioEntity(UUID codigo, String nombreproducto, int cantidad, UUID codigoindicador) {
-        setCodigo(UtilUUID.obtenerValorDefecto());
-        setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
-        setCodigoIndicador(new IndicadorInventarioEntity());
-    }
-
-    public InventarioEntity(final UUID id) {
-        setCodigo(id);
-        setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
-        setCodigoIndicador(IndicadorInventarioEntity.obtenerValorDefecto());
-    }
-
-    public InventarioEntity(final UUID id, String nombreProducto, int cantidad, final IndicadorInventarioEntity codigoIndicador) {
-        setCodigo(id);
+    public InventarioEntity(UUID codigo, String nombreProducto, int cantidad, UUID codigoIndicador) {
+        setCodigo(codigo);
         setNombreProducto(nombreProducto);
         setCantidad(cantidad);
         setCodigoIndicador(codigoIndicador);
     }
 
-    public UUID getId() {
+    public InventarioEntity(final UUID id) {
+        setCodigo(id);
+        setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
+        setCantidad(0);
+        setCodigoIndicador(UtilUUID.obtenerValorDefecto());
+    }
+
+    public UUID getCodigo() {
         return codigo;
     }
 
-    public UUID getCodigo() { // Método agregado
-        return codigo;
-    }
-
-    public void setCodigo(final UUID id) {
-        this.codigo = UtilUUID.obtenerValorDefecto(id);
+    public void setCodigo(final UUID codigo) {
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
     }
 
     public String getNombreProducto() {
@@ -55,14 +47,14 @@ public final class InventarioEntity {
     }
 
     public void setCantidad(final int cantidad) {
-        this.cantidad = Integer.parseInt(UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(String.valueOf(cantidad)));
+        this.cantidad = Math.max(0, cantidad); // Evitar valores negativos
     }
 
     public UUID getCodigoIndicador() {
         return codigoIndicador;
     }
 
-    public void setCodigoIndicador(final IndicadorInventarioEntity codigoIndicador) {
-        this.codigoIndicador = IndicadorInventarioEntity.obtenerValorDefecto(codigoIndicador);
+    public void setCodigoIndicador(final UUID codigoIndicador) {
+        this.codigoIndicador = UtilUUID.obtenerValorDefecto(codigoIndicador);
     }
 }
