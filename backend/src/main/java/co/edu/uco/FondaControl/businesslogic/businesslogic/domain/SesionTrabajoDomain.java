@@ -1,8 +1,9 @@
 package co.edu.uco.FondaControl.businesslogic.businesslogic.domain;
 
-import co.edu.uco.FondaControl.entity.UsuarioEntity;
+
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilFecha;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilMoneda;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
 import java.math.BigDecimal;
@@ -11,33 +12,34 @@ import java.util.UUID;
 
 public final class SesionTrabajoDomain {
     private UUID codigo;
-    private UsuarioEntity idUsuario;
+    private UsuarioDomain usuario;
     private BigDecimal baseCaja;
     private LocalDateTime fechaApertura;
     private LocalDateTime fechaCierre;
 
-    SesionTrabajoDomain() {
+    public SesionTrabajoDomain() {
         setCodigo(UtilUUID.obtenerValorDefecto());
-        setIdUsuario(UsuarioEntity.obtenerValorDefecto());
+        setUsuario(UsuarioDomain.obtenerValorDefecto());
         setBaseCaja(UtilMoneda.obtenerValorDefecto());
         setFechaApertura(UtilFecha.obtenerValorDefecto());
         setFechaCierre(UtilFecha.obtenerValorDefecto());
     }
 
-    public SesionTrabajoDomain(final UUID codigo, final UsuarioEntity idUsuario, final BigDecimal baseCaja, final LocalDateTime fechaApertura, final LocalDateTime fechaCierre) {
+    public SesionTrabajoDomain(final UUID codigo, final UsuarioDomain usuario, final BigDecimal baseCaja,
+                               final LocalDateTime fechaApertura, final LocalDateTime fechaCierre) {
         setCodigo(codigo);
-        setIdUsuario(idUsuario);
+        setUsuario(usuario);
         setBaseCaja(baseCaja);
         setFechaApertura(fechaApertura);
         setFechaCierre(fechaCierre);
     }
 
-    static SesionTrabajoDomain obtenerValorDefecto() {
+    public static SesionTrabajoDomain obtenerValorDefecto() {
         return new SesionTrabajoDomain();
     }
 
-    static SesionTrabajoDomain obtenerValorDefecto(final SesionTrabajoDomain sesion) {
-        return (sesion != null) ? sesion : obtenerValorDefecto();
+    public static SesionTrabajoDomain obtenerValorDefecto(final SesionTrabajoDomain sesion) {
+        return UtilObjeto.esNulo(sesion) ? obtenerValorDefecto() : sesion;
     }
 
     public UUID getCodigo() {
@@ -48,12 +50,15 @@ public final class SesionTrabajoDomain {
         this.codigo = UtilUUID.obtenerValorDefecto(codigo);
     }
 
-    public UsuarioEntity getIdUsuario() {
-        return idUsuario;
+    /**
+     * Método semántico que representa el identificador del usuario responsable de la sesión.
+     */
+    public UsuarioDomain getIdUsuario() {
+        return usuario;
     }
 
-    private void setIdUsuario(final UsuarioEntity idUsuario) {
-        this.idUsuario = (idUsuario != null) ? idUsuario : UsuarioEntity.obtenerValorDefecto();
+    private void setUsuario(final UsuarioDomain usuario) {
+        this.usuario = UtilObjeto.esNulo(usuario) ? UsuarioDomain.obtenerValorDefecto() : usuario;
     }
 
     public BigDecimal getBaseCaja() {

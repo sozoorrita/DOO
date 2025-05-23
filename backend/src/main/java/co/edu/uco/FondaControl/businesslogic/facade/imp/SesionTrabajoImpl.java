@@ -2,7 +2,9 @@ package co.edu.uco.FondaControl.businesslogic.facade.imp;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.SesionTrabajoBusinessLogic;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.SesionTrabajoDomain;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.UsuarioDomain;
 import co.edu.uco.FondaControl.businesslogic.facade.SesionTrabajoFacade;
+import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.SesionTrabajoDTO;
 import co.edu.uco.FondaControl.entity.UsuarioEntity;
 import co.edu.uco.FondaControl.crosscutting. utilitarios.UtilObjeto;
@@ -17,7 +19,7 @@ public class SesionTrabajoImpl implements SesionTrabajoFacade {
     }
 
     @Override
-    public void iniciarSesionTrabajo(SesionTrabajoDTO sesionTrabajo) {
+    public void iniciarSesionTrabajo(SesionTrabajoDTO sesionTrabajo) throws FondaControlException {
         if (UtilObjeto.esNulo(sesionTrabajo)) {
             throw new IllegalArgumentException("La sesión de trabajo no puede ser nula.");
         }
@@ -26,7 +28,7 @@ public class SesionTrabajoImpl implements SesionTrabajoFacade {
     }
 
     @Override
-    public void cerrarSesionTrabajo(SesionTrabajoDTO sesionTrabajo) {
+    public void cerrarSesionTrabajo(SesionTrabajoDTO sesionTrabajo) throws FondaControlException {
         if (UtilObjeto.esNulo(sesionTrabajo)) {
             throw new IllegalArgumentException("La sesión de trabajo no puede ser nula.");
         }
@@ -38,7 +40,7 @@ public class SesionTrabajoImpl implements SesionTrabajoFacade {
         if (UtilObjeto.esNulo(dto)) {
             return null;
         }
-        UsuarioEntity usuario = new UsuarioEntity(
+        UsuarioDomain usuario = new UsuarioDomain(
                 dto.getIdUsuario(),
                 UtilTexto.getInstancia().obtenerValorDefecto(dto.getNombreUsuario()),
                 null,
@@ -60,6 +62,7 @@ public class SesionTrabajoImpl implements SesionTrabajoFacade {
         return new SesionTrabajoDTO(
                 domain.getCodigo(),
                 domain.getIdUsuario().getId(),
+                domain.getIdUsuario().getNombre(),
                 domain.getBaseCaja(),
                 domain.getFechaApertura(),
                 domain.getFechaCierre()

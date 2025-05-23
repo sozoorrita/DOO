@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 public final class InformeCajaDomain {
+
     private UUID codigo;
     private UUID codigoSesionTrabajo;
     private LocalDate fecha;
@@ -30,7 +31,9 @@ public final class InformeCajaDomain {
         setVentas(new ArrayList<>());
     }
 
-    public InformeCajaDomain(final UUID codigo, final UUID codigoSesionTrabajo, final LocalDate fecha, final BigDecimal totalVenta, final BigDecimal pagoEfectivo, final BigDecimal pagoTransferencia, final Collection<Venta> ventas) {
+    public InformeCajaDomain(final UUID codigo, final UUID codigoSesionTrabajo, final LocalDate fecha,
+                             final BigDecimal totalVenta, final BigDecimal pagoEfectivo, final BigDecimal pagoTransferencia,
+                             final Collection<Venta> ventas) {
         setCodigo(codigo);
         setCodigoSesionTrabajo(codigoSesionTrabajo);
         setFecha(fecha);
@@ -40,12 +43,8 @@ public final class InformeCajaDomain {
         setVentas(ventas);
     }
 
-    static InformeCajaDomain obtenerValorDefecto() {
+    public static InformeCajaDomain obtenerValorDefecto() {
         return new InformeCajaDomain();
-    }
-
-    static InformeCajaDomain obtenerValorDefecto(final InformeCajaDomain informe) {
-        return UtilObjeto.getInstancia().obtenerValorDefecto(informe, obtenerValorDefecto());
     }
 
     public UUID getCodigo() {
@@ -69,15 +68,15 @@ public final class InformeCajaDomain {
     }
 
     private void setFecha(final LocalDate fecha) {
-        this.fecha = UtilObjeto.getInstancia().obtenerValorDefecto(fecha, UtilFecha.obtenerValorDefecto().toLocalDate());
+        this.fecha = UtilObjeto.getInstancia().esNulo(fecha) ? UtilFecha.obtenerValorDefecto().toLocalDate() : fecha;
     }
 
     public BigDecimal getTotalVenta() {
         return totalVenta;
     }
 
-    public void setTotalVentas(final double totalVenta) {
-        this.totalVenta = UtilMoneda.asegurarNoNegativo(BigDecimal.valueOf(totalVenta));
+    public void setTotalVenta(BigDecimal totalVenta) {
+        this.totalVenta = UtilMoneda.asegurarNoNegativo(totalVenta);
     }
 
     public BigDecimal getPagoEfectivo() {
@@ -97,17 +96,14 @@ public final class InformeCajaDomain {
     }
 
     public Collection<Venta> getVentas() {
-        return UtilObjeto.getInstancia().obtenerValorDefecto(ventas, new ArrayList<>());
+        return ventas;
     }
 
     public void setVentas(Collection<Venta> ventas) {
-        this.ventas = UtilObjeto.getInstancia().obtenerValorDefecto(ventas, new ArrayList<>());
+        this.ventas = UtilObjeto.getInstancia().esNulo(ventas) ? new ArrayList<>() : ventas;
     }
 
-    public void setTotalVenta(BigDecimal totalVenta) {
-        this.totalVenta = totalVenta;
-    }
-
+    // Subclase interna para representar una venta individual
     public static final class Venta {
         private BigDecimal monto;
 

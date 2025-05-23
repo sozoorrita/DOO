@@ -4,6 +4,7 @@ import co.edu.uco.FondaControl.businesslogic.businesslogic.InventarioBusinessLog
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.IndicadorInventarioDomain;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.InventarioDomain;
 import co.edu.uco.FondaControl.businesslogic.facade.InventarioFacade;
+import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.InventarioDTO;
 import co.edu.uco.FondaControl.entity.IndicadorInventarioEntity;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
@@ -20,7 +21,7 @@ public class InventarioImpl implements InventarioFacade {
     }
 
     @Override
-    public void actualizarCantidadEnInventario(InventarioDTO inventario) {
+    public void actualizarCantidadEnInventario(InventarioDTO inventario) throws FondaControlException {
         if (UtilObjeto.esNulo(inventario)) {
             throw new IllegalArgumentException("El inventario no puede ser nulo.");
         }
@@ -29,7 +30,7 @@ public class InventarioImpl implements InventarioFacade {
     }
 
     @Override
-    public void consultarCantidadInventario(UUID codigo) {
+    public void consultarCantidadInventario(UUID codigo) throws FondaControlException {
         if (UtilObjeto.esNulo(codigo)) {
             throw new IllegalArgumentException("El código no puede ser nulo.");
         }
@@ -37,7 +38,7 @@ public class InventarioImpl implements InventarioFacade {
     }
 
     @Override
-    public void gestionarInventarioManualmente(InventarioDTO inventario) {
+    public void gestionarInventarioManualmente(InventarioDTO inventario) throws FondaControlException{
         if (UtilObjeto.esNulo(inventario)) {
             throw new IllegalArgumentException("El inventario no puede ser nulo.");
         }
@@ -54,7 +55,7 @@ public class InventarioImpl implements InventarioFacade {
                 UtilTexto.getInstancia().obtenerValorDefecto(dto.getNombreIndicador())
         );
         return new InventarioDomain(
-                dto.getId(),
+                dto.getCodigo(),
                 UtilTexto.getInstancia().obtenerValorDefecto(dto.getNombreProducto()),
                 dto.getCantidad(),
                 indicadorDomain
@@ -65,12 +66,12 @@ public class InventarioImpl implements InventarioFacade {
         if (UtilObjeto.esNulo(domain)) {
             return null;
         }
-        UUID codigoIndicador = domain.getCodigoIndicador();
         return new InventarioDTO(
                 domain.getCodigo(),
                 UtilTexto.getInstancia().obtenerValorDefecto(domain.getNombreProducto()),
                 domain.getCantidad(),
-                new IndicadorInventarioEntity(codigoIndicador)
+                domain.getCodigoIndicador(),
+                UtilTexto.getInstancia().obtenerValorDefecto(domain.getNombreIndicador())
         );
     }
 }

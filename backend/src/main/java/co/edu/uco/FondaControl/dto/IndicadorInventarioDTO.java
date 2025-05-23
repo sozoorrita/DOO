@@ -34,6 +34,7 @@ public final class IndicadorInventarioDTO {
         return UtilObjeto.getInstancia().obtenerValorDefecto(indicador, obtenerValorDefecto());
     }
 
+
     public UUID getCodigo() {
         return codigo;
     }

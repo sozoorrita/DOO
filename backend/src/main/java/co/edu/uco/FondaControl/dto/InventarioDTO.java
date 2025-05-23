@@ -1,8 +1,7 @@
 package co.edu.uco.FondaControl.dto;
 
-import co.edu.uco.FondaControl.entity.IndicadorInventarioEntity;
-import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 
 import java.util.UUID;
 
@@ -14,26 +13,28 @@ public final class InventarioDTO {
     private String nombreIndicador;
 
     public InventarioDTO() {
-        setId(UtilUUID.obtenerValorDefecto());
-        setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
-        setCodigoIndicador(UtilUUID.obtenerValorDefecto());
-        setNombreIndicador(UtilTexto.getInstancia().obtenerValorDefecto());
+        this.codigo = UtilUUID.obtenerValorDefecto();
+        this.nombreProducto = UtilTexto.getInstancia().obtenerValorDefecto();
+        this.cantidad = 0;
+        this.codigoIndicador = UtilUUID.obtenerValorDefecto();
+        this.nombreIndicador = UtilTexto.getInstancia().obtenerValorDefecto();
     }
 
-    public InventarioDTO(final UUID id, String nombreProducto, int cantidad, IndicadorInventarioEntity indicador) {
-        setId(id);
-        setNombreProducto(nombreProducto);
-        setCantidad(cantidad);
-        setCodigoIndicador(indicador.getCodigo());
-        setNombreIndicador(indicador.getNombre());
+    public InventarioDTO(final UUID codigo, final String nombreProducto, final int cantidad,
+                         final UUID codigoIndicador, final String nombreIndicador) {
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
+        this.nombreProducto = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombreProducto);
+        this.cantidad = Math.max(cantidad, 0);
+        this.codigoIndicador = UtilUUID.obtenerValorDefecto(codigoIndicador);
+        this.nombreIndicador = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombreIndicador);
     }
 
-    public UUID getId() {
+    public UUID getCodigo() {
         return codigo;
     }
 
-    public void setId(final UUID id) {
-        this.codigo = UtilUUID.obtenerValorDefecto(id);
+    public void setCodigo(final UUID codigo) {
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
     }
 
     public String getNombreProducto() {
@@ -49,7 +50,7 @@ public final class InventarioDTO {
     }
 
     public void setCantidad(final int cantidad) {
-        this.cantidad = cantidad;
+        this.cantidad = Math.max(cantidad, 0);
     }
 
     public UUID getCodigoIndicador() {

@@ -1,5 +1,6 @@
 package co.edu.uco.FondaControl.data.dao.entity.Usuario;
 
+import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 import co.edu.uco.FondaControl.data.dao.entity.CreateDAO;
 import co.edu.uco.FondaControl.data.dao.entity.UpdateDAO;
 import co.edu.uco.FondaControl.data.dao.entity.DeleteDAO;
@@ -11,7 +12,6 @@ public interface UsuarioDAO extends
         CreateDAO<UsuarioEntity>,
         UpdateDAO<UsuarioEntity, UUID>,
         DeleteDAO<UsuarioEntity, UUID> {
-    void update(UUID uuid, UsuarioEntity entity);
 
-    UsuarioEntity findById(UUID id);
+    UsuarioEntity findById(UUID id) throws DataFondaControlException;
 }

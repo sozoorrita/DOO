@@ -10,30 +10,35 @@ public final class InventarioDomain {
     private UUID codigo;
     private String nombreProducto;
     private int cantidad;
-    private UUID codigoIndicador;
+    private IndicadorInventarioDomain indicador;
 
-    InventarioDomain() {
+    // Constructor por defecto
+    public InventarioDomain() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
         setCantidad(0);
-        setCodigoIndicador(IndicadorInventarioDomain.obtenerValorDefecto());
+        setIndicador(IndicadorInventarioDomain.obtenerValorDefecto());
     }
 
-    public InventarioDomain(final UUID codigo, final String nombreProducto, final int cantidad, final IndicadorInventarioDomain codigoIndicador) {
+    // Constructor con parámetros
+    public InventarioDomain(final UUID codigo, final String nombreProducto, final int cantidad, final IndicadorInventarioDomain indicador) {
         setCodigo(codigo);
         setNombreProducto(nombreProducto);
         setCantidad(cantidad);
-        setCodigoIndicador(codigoIndicador);
+        setIndicador(indicador);
     }
 
-    static InventarioDomain obtenerValorDefecto() {
+    // Método estático para obtener un objeto por defecto
+    public static InventarioDomain obtenerValorDefecto() {
         return new InventarioDomain();
     }
 
-    static UUID obtenerValorDefecto(final InventarioDomain inventario) {
-        return UtilObjeto.getInstancia().obtenerValorDefecto(inventario, obtenerValorDefecto());
+    // Método estático para obtener el código de un inventario (usado como valor por defecto)
+    public static UUID obtenerValorDefecto(final InventarioDomain inventario) {
+        return UtilObjeto.getInstancia().obtenerValorDefecto(inventario, obtenerValorDefecto()).getCodigo();
     }
 
+    // Getters y Setters
     public UUID getCodigo() {
         return codigo;
     }
@@ -58,11 +63,19 @@ public final class InventarioDomain {
         this.cantidad = Math.max(0, cantidad);
     }
 
-    public UUID getCodigoIndicador() {
-        return codigoIndicador;
+    public IndicadorInventarioDomain getIndicador() {
+        return indicador;
     }
 
-    private void setCodigoIndicador(final IndicadorInventarioDomain codigoIndicador) {
-        this.codigoIndicador = UtilObjeto.getInstancia().obtenerValorDefecto(codigoIndicador, IndicadorInventarioDomain.obtenerValorDefecto());
+    public UUID getCodigoIndicador() {
+        return indicador.getCodigo();
+    }
+
+    public String getNombreIndicador() {
+        return indicador.getNombre();
+    }
+
+    private void setIndicador(final IndicadorInventarioDomain indicador) {
+        this.indicador = UtilObjeto.getInstancia().obtenerValorDefecto(indicador, IndicadorInventarioDomain.obtenerValorDefecto());
     }
 }

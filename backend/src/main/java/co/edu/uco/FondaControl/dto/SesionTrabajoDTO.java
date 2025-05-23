@@ -1,5 +1,10 @@
 package co.edu.uco.FondaControl.dto;
 
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilFecha;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilMoneda;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -7,27 +12,28 @@ import java.util.UUID;
 public final class SesionTrabajoDTO {
     private UUID codigo;
     private UUID idUsuario;
-    private String nombreUsuario; // Nuevo atributo
+    private String nombreUsuario;
     private BigDecimal baseCaja;
     private LocalDateTime fechaApertura;
     private LocalDateTime fechaCierre;
 
-    public SesionTrabajoDTO(UUID codigo, UUID id, BigDecimal baseCaja, LocalDateTime fechaApertura, LocalDateTime fechaCierre) {
-        this.codigo = UUID.randomUUID();
-        this.idUsuario = UUID.randomUUID();
-        this.nombreUsuario = "";
-        this.baseCaja = BigDecimal.ZERO;
-        this.fechaApertura = LocalDateTime.now();
-        this.fechaCierre = LocalDateTime.now();
+    public SesionTrabajoDTO() {
+        this.codigo = UtilUUID.generarNuevoUUID();
+        this.idUsuario = UtilUUID.generarNuevoUUID();
+        this.nombreUsuario = UtilTexto.getInstancia().obtenerValorDefecto();
+        this.baseCaja = UtilMoneda.obtenerValorDefecto();
+        this.fechaApertura = UtilFecha.obtenerValorDefecto();
+        this.fechaCierre = UtilFecha.obtenerValorDefecto();
     }
 
-    public SesionTrabajoDTO(UUID codigo, UUID idUsuario, String nombreUsuario, BigDecimal baseCaja, LocalDateTime fechaApertura, LocalDateTime fechaCierre) {
-        this.codigo = codigo;
-        this.idUsuario = idUsuario;
-        this.nombreUsuario = nombreUsuario;
-        this.baseCaja = baseCaja;
-        this.fechaApertura = fechaApertura;
-        this.fechaCierre = fechaCierre;
+    public SesionTrabajoDTO(UUID codigo, UUID idUsuario, String nombreUsuario, BigDecimal baseCaja,
+                            LocalDateTime fechaApertura, LocalDateTime fechaCierre) {
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
+        this.idUsuario = UtilUUID.obtenerValorDefecto(idUsuario);
+        this.nombreUsuario = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombreUsuario);
+        this.baseCaja = UtilMoneda.obtenerValorDefecto(baseCaja);
+        this.fechaApertura = UtilFecha.obtenerValorDefecto(fechaApertura);
+        this.fechaCierre = UtilFecha.obtenerValorDefecto(fechaCierre);
     }
 
     public UUID getCodigo() {
@@ -35,7 +41,7 @@ public final class SesionTrabajoDTO {
     }
 
     public void setCodigo(UUID codigo) {
-        this.codigo = codigo;
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
     }
 
     public UUID getIdUsuario() {
@@ -43,7 +49,7 @@ public final class SesionTrabajoDTO {
     }
 
     public void setIdUsuario(UUID idUsuario) {
-        this.idUsuario = idUsuario;
+        this.idUsuario = UtilUUID.obtenerValorDefecto(idUsuario);
     }
 
     public String getNombreUsuario() {
@@ -51,7 +57,7 @@ public final class SesionTrabajoDTO {
     }
 
     public void setNombreUsuario(String nombreUsuario) {
-        this.nombreUsuario = nombreUsuario;
+        this.nombreUsuario = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombreUsuario);
     }
 
     public BigDecimal getBaseCaja() {
@@ -59,7 +65,7 @@ public final class SesionTrabajoDTO {
     }
 
     public void setBaseCaja(BigDecimal baseCaja) {
-        this.baseCaja = baseCaja;
+        this.baseCaja = UtilMoneda.obtenerValorDefecto(baseCaja);
     }
 
     public LocalDateTime getFechaApertura() {
@@ -67,7 +73,7 @@ public final class SesionTrabajoDTO {
     }
 
     public void setFechaApertura(LocalDateTime fechaApertura) {
-        this.fechaApertura = fechaApertura;
+        this.fechaApertura = UtilFecha.obtenerValorDefecto(fechaApertura);
     }
 
     public LocalDateTime getFechaCierre() {
@@ -75,6 +81,6 @@ public final class SesionTrabajoDTO {
     }
 
     public void setFechaCierre(LocalDateTime fechaCierre) {
-        this.fechaCierre = fechaCierre;
+        this.fechaCierre = UtilFecha.obtenerValorDefecto(fechaCierre);
     }
 }

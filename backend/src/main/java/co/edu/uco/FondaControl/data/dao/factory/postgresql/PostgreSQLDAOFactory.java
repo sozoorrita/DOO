@@ -1,147 +1,181 @@
 package co.edu.uco.FondaControl.data.dao.factory.postgresql;
 
+
+import co.edu.uco.FondaControl.data.dao.entity.Usuario.UsuarioDAO;
+import co.edu.uco.FondaControl.data.dao.entity.Usuario.imp.postgresql.UsuarioPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.IndicadorInventarioDAO;
+import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.impl.postgresql.IndicadorInventarioPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.informecaja.InformeCajaDAO;
+import co.edu.uco.FondaControl.data.dao.entity.informecaja.impl.postgresql.InformeCajaPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.inventario.InventarioDAO;
+import co.edu.uco.FondaControl.data.dao.entity.inventario.imp.postgresql.InventarioPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.SesionTrabajoDAO;
+import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.imp.postgresql.SesionTrabajoPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
+import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
-import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
-import co.edu.uco.FondaControl.data.dao.entity.Usuario.UsuarioDAO;
-import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.IndicadorInventarioDAO;
-import co.edu.uco.FondaControl.data.dao.entity.informecaja.InformeCajaDAO;
-import co.edu.uco.FondaControl.data.dao.entity.inventario.InventarioDAO;
-import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.SesionTrabajoDAO;
-import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
-
 public class PostgreSQLDAOFactory extends DAOFactory {
 
-    private static final String URL = "jdbc:postgresql://localhost:5432/DOO2025FONDACONTROL";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "1036778928";
-    private static final String DRIVER = "org.postgresql.Driver";
-
     private Connection conexion;
-    private boolean transaccionEstaIniciada;
+    private boolean transaccionEstainiciada;
     private boolean conexionEstaAbierta;
 
-    public PostgreSQLDAOFactory() throws FondaControlException {
+    public PostgreSQLDAOFactory() throws DataFondaControlException {
         abrirConexion();
-        transaccionEstaIniciada = false;
+        transaccionEstainiciada = false;
+        conexionEstaAbierta = false;
     }
 
     @Override
-    protected void abrirConexion() throws FondaControlException {
-        var baseDatos = "DOO2025FONDACONTROL";
-        var servidor = "localhost";
+    protected void abrirConexion() throws DataFondaControlException {
+        var baseDatos = "fondacontroldb";
+        var servidor = "9-pooler.us-east-1.aws.neon.tech";
+        var urlConexion = "jdbc:postgresql://" + servidor + "/" + baseDatos;
+        var usuario = "tu_usuario";
+        var contrasena = "tu_contrasena";
 
         try {
-            Class.forName(DRIVER);
-            conexion = DriverManager.getConnection(URL, USER, PASSWORD);
+            conexion = DriverManager.getConnection(urlConexion, usuario, contrasena);
             conexionEstaAbierta = true;
         } catch (SQLException exception) {
-            var mensajeUsuario = "Se ha presentado un problema tratando de obtener la conexión con la fuente de datos para llevar a cabo la operación deseada.";
-            var mensajeTecnico = "Se presentó una SQLException tratando de conectar con la base de datos " + baseDatos
-                    + " en el servidor " + servidor + ".";
+            var mensajeUsuario = "Error al abrir la conexión a la base de datos";
+            var mensajeTecnico = "Se presentó una excepción de tipo SQLException tratando de obtener la conexión con la base de datos "
+                    + baseDatos + " en el servidor " + servidor + ". Para más detalles, consulte el log de errores.";
+
             throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
+
         } catch (Exception exception) {
-            var mensajeUsuario = "Se ha presentado un problema inesperado tratando de obtener la conexión.";
-            var mensajeTecnico = "Excepción NO CONTROLADA tratando de conectar con la base de datos " + baseDatos
-                    + " en el servidor " + servidor + ".";
+            var mensajeUsuario = "Se ha presentado un error inesperado al abrir la conexión a la base de datos";
+            var mensajeTecnico = "Se presentó una excepción de tipo Exception tratando de obtener la conexión con la base de datos "
+                    + baseDatos + " en el servidor " + servidor + ". Para más detalles, consulte el log de errores.";
+
             throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
         }
     }
 
     @Override
-    public void iniciarTransaccion() throws FondaControlException {
+    public void iniciarTransaccion() throws DataFondaControlException {
         try {
             asegurarConexionAbierta();
             conexion.setAutoCommit(false);
-            transaccionEstaIniciada = true;
+            transaccionEstainiciada = true;
         } catch (SQLException exception) {
-            throw DataFondaControlException.reportar("Error al iniciar transacción.",
-                    "SQLException al desactivar AutoCommit.", exception);
+            var mensajeUsuario = "Se ha presentado un error inesperado tratando de iniciar la transacción con la fuente de datos";
+            var mensajeTecnico = "Se presentó una excepción de tipo SQLException tratando de iniciar la transacción sobre la conexión con la base de datos";
+
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
+        } catch (Exception exception) {
+            var mensajeUsuario = "Se ha presentado un error inesperado tratando de iniciar la transacción con la fuente de datos";
+            var mensajeTecnico = "Se presentó una excepción no controlada de tipo Exception tratando de iniciar la transacción sobre la conexión con la base de datos";
+
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
         }
     }
 
     @Override
-    public void confirmarTransaccion() throws FondaControlException {
+    public void confirmarTransaccion() throws DataFondaControlException {
         try {
             asegurarConexionAbierta();
             asegurarTransaccionIniciada();
             conexion.commit();
-            transaccionEstaIniciada = false;
         } catch (SQLException exception) {
-            throw DataFondaControlException.reportar("Error al confirmar transacción.", "SQLException en commit().",
-                    exception);
+            var mensajeUsuario = "Se ha presentado un error inesperado tratando de confirmar la transacción con la fuente de datos";
+            var mensajeTecnico = "Se presentó una excepción de tipo SQLException tratando de confirmar la transacción sobre la conexión con la base de datos";
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
+        } catch (Exception exception) {
+            var mensajeUsuario = "Se ha presentado un error inesperado tratando de confirmar la transacción con la fuente de datos";
+            var mensajeTecnico = "Se presentó una excepción no controlada de tipo Exception tratando de confirmar la transacción sobre la conexión con la base de datos";
+
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
         }
     }
 
     @Override
-    public void cancelarTransaccion() throws FondaControlException {
+    public void cancelarTransaccion() throws DataFondaControlException {
         try {
             asegurarConexionAbierta();
             asegurarTransaccionIniciada();
             conexion.rollback();
-            transaccionEstaIniciada = false;
         } catch (SQLException exception) {
-            throw DataFondaControlException.reportar("Error al cancelar transacción.", "SQLException en rollback().",
-                    exception);
+            var mensajeUsuario = "Se ha presentado un error inesperado tratando de cancelar la transacción con la fuente de datos";
+            var mensajeTecnico = "Se presentó una excepción de tipo SQLException tratando de cancelar la transacción sobre la conexión con la base de datos";
+
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
+        } catch (Exception exception) {
+            var mensajeUsuario = "Se ha presentado un error inesperado tratando de cancelar la transacción con la fuente de datos";
+            var mensajeTecnico = "Se presentó una excepción no controlada de tipo Exception tratando de cancelar la transacción sobre la conexión con la base de datos";
+
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
         }
     }
 
     @Override
-    public void cerrarConexion() throws FondaControlException {
+    public void cerrarConexion() throws DataFondaControlException {
         try {
             asegurarConexionAbierta();
             conexion.close();
-            conexionEstaAbierta = false;
         } catch (SQLException exception) {
-            throw DataFondaControlException.reportar("Error al cerrar conexión.", "SQLException en close().",
-                    exception);
+            var mensajeUsuario = "Se ha presentado un error inesperado tratando de cerrar la conexión con la fuente de datos";
+            var mensajeTecnico = "Se presentó una excepción de tipo SQLException tratando de cerrar la conexión sobre la base de datos";
+
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
+        } catch (Exception exception) {
+            var mensajeUsuario = "Se ha presentado un error inesperado tratando de cerrar la conexión con la fuente de datos";
+            var mensajeTecnico = "Se presentó una excepción no controlada de tipo Exception tratando de cerrar la conexión sobre la base de datos";
+
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
         }
     }
 
-    private void asegurarTransaccionIniciada() throws FondaControlException {
-        if (!transaccionEstaIniciada) {
-            throw DataFondaControlException.reportar("Transacción no iniciada.",
-                    "Se intentó confirmar o cancelar una transacción que no ha sido iniciada.");
+    private void asegurarTransaccionIniciada() throws DataFondaControlException {
+        if (!transaccionEstainiciada) {
+            var mensajeUsuario = "Se ha presentado un error inesperado tratando de gestionar la transacción con la fuente de datos";
+            var mensajeTecnico = "Se intentó gestionar (COMMIT/ROLLBACK) una transacción que no ha sido iniciada";
+
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico);
         }
     }
 
-    private void asegurarConexionAbierta() throws FondaControlException {
-        if (!conexionEstaAbierta || conexion == null) {
-            throw DataFondaControlException.reportar("Conexión no abierta.",
-                    "Se intentó operar con una conexión cerrada o nula.");
+    private void asegurarConexionAbierta() throws DataFondaControlException {
+        if (!conexionEstaAbierta) {
+            var mensajeUsuario = "Se ha presentado un problema tratando de llevar a cabo la operación deseada con una conexión cerrada";
+            var mensajeTecnico = "Se intentó llevar a cabo una operación que requería una conexión abierta, pero la conexión estaba cerrada";
+
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico);
         }
     }
 
     @Override
-    public IndicadorInventarioDAO getIndicadorInventarioDAO() {
-        // Pendiente de implementación
-        return null;
+    public IndicadorInventarioDAO getIndicadorInventarioDAO() throws DataFondaControlException {
+        asegurarConexionAbierta();
+        return new IndicadorInventarioPostgreSQLDAO(conexion);
     }
 
     @Override
-    public InformeCajaDAO getInformeCajaDAO() {
-        // Pendiente de implementación
-        return null;
+    public InformeCajaDAO getInformeCajaDAO() throws DataFondaControlException {
+        asegurarConexionAbierta();
+        return new InformeCajaPostgreSQLDAO(conexion);
     }
 
     @Override
-    public InventarioDAO getInventarioDAO() {
-        // Pendiente de implementación
-        return null;
+    public InventarioDAO getInventarioDAO() throws DataFondaControlException {
+        asegurarConexionAbierta();
+        return new InventarioPostgreSQLDAO(conexion);
     }
 
     @Override
-    public UsuarioDAO getUsuarioDAO() {
-        // Pendiente de implementación
-        return null;
+    public UsuarioDAO getUsuarioDAO() throws DataFondaControlException {
+        asegurarConexionAbierta();
+        return new UsuarioPostgreSQLDAO(conexion);
     }
 
     @Override
-    public SesionTrabajoDAO getSesionTrabajoDAO() {
-        // Pendiente de implementación
-        return null;
+    public SesionTrabajoDAO getSesionTrabajoDAO() throws DataFondaControlException {
+        asegurarConexionAbierta();
+        return new SesionTrabajoPostgreSQLDAO(conexion);
     }
 }

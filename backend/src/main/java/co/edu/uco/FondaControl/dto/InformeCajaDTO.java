@@ -1,5 +1,9 @@
 package co.edu.uco.FondaControl.dto;
 
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilMoneda;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilFecha;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -13,29 +17,30 @@ public final class InformeCajaDTO {
     private BigDecimal pagoTransferencia;
 
     public InformeCajaDTO() {
-        this.codigo = UUID.randomUUID();
-        this.codigoSesionTrabajo = UUID.randomUUID();
-        this.fecha = LocalDate.now();
-        this.totalVenta = BigDecimal.ZERO;
-        this.pagoEfectivo = BigDecimal.ZERO;
-        this.pagoTransferencia = BigDecimal.ZERO;
+        this.codigo = UtilUUID.generarNuevoUUID();
+        this.codigoSesionTrabajo = UtilUUID.generarNuevoUUID();
+        this.fecha = UtilFecha.obtenerValorDefecto().toLocalDate();
+        this.totalVenta = UtilMoneda.obtenerValorDefecto();
+        this.pagoEfectivo = UtilMoneda.obtenerValorDefecto();
+        this.pagoTransferencia = UtilMoneda.obtenerValorDefecto();
     }
 
     public InformeCajaDTO(UUID codigo, UUID codigoSesionTrabajo, LocalDate fecha, BigDecimal totalVenta, BigDecimal pagoEfectivo, BigDecimal pagoTransferencia) {
-        this.codigo = codigo;
-        this.codigoSesionTrabajo = codigoSesionTrabajo;
-        this.fecha = fecha;
-        this.totalVenta = totalVenta;
-        this.pagoEfectivo = pagoEfectivo;
-        this.pagoTransferencia = pagoTransferencia;
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
+        this.codigoSesionTrabajo = UtilUUID.obtenerValorDefecto(codigoSesionTrabajo);
+        this.fecha = (fecha != null) ? fecha : UtilFecha.obtenerValorDefecto().toLocalDate();
+        this.totalVenta = UtilMoneda.obtenerValorDefecto(totalVenta);
+        this.pagoEfectivo = UtilMoneda.obtenerValorDefecto(pagoEfectivo);
+        this.pagoTransferencia = UtilMoneda.obtenerValorDefecto(pagoTransferencia);
     }
 
+    // Getters y Setters seguros
     public UUID getCodigo() {
         return codigo;
     }
 
     public void setCodigo(UUID codigo) {
-        this.codigo = codigo;
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
     }
 
     public UUID getCodigoSesionTrabajo() {
@@ -43,7 +48,7 @@ public final class InformeCajaDTO {
     }
 
     public void setCodigoSesionTrabajo(UUID codigoSesionTrabajo) {
-        this.codigoSesionTrabajo = codigoSesionTrabajo;
+        this.codigoSesionTrabajo = UtilUUID.obtenerValorDefecto(codigoSesionTrabajo);
     }
 
     public LocalDate getFecha() {
@@ -51,7 +56,7 @@ public final class InformeCajaDTO {
     }
 
     public void setFecha(LocalDate fecha) {
-        this.fecha = fecha;
+        this.fecha = (fecha != null) ? fecha : UtilFecha.obtenerValorDefecto().toLocalDate();
     }
 
     public BigDecimal getTotalVenta() {
@@ -59,7 +64,7 @@ public final class InformeCajaDTO {
     }
 
     public void setTotalVenta(BigDecimal totalVenta) {
-        this.totalVenta = totalVenta;
+        this.totalVenta = UtilMoneda.obtenerValorDefecto(totalVenta);
     }
 
     public BigDecimal getPagoEfectivo() {
@@ -67,7 +72,7 @@ public final class InformeCajaDTO {
     }
 
     public void setPagoEfectivo(BigDecimal pagoEfectivo) {
-        this.pagoEfectivo = pagoEfectivo;
+        this.pagoEfectivo = UtilMoneda.obtenerValorDefecto(pagoEfectivo);
     }
 
     public BigDecimal getPagoTransferencia() {
@@ -75,6 +80,6 @@ public final class InformeCajaDTO {
     }
 
     public void setPagoTransferencia(BigDecimal pagoTransferencia) {
-        this.pagoTransferencia = pagoTransferencia;
+        this.pagoTransferencia = UtilMoneda.obtenerValorDefecto(pagoTransferencia);
     }
 }

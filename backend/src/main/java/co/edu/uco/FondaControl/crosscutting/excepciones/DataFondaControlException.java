@@ -7,15 +7,15 @@ public class DataFondaControlException extends FondaControlException {
 	private DataFondaControlException(String mensajeUsuario, String mensajeTecnico, Exception excepcionRaiz) {
 		super(mensajeUsuario, mensajeTecnico, excepcionRaiz, LayerException.DATA);
 	}
-	
+
 	public static DataFondaControlException reportar(String mensajeUsuario) {
 		return new DataFondaControlException(mensajeUsuario, mensajeUsuario, new Exception());
 	}
-	
+
 	public static DataFondaControlException reportar(String mensajeUsuario, String mensajeTecnico) {
 		return new DataFondaControlException(mensajeUsuario, mensajeTecnico, new Exception());
 	}
-	
+
 	public static DataFondaControlException reportar(String mensajeUsuario, String mensajeTecnico, Exception excepcionRaiz) {
 		return new DataFondaControlException(mensajeUsuario, mensajeTecnico, excepcionRaiz);
 	}
