@@ -1,6 +1,5 @@
 package co.edu.uco.FondaControl.businesslogic.businesslogic.domain;
 
-
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilFecha;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilMoneda;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
@@ -34,6 +33,11 @@ public final class SesionTrabajoDomain {
         setFechaCierre(fechaCierre);
     }
 
+    public static SesionTrabajoDomain crearParaRegistro(final UsuarioDomain usuario, final BigDecimal baseCaja,
+                                                        final LocalDateTime fechaApertura) {
+        return new SesionTrabajoDomain(null, usuario, baseCaja, fechaApertura, null);
+    }
+
     public static SesionTrabajoDomain obtenerValorDefecto() {
         return new SesionTrabajoDomain();
     }
@@ -50,10 +54,7 @@ public final class SesionTrabajoDomain {
         this.codigo = UtilUUID.obtenerValorDefecto(codigo);
     }
 
-    /**
-     * Método semántico que representa el identificador del usuario responsable de la sesión.
-     */
-    public UsuarioDomain getIdUsuario() {
+    public UsuarioDomain getUsuario() {
         return usuario;
     }
 

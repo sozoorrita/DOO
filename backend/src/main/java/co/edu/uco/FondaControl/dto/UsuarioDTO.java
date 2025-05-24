@@ -12,17 +12,18 @@ public final class UsuarioDTO {
     private String contrasena;
 
     public UsuarioDTO() {
-        setId(UtilUUID.obtenerValorDefecto());
-        setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
-        setCodigoRol(UtilUUID.obtenerValorDefecto());
-        setContrasena(UtilTexto.getInstancia().obtenerValorDefecto());
+        // id queda en null para que lo genere la base de datos
+        this.id = null;
+        this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+        this.codigoRol = UtilUUID.obtenerValorDefecto();
+        this.contrasena = UtilTexto.getInstancia().obtenerValorDefecto();
     }
 
     public UsuarioDTO(final UUID id) {
         setId(id);
-        setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
-        setCodigoRol(UtilUUID.obtenerValorDefecto());
-        setContrasena(UtilTexto.getInstancia().obtenerValorDefecto());
+        this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+        this.codigoRol = UtilUUID.obtenerValorDefecto();
+        this.contrasena = UtilTexto.getInstancia().obtenerValorDefecto();
     }
 
     public UsuarioDTO(final UUID id, final String nombre, final UUID codigoRol, final String contrasena) {
@@ -41,7 +42,7 @@ public final class UsuarioDTO {
     }
 
     public void setId(final UUID id) {
-        this.id = UtilUUID.obtenerValorDefecto(id);
+        this.id = UtilUUID.obtenerValorDefecto(id, null); // Si no es válido, dejarlo en null
     }
 
     public String getNombre() {
@@ -69,10 +70,17 @@ public final class UsuarioDTO {
     }
 
     public static class Builder {
-        private UUID id = UtilUUID.obtenerValorDefecto();
-        private String nombre = UtilTexto.getInstancia().obtenerValorDefecto();
-        private UUID codigoRol = UtilUUID.obtenerValorDefecto();
-        private String contrasena = UtilTexto.getInstancia().obtenerValorDefecto();
+        private UUID id;
+        private String nombre;
+        private UUID codigoRol;
+        private String contrasena;
+
+        public Builder() {
+            this.id = null; // No se asigna UUID por defecto
+            this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+            this.codigoRol = UtilUUID.obtenerValorDefecto();
+            this.contrasena = UtilTexto.getInstancia().obtenerValorDefecto();
+        }
 
         public Builder id(UUID id) {
             this.id = id;

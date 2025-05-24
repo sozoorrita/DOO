@@ -1,13 +1,11 @@
 package co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.imp.postgresql;
 
-
 import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.SesionTrabajoDAO;
 import co.edu.uco.FondaControl.entity.SesionTrabajoEntity;
 import co.edu.uco.FondaControl.entity.UsuarioEntity;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -15,6 +13,7 @@ import java.sql.SQLException;
 import java.util.UUID;
 
 public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
+
     private final Connection connection;
 
     public SesionTrabajoPostgreSQLDAO(Connection connection) {
@@ -25,24 +24,27 @@ public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
     public void create(SesionTrabajoEntity entity) throws DataFondaControlException {
         validarEntidad(entity);
 
-        var sql = "INSERT INTO sesiontrabajo (codigo, idusuario, fechaapertura, fechacierre, basecaja) VALUES (?, ?, ?, ?, ?)";
+        final String sql = "INSERT INTO sesiontrabajo (idusuario, fechaapertura, fechacierre, basecaja) VALUES (?, ?, ?, ?) RETURNING codigo";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, entity.getCodigo());
-            ps.setObject(2, entity.getIdUsuario().getCodigo());
-            ps.setTimestamp(3, java.sql.Timestamp.valueOf(entity.getFechaApertura()));
-            ps.setTimestamp(4, entity.getFechaCierre() != null ? java.sql.Timestamp.valueOf(entity.getFechaCierre()) : null);
-            ps.setBigDecimal(5, entity.getBaseCaja());
-            ps.executeUpdate();
+            ps.setObject(1, entity.getIdUsuario().getCodigo());
+            ps.setTimestamp(2, java.sql.Timestamp.valueOf(entity.getFechaApertura()));
+            ps.setTimestamp(3, entity.getFechaCierre() != null ? java.sql.Timestamp.valueOf(entity.getFechaCierre()) : null);
+            ps.setBigDecimal(4, entity.getBaseCaja());
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    entity.setCodigo((UUID) rs.getObject("codigo"));
+                } else {
+                    throw DataFondaControlException.reportar(
+                            "No se pudo obtener el UUID generado automáticamente para la sesión de trabajo.",
+                            "La sentencia INSERT en create() no retornó ningún UUID."
+                    );
+                }
+            }
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
                     "Error al crear la sesión de trabajo.",
                     "SQLException en create(): " + e.getMessage(),
-                    e
-            );
-        } catch (Exception e) {
-            throw DataFondaControlException.reportar(
-                    "Error inesperado al crear la sesión de trabajo.",
-                    "Excepción en create(): " + e.getMessage(),
                     e
             );
         }
@@ -55,7 +57,7 @@ public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
         }
         validarEntidad(entity);
 
-        var sql = "UPDATE sesiontrabajo SET idusuario = ?, fechaapertura = ?, fechacierre = ?, basecaja = ? WHERE codigo = ?";
+        final String sql = "UPDATE sesiontrabajo SET idusuario = ?, fechaapertura = ?, fechacierre = ?, basecaja = ? WHERE codigo = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setObject(1, entity.getIdUsuario().getCodigo());
             ps.setTimestamp(2, java.sql.Timestamp.valueOf(entity.getFechaApertura()));
@@ -76,12 +78,6 @@ public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
                     "SQLException en update(): " + e.getMessage(),
                     e
             );
-        } catch (Exception e) {
-            throw DataFondaControlException.reportar(
-                    "Error inesperado al actualizar la sesión de trabajo.",
-                    "Excepción en update(): " + e.getMessage(),
-                    e
-            );
         }
     }
 
@@ -91,7 +87,7 @@ public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
             throw new IllegalArgumentException("El código no puede ser nulo.");
         }
 
-        var sql = "SELECT codigo, idusuario, fechaapertura, fechacierre, basecaja FROM sesiontrabajo WHERE codigo = ?";
+        final String sql = "SELECT codigo, idusuario, fechaapertura, fechacierre, basecaja FROM sesiontrabajo WHERE codigo = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setObject(1, codigo);
             try (ResultSet rs = ps.executeQuery()) {
@@ -105,13 +101,8 @@ public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
                     "SQLException en findById(): " + e.getMessage(),
                     e
             );
-        } catch (Exception e) {
-            throw DataFondaControlException.reportar(
-                    "Error inesperado al buscar la sesión de trabajo por código.",
-                    "Excepción en findById(): " + e.getMessage(),
-                    e
-            );
         }
+
         return null;
     }
 
@@ -121,7 +112,7 @@ public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
             throw new IllegalArgumentException("El ID de usuario no puede ser nulo.");
         }
 
-        var sql = "SELECT codigo, idusuario, fechaapertura, fechacierre, basecaja FROM sesiontrabajo WHERE idusuario = ?";
+        final String sql = "SELECT codigo, idusuario, fechaapertura, fechacierre, basecaja FROM sesiontrabajo WHERE idusuario = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setObject(1, idUsuario);
             try (ResultSet rs = ps.executeQuery()) {
@@ -135,13 +126,8 @@ public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
                     "SQLException en findByUsuario(): " + e.getMessage(),
                     e
             );
-        } catch (Exception e) {
-            throw DataFondaControlException.reportar(
-                    "Error inesperado al buscar la sesión de trabajo por usuario.",
-                    "Excepción en findByUsuario(): " + e.getMessage(),
-                    e
-            );
         }
+
         return null;
     }
 

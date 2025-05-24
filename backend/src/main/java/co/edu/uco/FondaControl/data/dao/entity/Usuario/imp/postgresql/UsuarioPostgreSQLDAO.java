@@ -22,14 +22,18 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
     @Override
     public void create(UsuarioEntity entity) throws DataFondaControlException {
         validarEntidad(entity);
-        var sql = "INSERT INTO usuario (id, nombre, contrasena, codigorol) VALUES (?, ?, ?, ?)";
+        var sql = "INSERT INTO usuario (nombre, contrasena, codigorol) VALUES (?, ?, ?) RETURNING id";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, entity.getId());
-            ps.setString(2, entity.getNombre());
-            ps.setString(3, entity.getContrasena());
-            ps.setObject(4, entity.getCodigoRol());
-            ps.executeUpdate();
-        } catch (SQLException e) {
+            ps.setString(1, entity.getNombre());
+            ps.setString(2, entity.getContrasena());
+            ps.setObject(3, entity.getCodigoRol());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                entity.setId((UUID) rs.getObject("id")); // Asignar ID generado desde la DB
+            }
+        }
+
+        catch (SQLException e) {
             throw DataFondaControlException.reportar(
                     "No fue posible registrar el usuario en la base de datos.",
                     "Se produjo un SQLException en 'create' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], ID=[" + entity.getId() + "]. Detalle: " + e.getMessage(),
@@ -115,5 +119,15 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
         if (UtilObjeto.esNulo(entity)) {
             throw new IllegalArgumentException("La entidad de usuario no puede ser nula.");
         }
+        if (entity.getNombre() == null || entity.getNombre().isBlank()) {
+            throw new IllegalArgumentException("El nombre del usuario no puede ser nulo ni vacío.");
+        }
+        if (entity.getContrasena() == null || entity.getContrasena().isBlank()) {
+            throw new IllegalArgumentException("La contraseña no puede ser nula ni vacía.");
+        }
+        if (UtilObjeto.esNulo(entity.getCodigoRol())) {
+            throw new IllegalArgumentException("El código de rol no puede ser nulo.");
+        }
     }
+
 }

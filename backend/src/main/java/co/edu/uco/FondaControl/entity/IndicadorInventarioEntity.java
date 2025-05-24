@@ -11,8 +11,9 @@ public final class IndicadorInventarioEntity {
     private String nombre;
 
     public IndicadorInventarioEntity() {
-        setCodigo(UtilUUID.obtenerValorDefecto());
-        setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
+        // No se asigna UUID porque lo genera la base de datos
+        this.codigo = null;
+        this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
     }
 
     public IndicadorInventarioEntity(final UUID codigo, final String nombre) {
@@ -38,7 +39,8 @@ public final class IndicadorInventarioEntity {
     }
 
     public void setCodigo(final UUID codigo) {
-        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
+        // Permitimos null, ya que lo genera la BD
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo, null);
     }
 
     public String getNombre() {
@@ -46,6 +48,10 @@ public final class IndicadorInventarioEntity {
     }
 
     public void setNombre(final String nombre) {
-        this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
+        if (nombre == null || nombre.isBlank()) {
+            this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+        } else {
+            this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
+        }
     }
 }

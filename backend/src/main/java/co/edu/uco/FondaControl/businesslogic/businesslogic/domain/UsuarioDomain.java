@@ -11,7 +11,7 @@ public final class UsuarioDomain {
     private UUID codigoRol;
     private String contrasena;
 
-    UsuarioDomain() {
+    public UsuarioDomain() {
         setId(UtilUUID.obtenerValorDefecto());
         setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
         setCodigoRol(UtilUUID.obtenerValorDefecto());
@@ -25,11 +25,16 @@ public final class UsuarioDomain {
         setContrasena(contrasena);
     }
 
-    static UsuarioDomain obtenerValorDefecto() {
+    // Constructor para creación sin ID (dejando que la DB lo genere)
+    public static UsuarioDomain crearParaRegistro(final String nombre, final UUID codigoRol, final String contrasena) {
+        return new UsuarioDomain(null, nombre, codigoRol, contrasena);
+    }
+
+    public static UsuarioDomain obtenerValorDefecto() {
         return new UsuarioDomain();
     }
 
-    static UsuarioDomain obtenerValorDefecto(final UsuarioDomain usuario) {
+    public static UsuarioDomain obtenerValorDefecto(final UsuarioDomain usuario) {
         return (usuario != null) ? usuario : obtenerValorDefecto();
     }
 

@@ -12,17 +12,17 @@ public final class UsuarioEntity {
     private String contrasena;
 
     public UsuarioEntity() {
-        setId(UtilUUID.obtenerValorDefecto());
-        setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
-        setCodigoRol(UtilUUID.obtenerValorDefecto());
-        setContrasena(UtilTexto.getInstancia().obtenerValorDefecto());
+        this.id = null; // Para que lo genere la BD
+        this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+        this.codigoRol = UtilUUID.obtenerValorDefecto();
+        this.contrasena = UtilTexto.getInstancia().obtenerValorDefecto();
     }
 
     public UsuarioEntity(final UUID id) {
         setId(id);
-        setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
-        setCodigoRol(UtilUUID.obtenerValorDefecto());
-        setContrasena(UtilTexto.getInstancia().obtenerValorDefecto());
+        this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+        this.codigoRol = UtilUUID.obtenerValorDefecto();
+        this.contrasena = UtilTexto.getInstancia().obtenerValorDefecto();
     }
 
     public UsuarioEntity(final UUID id, final String nombre, final UUID codigoRol, final String contrasena) {
@@ -33,12 +33,7 @@ public final class UsuarioEntity {
     }
 
     public static UsuarioEntity obtenerValorDefecto() {
-        return new UsuarioEntity(
-                UtilUUID.obtenerValorDefecto(),
-                UtilTexto.getInstancia().obtenerValorDefecto(),
-                UtilUUID.obtenerValorDefecto(),
-                UtilTexto.getInstancia().obtenerValorDefecto()
-        );
+        return new UsuarioEntity();
     }
 
     public static UsuarioEntity obtenerDesdeUUID(UUID idUsuario) {
@@ -50,7 +45,7 @@ public final class UsuarioEntity {
     }
 
     public void setId(final UUID id) {
-        this.id = UtilUUID.obtenerValorDefecto(id);
+        this.id = UtilUUID.obtenerValorDefecto(id, null); // Mantener nulo si no es válido
     }
 
     public String getNombre() {
@@ -77,6 +72,7 @@ public final class UsuarioEntity {
         this.contrasena = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(contrasena);
     }
 
+    // Alias
     public UUID getCodigo() {
         return getId();
     }

@@ -24,23 +24,20 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
     public void create(InventarioEntity entity) throws DataFondaControlException {
         validarEntidad(entity);
 
-        var sentenciaSQL = new StringBuilder("INSERT INTO inventario (codigo, nombreproducto, cantidad, codigoindicador) VALUES (?, ?, ?, ?)");
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sentenciaSQL.toString())) {
-            preparedStatement.setObject(1, entity.getCodigo());
-            preparedStatement.setString(2, entity.getNombreProducto());
-            preparedStatement.setInt(3, entity.getCantidad());
-            preparedStatement.setObject(4, entity.getCodigoIndicador());
-            preparedStatement.executeUpdate();
+        final String sql = "INSERT INTO inventario (nombreproducto, cantidad, codigoindicador) VALUES (?, ?, ?) RETURNING codigo";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, entity.getNombreProducto());
+            ps.setInt(2, entity.getCantidad());
+            ps.setObject(3, entity.getCodigoIndicador());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    entity.setCodigo((UUID) rs.getObject("codigo"));
+                }
+            }
         } catch (SQLException exception) {
             throw DataFondaControlException.reportar(
                     "Error al crear el inventario.",
-                    "SQLException al crear el inventario: " + exception.getMessage(),
-                    exception
-            );
-        } catch (Exception exception) {
-            throw DataFondaControlException.reportar(
-                    "Error inesperado al crear el inventario.",
-                    "Excepción no controlada al crear el inventario: " + exception.getMessage(),
+                    "SQLException en create(): " + exception.getMessage(),
                     exception
             );
         }
@@ -52,13 +49,13 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
             throw new IllegalArgumentException("El nombre del producto no puede exceder los 50 caracteres.");
         }
 
-        var sentenciaSQL = new StringBuilder("SELECT codigo, nombreproducto, cantidad, codigoindicador FROM inventario WHERE nombreproducto LIKE ?");
+        final String sql = "SELECT codigo, nombreproducto, cantidad, codigoindicador FROM inventario WHERE nombreproducto LIKE ?";
         List<InventarioEntity> result = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sentenciaSQL.toString())) {
-            preparedStatement.setString(1, "%" + entity.getNombreProducto() + "%");
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    result.add(mapToEntity(resultSet));
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, "%" + entity.getNombreProducto() + "%");
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    result.add(mapToEntity(rs));
                 }
             }
         } catch (SQLException exception) {
@@ -67,35 +64,23 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
                     "SQLException al listar inventarios por filtro: " + exception.getMessage(),
                     exception
             );
-        } catch (Exception exception) {
-            throw DataFondaControlException.reportar(
-                    "Error inesperado al listar los inventarios por filtro.",
-                    "Excepción no controlada al listar inventarios por filtro: " + exception.getMessage(),
-                    exception
-            );
         }
         return result;
     }
 
     @Override
     public List<InventarioEntity> listAll() throws DataFondaControlException {
-        var sentenciaSQL = new StringBuilder("SELECT codigo, nombreproducto, cantidad, codigoindicador FROM inventario");
+        final String sql = "SELECT codigo, nombreproducto, cantidad, codigoindicador FROM inventario";
         List<InventarioEntity> result = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sentenciaSQL.toString());
-             ResultSet resultSet = preparedStatement.executeQuery()) {
-            while (resultSet.next()) {
-                result.add(mapToEntity(resultSet));
+        try (PreparedStatement ps = connection.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                result.add(mapToEntity(rs));
             }
         } catch (SQLException exception) {
             throw DataFondaControlException.reportar(
                     "Error al listar todos los inventarios.",
                     "SQLException al listar todos los inventarios: " + exception.getMessage(),
-                    exception
-            );
-        } catch (Exception exception) {
-            throw DataFondaControlException.reportar(
-                    "Error inesperado al listar todos los inventarios.",
-                    "Excepción no controlada al listar todos los inventarios: " + exception.getMessage(),
                     exception
             );
         }
@@ -108,25 +93,19 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
             throw new IllegalArgumentException("El UUID no puede ser nulo.");
         }
 
-        var sentenciaSQL = new StringBuilder("SELECT codigo, nombreproducto, cantidad, codigoindicador FROM inventario WHERE codigo = ?");
+        final String sql = "SELECT codigo, nombreproducto, cantidad, codigoindicador FROM inventario WHERE codigo = ?";
         List<InventarioEntity> result = new ArrayList<>();
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sentenciaSQL.toString())) {
-            preparedStatement.setObject(1, uuid);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                while (resultSet.next()) {
-                    result.add(mapToEntity(resultSet));
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setObject(1, uuid);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    result.add(mapToEntity(rs));
                 }
             }
         } catch (SQLException exception) {
             throw DataFondaControlException.reportar(
                     "Error al listar los inventarios por código.",
                     "SQLException al listar inventarios por código: " + exception.getMessage(),
-                    exception
-            );
-        } catch (Exception exception) {
-            throw DataFondaControlException.reportar(
-                    "Error inesperado al listar los inventarios por código.",
-                    "Excepción no controlada al listar inventarios por código: " + exception.getMessage(),
                     exception
             );
         }
@@ -140,14 +119,14 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
         }
         validarEntidad(entity);
 
-        var sentenciaSQL = new StringBuilder("UPDATE inventario SET nombreproducto = ?, cantidad = ?, codigoindicador = ? WHERE codigo = ?");
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sentenciaSQL.toString())) {
-            preparedStatement.setString(1, entity.getNombreProducto());
-            preparedStatement.setInt(2, entity.getCantidad());
-            preparedStatement.setObject(3, entity.getCodigoIndicador());
-            preparedStatement.setObject(4, uuid);
+        final String sql = "UPDATE inventario SET nombreproducto = ?, cantidad = ?, codigoindicador = ? WHERE codigo = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, entity.getNombreProducto());
+            ps.setInt(2, entity.getCantidad());
+            ps.setObject(3, entity.getCodigoIndicador());
+            ps.setObject(4, uuid);
 
-            int rowsUpdated = preparedStatement.executeUpdate();
+            int rowsUpdated = ps.executeUpdate();
             if (rowsUpdated == 0) {
                 throw DataFondaControlException.reportar(
                         "No se encontró el registro para actualizar.",
@@ -160,12 +139,6 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
                     "SQLException al actualizar el inventario: " + exception.getMessage(),
                     exception
             );
-        } catch (Exception exception) {
-            throw DataFondaControlException.reportar(
-                    "Error inesperado al actualizar el inventario.",
-                    "Excepción no controlada al actualizar el inventario: " + exception.getMessage(),
-                    exception
-            );
         }
     }
 
@@ -175,24 +148,18 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
             throw new IllegalArgumentException("El código no puede ser nulo.");
         }
 
-        var sentenciaSQL = new StringBuilder("SELECT codigo, nombreproducto, cantidad, codigoindicador FROM inventario WHERE codigo = ?");
-        try (PreparedStatement preparedStatement = connection.prepareStatement(sentenciaSQL.toString())) {
-            preparedStatement.setObject(1, codigo);
-            try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    return mapToEntity(resultSet);
+        final String sql = "SELECT codigo, nombreproducto, cantidad, codigoindicador FROM inventario WHERE codigo = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setObject(1, codigo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapToEntity(rs);
                 }
             }
         } catch (SQLException exception) {
             throw DataFondaControlException.reportar(
                     "Error al buscar el inventario por ID.",
                     "SQLException al buscar inventario por ID: " + exception.getMessage(),
-                    exception
-            );
-        } catch (Exception exception) {
-            throw DataFondaControlException.reportar(
-                    "Error inesperado al buscar el inventario por ID.",
-                    "Excepción no controlada al buscar inventario por ID: " + exception.getMessage(),
                     exception
             );
         }
@@ -209,12 +176,12 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
         }
     }
 
-    private InventarioEntity mapToEntity(ResultSet resultSet) throws SQLException {
+    private InventarioEntity mapToEntity(ResultSet rs) throws SQLException {
         return new InventarioEntity(
-                (UUID) resultSet.getObject("codigo"),
-                resultSet.getString("nombreproducto"),
-                resultSet.getInt("cantidad"),
-                (UUID) resultSet.getObject("codigoindicador")
+                (UUID) rs.getObject("codigo"),
+                rs.getString("nombreproducto"),
+                rs.getInt("cantidad"),
+                (UUID) rs.getObject("codigoindicador")
         );
     }
 

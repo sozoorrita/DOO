@@ -13,9 +13,12 @@ public interface IndicadorInventarioDAO extends
         CreateDAO<IndicadorInventarioEntity>,
         RetrieveDAO<IndicadorInventarioEntity, UUID>,
         UpdateDAO<IndicadorInventarioEntity, UUID> {
+
     void update(UUID uuid, IndicadorInventarioEntity entity) throws DataFondaControlException;
 
     IndicadorInventarioEntity findById(UUID codigo) throws DataFondaControlException;
 
     void update(List<IndicadorInventarioEntity> entities) throws DataFondaControlException;
+
+    void delete(UUID id) throws DataFondaControlException;
 }

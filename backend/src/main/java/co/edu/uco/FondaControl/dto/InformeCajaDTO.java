@@ -17,8 +17,8 @@ public final class InformeCajaDTO {
     private BigDecimal pagoTransferencia;
 
     public InformeCajaDTO() {
-        this.codigo = UtilUUID.generarNuevoUUID();
-        this.codigoSesionTrabajo = UtilUUID.generarNuevoUUID();
+        this.codigo = null; // Deja que la base de datos lo genere
+        this.codigoSesionTrabajo = UtilUUID.generarNuevoUUID(); // Este sí puedes generarlo
         this.fecha = UtilFecha.obtenerValorDefecto().toLocalDate();
         this.totalVenta = UtilMoneda.obtenerValorDefecto();
         this.pagoEfectivo = UtilMoneda.obtenerValorDefecto();
@@ -26,13 +26,18 @@ public final class InformeCajaDTO {
     }
 
     public InformeCajaDTO(UUID codigo, UUID codigoSesionTrabajo, LocalDate fecha, BigDecimal totalVenta, BigDecimal pagoEfectivo, BigDecimal pagoTransferencia) {
-        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo); // ya no se autogenera si llega null
         this.codigoSesionTrabajo = UtilUUID.obtenerValorDefecto(codigoSesionTrabajo);
         this.fecha = (fecha != null) ? fecha : UtilFecha.obtenerValorDefecto().toLocalDate();
         this.totalVenta = UtilMoneda.obtenerValorDefecto(totalVenta);
         this.pagoEfectivo = UtilMoneda.obtenerValorDefecto(pagoEfectivo);
         this.pagoTransferencia = UtilMoneda.obtenerValorDefecto(pagoTransferencia);
     }
+
+    // Getters y Setters
+    // ...
+
+
 
     // Getters y Setters seguros
     public UUID getCodigo() {

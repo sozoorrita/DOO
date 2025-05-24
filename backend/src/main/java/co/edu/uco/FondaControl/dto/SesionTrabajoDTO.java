@@ -18,12 +18,12 @@ public final class SesionTrabajoDTO {
     private LocalDateTime fechaCierre;
 
     public SesionTrabajoDTO() {
-        this.codigo = UtilUUID.generarNuevoUUID();
-        this.idUsuario = UtilUUID.generarNuevoUUID();
+        this.codigo = null; // UUID será asignado por la base de datos
+        this.idUsuario = UtilUUID.obtenerValorDefecto();
         this.nombreUsuario = UtilTexto.getInstancia().obtenerValorDefecto();
         this.baseCaja = UtilMoneda.obtenerValorDefecto();
         this.fechaApertura = UtilFecha.obtenerValorDefecto();
-        this.fechaCierre = UtilFecha.obtenerValorDefecto();
+        this.fechaCierre = null; // Puede ser nulo al momento de crear
     }
 
     public SesionTrabajoDTO(UUID codigo, UUID idUsuario, String nombreUsuario, BigDecimal baseCaja,

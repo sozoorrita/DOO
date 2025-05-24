@@ -6,8 +6,7 @@ import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.UsuarioDomain;
 import co.edu.uco.FondaControl.businesslogic.facade.SesionTrabajoFacade;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.SesionTrabajoDTO;
-import co.edu.uco.FondaControl.entity.UsuarioEntity;
-import co.edu.uco.FondaControl.crosscutting. utilitarios.UtilObjeto;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 
 public class SesionTrabajoImpl implements SesionTrabajoFacade {
@@ -61,8 +60,8 @@ public class SesionTrabajoImpl implements SesionTrabajoFacade {
         }
         return new SesionTrabajoDTO(
                 domain.getCodigo(),
-                domain.getIdUsuario().getId(),
-                domain.getIdUsuario().getNombre(),
+                domain.getUsuario().getId(),
+                domain.getUsuario().getNombre(),
                 domain.getBaseCaja(),
                 domain.getFechaApertura(),
                 domain.getFechaCierre()

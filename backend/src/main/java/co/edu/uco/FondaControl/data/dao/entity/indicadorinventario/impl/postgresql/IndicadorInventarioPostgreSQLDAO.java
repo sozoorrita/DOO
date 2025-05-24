@@ -1,13 +1,10 @@
 package co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.impl.postgresql;
 
-
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.IndicadorInventarioDAO;
 import co.edu.uco.FondaControl.entity.IndicadorInventarioEntity;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,16 +20,37 @@ public class IndicadorInventarioPostgreSQLDAO implements IndicadorInventarioDAO 
     @Override
     public void create(IndicadorInventarioEntity entity) throws DataFondaControlException {
         validarEntidad(entity);
+        final String sql = "INSERT INTO indicador_inventario (nombre) VALUES (?) RETURNING codigo";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setString(1, entity.getNombre());
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    entity.setCodigo((UUID) rs.getObject("codigo"));
+                }
+            }
+        } catch (SQLException e) {
+            throw DataFondaControlException.reportar(
+                    "No fue posible registrar el indicador de inventario.",
+                    "SQLException en 'create' con SQL=[" + sql + "], nombre=[" + entity.getNombre() + "]. Detalle: " + e.getMessage(),
+                    e
+            );
+        }
+    }
 
-        var sql = "INSERT INTO indicador_inventario (codigo, nombre) VALUES (?, ?)";
-        try (var ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, entity.getCodigo());
-            ps.setString(2, entity.getNombre());
+    @Override
+    public void delete(UUID id) throws DataFondaControlException {
+        if (id == null) {
+            throw new IllegalArgumentException("El ID no puede ser nulo.");
+        }
+
+        final String sql = "DELETE FROM indicador_inventario WHERE codigo = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setObject(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                    "Error al crear el indicador de inventario.",
-                    "SQLException en create(): " + e.getMessage(),
+                    "No fue posible eliminar el indicador de inventario.",
+                    "SQLException en 'delete' con SQL=[" + sql + "], ID=[" + id + "]. Detalle: " + e.getMessage(),
                     e
             );
         }
@@ -44,22 +62,19 @@ public class IndicadorInventarioPostgreSQLDAO implements IndicadorInventarioDAO 
             throw new IllegalArgumentException("El nombre no puede ser nulo ni exceder los 50 caracteres.");
         }
 
-        var sql = "SELECT codigo, nombre FROM indicador_inventario WHERE nombre LIKE ?";
-        var result = new ArrayList<IndicadorInventarioEntity>();
-        try (var ps = connection.prepareStatement(sql)) {
+        final String sql = "SELECT codigo, nombre FROM indicador_inventario WHERE nombre LIKE ?";
+        List<IndicadorInventarioEntity> result = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, "%" + entity.getNombre() + "%");
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    result.add(new IndicadorInventarioEntity(
-                            (UUID) rs.getObject("codigo"),
-                            rs.getString("nombre")
-                    ));
+                    result.add(mapToEntity(rs));
                 }
             }
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                    "Error al listar indicadores de inventario por filtro.",
-                    "SQLException en listByFilter(): " + e.getMessage(),
+                    "No fue posible filtrar los indicadores de inventario.",
+                    "SQLException en 'listByFilter' con SQL=[" + sql + "], nombre filtro=[" + entity.getNombre() + "]. Detalle: " + e.getMessage(),
                     e
             );
         }
@@ -68,25 +83,20 @@ public class IndicadorInventarioPostgreSQLDAO implements IndicadorInventarioDAO 
 
     @Override
     public List<IndicadorInventarioEntity> listAll() throws DataFondaControlException {
-        var sql = "SELECT codigo, nombre FROM indicador_inventario";
-        var result = new ArrayList<IndicadorInventarioEntity>();
-
-        try (var ps = connection.prepareStatement(sql);
+        final String sql = "SELECT codigo, nombre FROM indicador_inventario";
+        List<IndicadorInventarioEntity> result = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                result.add(new IndicadorInventarioEntity(
-                        (UUID) rs.getObject("codigo"),
-                        rs.getString("nombre")
-                ));
+                result.add(mapToEntity(rs));
             }
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                    "Error al listar todos los indicadores de inventario.",
-                    "SQLException en listAll(): " + e.getMessage(),
+                    "No fue posible listar todos los indicadores de inventario.",
+                    "SQLException en 'listAll' con SQL=[" + sql + "]. Detalle: " + e.getMessage(),
                     e
             );
         }
-
         return result;
     }
 
@@ -96,28 +106,49 @@ public class IndicadorInventarioPostgreSQLDAO implements IndicadorInventarioDAO 
             throw new IllegalArgumentException("El UUID no puede ser nulo.");
         }
 
-        var sql = "SELECT codigo, nombre FROM indicador_inventario WHERE codigo = ?";
-        var result = new ArrayList<IndicadorInventarioEntity>();
-
-        try (var ps = connection.prepareStatement(sql)) {
+        final String sql = "SELECT codigo, nombre FROM indicador_inventario WHERE codigo = ?";
+        List<IndicadorInventarioEntity> result = new ArrayList<>();
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setObject(1, uuid);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    result.add(new IndicadorInventarioEntity(
-                            (UUID) rs.getObject("codigo"),
-                            rs.getString("nombre")
-                    ));
+                    result.add(mapToEntity(rs));
                 }
             }
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                    "Error al listar el indicador de inventario por código.",
-                    "SQLException en listByCodigo(): " + e.getMessage(),
+                    "No fue posible obtener el indicador de inventario por código.",
+                    "SQLException en 'listByCodigo' con SQL=[" + sql + "], código=[" + uuid + "]. Detalle: " + e.getMessage(),
                     e
             );
         }
 
         return result;
+    }
+
+    @Override
+    public IndicadorInventarioEntity findById(UUID codigo) throws DataFondaControlException {
+        if (codigo == null) {
+            throw new IllegalArgumentException("El código no puede ser nulo.");
+        }
+
+        final String sql = "SELECT codigo, nombre FROM indicador_inventario WHERE codigo = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setObject(1, codigo);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapToEntity(rs);
+                }
+            }
+        } catch (SQLException e) {
+            throw DataFondaControlException.reportar(
+                    "No fue posible encontrar el indicador de inventario por ID.",
+                    "SQLException en 'findById' con SQL=[" + sql + "], ID=[" + codigo + "]. Detalle: " + e.getMessage(),
+                    e
+            );
+        }
+
+        return null;
     }
 
     @Override
@@ -127,83 +158,61 @@ public class IndicadorInventarioPostgreSQLDAO implements IndicadorInventarioDAO 
         }
         validarEntidad(entity);
 
-        var sql = "UPDATE indicador_inventario SET nombre = ? WHERE codigo = ?";
-        try (var ps = connection.prepareStatement(sql)) {
+        final String sql = "UPDATE indicador_inventario SET nombre = ? WHERE codigo = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, entity.getNombre());
             ps.setObject(2, uuid);
-            int filas = ps.executeUpdate();
-            if (filas == 0) {
+            if (ps.executeUpdate() == 0) {
                 throw DataFondaControlException.reportar(
                         "No se encontró el indicador para actualizar.",
-                        "No hay registro con el código: " + uuid
+                        "No hay registro con el código=[" + uuid + "] en la base de datos."
                 );
             }
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
                     "Error al actualizar el indicador de inventario.",
-                    "SQLException en update(): " + e.getMessage(),
+                    "SQLException en 'update' con SQL=[" + sql + "], código=[" + uuid + "]. Detalle: " + e.getMessage(),
                     e
             );
         }
     }
 
-    @Override
-    public IndicadorInventarioEntity findById(UUID codigo) throws DataFondaControlException {
-        if (codigo == null) {
-            throw new IllegalArgumentException("El código no puede ser nulo.");
-        }
-
-        var sql = "SELECT codigo, nombre FROM indicador_inventario WHERE codigo = ?";
-        try (var ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, codigo);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new IndicadorInventarioEntity(
-                            (UUID) rs.getObject("codigo"),
-                            rs.getString("nombre")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            throw DataFondaControlException.reportar(
-                    "Error al buscar el indicador por ID.",
-                    "SQLException en findById(): " + e.getMessage(),
-                    e
-            );
-        }
-
-        return null;
-    }
 
     @Override
     public void update(List<IndicadorInventarioEntity> entities) throws DataFondaControlException {
         if (entities == null || entities.isEmpty()) {
-            throw new IllegalArgumentException("La lista no puede ser nula ni vacía.");
+            throw new IllegalArgumentException("La lista de entidades no puede ser nula ni vacía.");
         }
 
-        var sql = "UPDATE indicador_inventario SET nombre = ? WHERE codigo = ?";
+        final String sql = "UPDATE indicador_inventario SET nombre = ? WHERE codigo = ?";
         try {
             for (IndicadorInventarioEntity entity : entities) {
                 validarEntidad(entity);
-                try (var ps = connection.prepareStatement(sql)) {
+                try (PreparedStatement ps = connection.prepareStatement(sql)) {
                     ps.setString(1, entity.getNombre());
                     ps.setObject(2, entity.getCodigo());
-                    int filas = ps.executeUpdate();
-                    if (filas == 0) {
+                    if (ps.executeUpdate() == 0) {
                         throw DataFondaControlException.reportar(
                                 "No se encontró un indicador de inventario para actualizar.",
-                                "Código no encontrado: " + entity.getCodigo()
+                                "Código no encontrado en 'update(List)': " + entity.getCodigo()
                         );
                     }
                 }
             }
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                    "Error al actualizar la lista de indicadores de inventario.",
-                    "SQLException en update(List): " + e.getMessage(),
+                    "Error al actualizar múltiples indicadores de inventario.",
+                    "SQLException en 'update(List)' con SQL=[" + sql + "]. Detalle: " + e.getMessage(),
                     e
             );
         }
+    }
+
+    private IndicadorInventarioEntity mapToEntity(ResultSet rs) throws SQLException {
+        return new IndicadorInventarioEntity(
+                (UUID) rs.getObject("codigo"),
+                rs.getString("nombre")
+        );
     }
 
     private void validarEntidad(IndicadorInventarioEntity entity) {
@@ -211,10 +220,10 @@ public class IndicadorInventarioPostgreSQLDAO implements IndicadorInventarioDAO 
             throw new IllegalArgumentException("La entidad no puede ser nula.");
         }
         if (entity.getNombre() == null || entity.getNombre().isBlank()) {
-            throw new IllegalArgumentException("El nombre no puede ser nulo ni vacío.");
+            throw new IllegalArgumentException("El nombre no puede ser nulo ni estar vacío.");
         }
         if (entity.getNombre().length() > 50) {
-            throw new IllegalArgumentException("El nombre no puede exceder los 50 caracteres.");
+            throw new IllegalArgumentException("El nombre del indicador no puede exceder los 50 caracteres.");
         }
     }
 }

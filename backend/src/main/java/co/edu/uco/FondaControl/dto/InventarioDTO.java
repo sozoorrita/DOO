@@ -13,7 +13,7 @@ public final class InventarioDTO {
     private String nombreIndicador;
 
     public InventarioDTO() {
-        this.codigo = UtilUUID.obtenerValorDefecto();
+        this.codigo = null; // UUID se generará en la base de datos
         this.nombreProducto = UtilTexto.getInstancia().obtenerValorDefecto();
         this.cantidad = 0;
         this.codigoIndicador = UtilUUID.obtenerValorDefecto();
@@ -22,7 +22,7 @@ public final class InventarioDTO {
 
     public InventarioDTO(final UUID codigo, final String nombreProducto, final int cantidad,
                          final UUID codigoIndicador, final String nombreIndicador) {
-        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
+        this.codigo = codigo; // Puede venir de la base de datos
         this.nombreProducto = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombreProducto);
         this.cantidad = Math.max(cantidad, 0);
         this.codigoIndicador = UtilUUID.obtenerValorDefecto(codigoIndicador);
@@ -34,7 +34,7 @@ public final class InventarioDTO {
     }
 
     public void setCodigo(final UUID codigo) {
-        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
+        this.codigo = codigo; // permitir null para que sea generado en BD
     }
 
     public String getNombreProducto() {
