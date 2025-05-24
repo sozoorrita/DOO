@@ -43,11 +43,14 @@ public class UsuarioImp implements UsuarioBusinessLogic {
 
     @Override
     public void eliminarUsuario(UsuarioDomain usuarioDomain) throws FondaControlException {
-        UsuarioEntity entity = new UsuarioEntity();
-        entity.setId(usuarioDomain.getId());
-        usuarioDAO.delete(entity);
-        LOGGER.info("Usuario eliminado con ID: " + entity.getId());
+        if (UtilObjeto.esNulo(usuarioDomain) || UtilObjeto.esNulo(usuarioDomain.getId())) {
+            throw new IllegalArgumentException("El ID del usuario no puede ser nulo.");
+        }
+
+        usuarioDAO.delete(usuarioDomain.getId());
+        LOGGER.info("Usuario eliminado con ID: " + usuarioDomain.getId());
     }
+
 
     @Override
     public void iniciarSesion(UsuarioDomain usuarioDomain, String tipoUsuario) throws FondaControlException {

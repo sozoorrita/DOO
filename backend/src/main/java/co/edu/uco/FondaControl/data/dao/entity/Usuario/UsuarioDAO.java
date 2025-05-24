@@ -11,7 +11,7 @@ import java.util.UUID;
 public interface UsuarioDAO extends
         CreateDAO<UsuarioEntity>,
         UpdateDAO<UsuarioEntity, UUID>,
-        DeleteDAO<UsuarioEntity, UUID> {
+        DeleteDAO<UUID> {
 
     UsuarioEntity findById(UUID id) throws DataFondaControlException;
 }

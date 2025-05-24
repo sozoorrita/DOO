@@ -62,23 +62,24 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
     }
 
     @Override
-    public void delete(UsuarioEntity usuarioEntity) throws DataFondaControlException {
-        if (UtilObjeto.esNulo(usuarioEntity)) {
-            throw new IllegalArgumentException("La entidad no puede ser nula.");
+    public void delete(UUID id) throws DataFondaControlException {
+        if (UtilObjeto.esNulo(id)) {
+            throw new IllegalArgumentException("El ID no puede ser nulo.");
         }
 
         var sql = "DELETE FROM usuario WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, usuarioEntity.getId());
+            ps.setObject(1, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
                     "No fue posible eliminar el usuario.",
-                    "SQLException en 'delete' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], ID=[" + usuarioEntity.getId() + "]. Detalle: " + e.getMessage(),
+                    "SQLException en 'delete' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], ID=[" + id + "]. Detalle: " + e.getMessage(),
                     e
             );
         }
     }
+
 
     @Override
     public UsuarioEntity findById(UUID id) throws DataFondaControlException {

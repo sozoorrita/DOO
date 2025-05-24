@@ -1,6 +1,5 @@
 package co.edu.uco.FondaControl.data.dao.factory.postgresql;
 
-
 import co.edu.uco.FondaControl.data.dao.entity.Usuario.UsuarioDAO;
 import co.edu.uco.FondaControl.data.dao.entity.Usuario.imp.postgresql.UsuarioPostgreSQLDAO;
 import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.IndicadorInventarioDAO;
@@ -27,33 +26,32 @@ public class PostgreSQLDAOFactory extends DAOFactory {
     public PostgreSQLDAOFactory() throws DataFondaControlException {
         abrirConexion();
         transaccionEstainiciada = false;
-        conexionEstaAbierta = false;
+        conexionEstaAbierta = true;
     }
 
     @Override
     protected void abrirConexion() throws DataFondaControlException {
-        var baseDatos = "fondacontroldb";
-        var servidor = "9-pooler.us-east-1.aws.neon.tech";
-        var urlConexion = "jdbc:postgresql://" + servidor + "/" + baseDatos;
-        var usuario = "tu_usuario";
-        var contrasena = "tu_contrasena";
+        var baseDatos = "fondacontrol";
+        var servidor = "ep-green-snow-a4vppda9-pooler.us-east-1.aws.neon.tech";
+        var usuario = "fondacontrol_owner";
+        var contrasena = "npg_FOPNH4dG6UhZ"; // Reemplaza con la contraseña real
+        var urlConexion = "jdbc:postgresql://" + servidor + "/" + baseDatos + "?sslmode=require";
 
         try {
             conexion = DriverManager.getConnection(urlConexion, usuario, contrasena);
             conexionEstaAbierta = true;
         } catch (SQLException exception) {
-            var mensajeUsuario = "Error al abrir la conexión a la base de datos";
-            var mensajeTecnico = "Se presentó una excepción de tipo SQLException tratando de obtener la conexión con la base de datos "
-                    + baseDatos + " en el servidor " + servidor + ". Para más detalles, consulte el log de errores.";
-
-            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
-
+            throw DataFondaControlException.reportar(
+                    "Error al abrir la conexión a la base de datos",
+                    "SQLException al conectar a la base de datos: " + exception.getMessage(),
+                    exception
+            );
         } catch (Exception exception) {
-            var mensajeUsuario = "Se ha presentado un error inesperado al abrir la conexión a la base de datos";
-            var mensajeTecnico = "Se presentó una excepción de tipo Exception tratando de obtener la conexión con la base de datos "
-                    + baseDatos + " en el servidor " + servidor + ". Para más detalles, consulte el log de errores.";
-
-            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
+            throw DataFondaControlException.reportar(
+                    "Error inesperado al abrir la conexión a la base de datos",
+                    "Exception al conectar a la base de datos: " + exception.getMessage(),
+                    exception
+            );
         }
     }
 
@@ -63,16 +61,8 @@ public class PostgreSQLDAOFactory extends DAOFactory {
             asegurarConexionAbierta();
             conexion.setAutoCommit(false);
             transaccionEstainiciada = true;
-        } catch (SQLException exception) {
-            var mensajeUsuario = "Se ha presentado un error inesperado tratando de iniciar la transacción con la fuente de datos";
-            var mensajeTecnico = "Se presentó una excepción de tipo SQLException tratando de iniciar la transacción sobre la conexión con la base de datos";
-
-            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
-        } catch (Exception exception) {
-            var mensajeUsuario = "Se ha presentado un error inesperado tratando de iniciar la transacción con la fuente de datos";
-            var mensajeTecnico = "Se presentó una excepción no controlada de tipo Exception tratando de iniciar la transacción sobre la conexión con la base de datos";
-
-            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
+        } catch (Exception e) {
+            throw DataFondaControlException.reportar("Error al iniciar la transacción", "Detalles: " + e.getMessage(), e);
         }
     }
 
@@ -82,15 +72,8 @@ public class PostgreSQLDAOFactory extends DAOFactory {
             asegurarConexionAbierta();
             asegurarTransaccionIniciada();
             conexion.commit();
-        } catch (SQLException exception) {
-            var mensajeUsuario = "Se ha presentado un error inesperado tratando de confirmar la transacción con la fuente de datos";
-            var mensajeTecnico = "Se presentó una excepción de tipo SQLException tratando de confirmar la transacción sobre la conexión con la base de datos";
-            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
-        } catch (Exception exception) {
-            var mensajeUsuario = "Se ha presentado un error inesperado tratando de confirmar la transacción con la fuente de datos";
-            var mensajeTecnico = "Se presentó una excepción no controlada de tipo Exception tratando de confirmar la transacción sobre la conexión con la base de datos";
-
-            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
+        } catch (Exception e) {
+            throw DataFondaControlException.reportar("Error al confirmar la transacción", "Detalles: " + e.getMessage(), e);
         }
     }
 
@@ -100,16 +83,8 @@ public class PostgreSQLDAOFactory extends DAOFactory {
             asegurarConexionAbierta();
             asegurarTransaccionIniciada();
             conexion.rollback();
-        } catch (SQLException exception) {
-            var mensajeUsuario = "Se ha presentado un error inesperado tratando de cancelar la transacción con la fuente de datos";
-            var mensajeTecnico = "Se presentó una excepción de tipo SQLException tratando de cancelar la transacción sobre la conexión con la base de datos";
-
-            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
-        } catch (Exception exception) {
-            var mensajeUsuario = "Se ha presentado un error inesperado tratando de cancelar la transacción con la fuente de datos";
-            var mensajeTecnico = "Se presentó una excepción no controlada de tipo Exception tratando de cancelar la transacción sobre la conexión con la base de datos";
-
-            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
+        } catch (Exception e) {
+            throw DataFondaControlException.reportar("Error al cancelar la transacción", "Detalles: " + e.getMessage(), e);
         }
     }
 
@@ -118,35 +93,27 @@ public class PostgreSQLDAOFactory extends DAOFactory {
         try {
             asegurarConexionAbierta();
             conexion.close();
-        } catch (SQLException exception) {
-            var mensajeUsuario = "Se ha presentado un error inesperado tratando de cerrar la conexión con la fuente de datos";
-            var mensajeTecnico = "Se presentó una excepción de tipo SQLException tratando de cerrar la conexión sobre la base de datos";
-
-            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
-        } catch (Exception exception) {
-            var mensajeUsuario = "Se ha presentado un error inesperado tratando de cerrar la conexión con la fuente de datos";
-            var mensajeTecnico = "Se presentó una excepción no controlada de tipo Exception tratando de cerrar la conexión sobre la base de datos";
-
-            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
+        } catch (Exception e) {
+            throw DataFondaControlException.reportar("Error al cerrar la conexión", "Detalles: " + e.getMessage(), e);
         }
     }
 
     private void asegurarTransaccionIniciada() throws DataFondaControlException {
         if (!transaccionEstainiciada) {
-            var mensajeUsuario = "Se ha presentado un error inesperado tratando de gestionar la transacción con la fuente de datos";
-            var mensajeTecnico = "Se intentó gestionar (COMMIT/ROLLBACK) una transacción que no ha sido iniciada";
-
-            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico);
+            throw DataFondaControlException.reportar("No se ha iniciado ninguna transacción");
         }
     }
 
     private void asegurarConexionAbierta() throws DataFondaControlException {
         if (!conexionEstaAbierta) {
-            var mensajeUsuario = "Se ha presentado un problema tratando de llevar a cabo la operación deseada con una conexión cerrada";
-            var mensajeTecnico = "Se intentó llevar a cabo una operación que requería una conexión abierta, pero la conexión estaba cerrada";
-
-            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico);
+            throw DataFondaControlException.reportar("La conexión está cerrada y no se puede continuar");
         }
+    }
+
+    @Override
+    public UsuarioDAO getUsuarioDAO() throws DataFondaControlException {
+        asegurarConexionAbierta();
+        return new UsuarioPostgreSQLDAO(conexion);
     }
 
     @Override
@@ -165,12 +132,6 @@ public class PostgreSQLDAOFactory extends DAOFactory {
     public InventarioDAO getInventarioDAO() throws DataFondaControlException {
         asegurarConexionAbierta();
         return new InventarioPostgreSQLDAO(conexion);
-    }
-
-    @Override
-    public UsuarioDAO getUsuarioDAO() throws DataFondaControlException {
-        asegurarConexionAbierta();
-        return new UsuarioPostgreSQLDAO(conexion);
     }
 
     @Override
