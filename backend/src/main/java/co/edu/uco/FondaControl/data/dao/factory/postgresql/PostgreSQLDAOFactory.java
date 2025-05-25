@@ -2,12 +2,15 @@ package co.edu.uco.FondaControl.data.dao.factory.postgresql;
 
 import co.edu.uco.FondaControl.data.dao.entity.Usuario.UsuarioDAO;
 import co.edu.uco.FondaControl.data.dao.entity.Usuario.imp.postgresql.UsuarioPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.estadomesa.EstadoMesaDAO;
+import co.edu.uco.FondaControl.data.dao.entity.estadomesa.impl.postgresql.EstadoMesaPostgreSQLDAO;
 import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.IndicadorInventarioDAO;
 import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.impl.postgresql.IndicadorInventarioPostgreSQLDAO;
 import co.edu.uco.FondaControl.data.dao.entity.informecaja.InformeCajaDAO;
 import co.edu.uco.FondaControl.data.dao.entity.informecaja.impl.postgresql.InformeCajaPostgreSQLDAO;
 import co.edu.uco.FondaControl.data.dao.entity.inventario.InventarioDAO;
 import co.edu.uco.FondaControl.data.dao.entity.inventario.imp.postgresql.InventarioPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.mesa.MesaDAO;
 import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.SesionTrabajoDAO;
 import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.imp.postgresql.SesionTrabajoPostgreSQLDAO;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
@@ -121,6 +124,18 @@ public class PostgreSQLDAOFactory extends DAOFactory {
         asegurarConexionAbierta();
         return new IndicadorInventarioPostgreSQLDAO(conexion);
     }
+    @Override
+    public MesaDAO getMesaDAO() throws DataFondaControlException {
+        asegurarConexionAbierta();
+        return new co.edu.uco.FondaControl.data.dao.entity.mesa.impl.postgresql.MesaPostgreSQLDAO(conexion);
+    }
+
+    @Override
+    public EstadoMesaDAO getEstadoMesaDAO() throws DataFondaControlException {
+        asegurarConexionAbierta();
+        return new EstadoMesaPostgreSQLDAO(conexion);
+    }
+
 
     @Override
     public InformeCajaDAO getInformeCajaDAO() throws DataFondaControlException {

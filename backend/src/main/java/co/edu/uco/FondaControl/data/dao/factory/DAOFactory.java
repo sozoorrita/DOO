@@ -3,9 +3,11 @@ package co.edu.uco.FondaControl.data.dao.factory;
 
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 import co.edu.uco.FondaControl.data.dao.entity.Usuario.UsuarioDAO;
+import co.edu.uco.FondaControl.data.dao.entity.estadomesa.EstadoMesaDAO;
 import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.IndicadorInventarioDAO;
 import co.edu.uco.FondaControl.data.dao.entity.informecaja.InformeCajaDAO;
 import co.edu.uco.FondaControl.data.dao.entity.inventario.InventarioDAO;
+import co.edu.uco.FondaControl.data.dao.entity.mesa.MesaDAO;
 import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.SesionTrabajoDAO;
 import co.edu.uco.FondaControl.data.dao.factory.postgresql.PostgreSQLDAOFactory;
 
@@ -33,4 +35,6 @@ public abstract class DAOFactory {
     public abstract InventarioDAO getInventarioDAO() throws DataFondaControlException;
     public abstract UsuarioDAO getUsuarioDAO() throws DataFondaControlException;
     public abstract SesionTrabajoDAO getSesionTrabajoDAO() throws DataFondaControlException;
+    public abstract MesaDAO getMesaDAO() throws DataFondaControlException;
+    public abstract EstadoMesaDAO getEstadoMesaDAO() throws DataFondaControlException;
 }

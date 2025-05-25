@@ -24,27 +24,21 @@ public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
     public void create(SesionTrabajoEntity entity) throws DataFondaControlException {
         validarEntidad(entity);
 
-        final String sql = "INSERT INTO sesiontrabajo (idusuario, fechaapertura, fechacierre, basecaja) VALUES (?, ?, ?, ?) RETURNING codigo";
+        final String sql = "INSERT INTO sesiontrabajo (codigo, idusuario, fechaapertura, fechacierre, basecaja) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, entity.getIdUsuario().getCodigo());
-            ps.setTimestamp(2, java.sql.Timestamp.valueOf(entity.getFechaApertura()));
-            ps.setTimestamp(3, entity.getFechaCierre() != null ? java.sql.Timestamp.valueOf(entity.getFechaCierre()) : null);
-            ps.setBigDecimal(4, entity.getBaseCaja());
+            ps.setObject(1, entity.getCodigo());
+            ps.setObject(2, entity.getIdUsuario().getCodigo());
+            ps.setTimestamp(3, java.sql.Timestamp.valueOf(entity.getFechaApertura()));
+            ps.setTimestamp(4, entity.getFechaCierre() != null ? java.sql.Timestamp.valueOf(entity.getFechaCierre()) : null);
+            ps.setBigDecimal(5, entity.getBaseCaja());
 
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    entity.setCodigo((UUID) rs.getObject("codigo"));
-                } else {
-                    throw DataFondaControlException.reportar(
-                            "No se pudo obtener el UUID generado automáticamente para la sesión de trabajo.",
-                            "La sentencia INSERT en create() no retornó ningún UUID."
-                    );
-                }
-            }
+            ps.executeUpdate();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                    "Error al crear la sesión de trabajo.",
-                    "SQLException en create(): " + e.getMessage(),
+                    "No fue posible registrar la sesión de trabajo.",
+                    "SQLException en 'create' de SesionTrabajoPostgreSQLDAO. SQL=[" + sql + "], código=[" + entity.getCodigo() +
+                            "], idUsuario=[" + entity.getIdUsuario().getCodigo() + "], baseCaja=[" + entity.getBaseCaja() +
+                            "], fechaApertura=[" + entity.getFechaApertura() + "], fechaCierre=[" + entity.getFechaCierre() + "]. Detalle: " + e.getMessage(),
                     e
             );
         }
@@ -69,13 +63,15 @@ public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
             if (rowsUpdated == 0) {
                 throw DataFondaControlException.reportar(
                         "No se encontró la sesión de trabajo para actualizar.",
-                        "No existe sesión de trabajo con código: " + codigo
+                        "No existe sesión con código=[" + codigo + "] para ejecutar 'update(...)'."
                 );
             }
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
                     "Error al actualizar la sesión de trabajo.",
-                    "SQLException en update(): " + e.getMessage(),
+                    "SQLException en 'update' de SesionTrabajoPostgreSQLDAO. SQL=[" + sql + "], código=[" + codigo +
+                            "], idUsuario=[" + entity.getIdUsuario().getCodigo() + "], baseCaja=[" + entity.getBaseCaja() +
+                            "], fechaApertura=[" + entity.getFechaApertura() + "], fechaCierre=[" + entity.getFechaCierre() + "]. Detalle: " + e.getMessage(),
                     e
             );
         }
@@ -98,7 +94,7 @@ public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
                     "Error al buscar la sesión de trabajo por código.",
-                    "SQLException en findById(): " + e.getMessage(),
+                    "SQLException en 'findById' de SesionTrabajoPostgreSQLDAO. SQL=[" + sql + "], código=[" + codigo + "]. Detalle: " + e.getMessage(),
                     e
             );
         }
@@ -123,7 +119,7 @@ public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
                     "Error al buscar la sesión de trabajo por usuario.",
-                    "SQLException en findByUsuario(): " + e.getMessage(),
+                    "SQLException en 'findByUsuario' de SesionTrabajoPostgreSQLDAO. SQL=[" + sql + "], idUsuario=[" + idUsuario + "]. Detalle: " + e.getMessage(),
                     e
             );
         }

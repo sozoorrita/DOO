@@ -3,6 +3,7 @@ package co.edu.uco.FondaControl.data.dao.entity.inventario.imp.postgresql;
 import co.edu.uco.FondaControl.data.dao.entity.inventario.InventarioDAO;
 import co.edu.uco.FondaControl.entity.InventarioEntity;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 
 import java.sql.Connection;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class InventarioPostgreSQLDAO implements InventarioDAO {
+
     private final Connection connection;
 
     public InventarioPostgreSQLDAO(Connection connection) {
@@ -24,20 +26,18 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
     public void create(InventarioEntity entity) throws DataFondaControlException {
         validarEntidad(entity);
 
-        final String sql = "INSERT INTO inventario (nombreproducto, cantidad, codigoindicador) VALUES (?, ?, ?) RETURNING codigo";
+        final String sql = "INSERT INTO inventario (codigo, nombreproducto, cantidad, codigoindicador) VALUES (?, ?, ?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, entity.getNombreProducto());
-            ps.setInt(2, entity.getCantidad());
-            ps.setObject(3, entity.getCodigoIndicador());
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    entity.setCodigo((UUID) rs.getObject("codigo"));
-                }
-            }
+            ps.setObject(1, entity.getCodigo());
+            ps.setString(2, entity.getNombreProducto());
+            ps.setInt(3, entity.getCantidad());
+            ps.setObject(4, entity.getCodigoIndicador());
+
+            ps.executeUpdate();
         } catch (SQLException exception) {
             throw DataFondaControlException.reportar(
-                    "Error al crear el inventario.",
-                    "SQLException en create(): " + exception.getMessage(),
+                    "No fue posible registrar el inventario.",
+                    "SQLException en 'create' con SQL=[" + sql + "], código=[" + entity.getCodigo() + "], nombreProducto=[" + entity.getNombreProducto() + "], cantidad=[" + entity.getCantidad() + "], codigoIndicador=[" + entity.getCodigoIndicador() + "]. Detalle: " + exception.getMessage(),
                     exception
             );
         }
@@ -60,8 +60,8 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
             }
         } catch (SQLException exception) {
             throw DataFondaControlException.reportar(
-                    "Error al listar los inventarios por filtro.",
-                    "SQLException al listar inventarios por filtro: " + exception.getMessage(),
+                    "No fue posible filtrar los registros de inventario.",
+                    "SQLException en 'listByFilter' con SQL=[" + sql + "], filtro nombreProducto=[" + entity.getNombreProducto() + "]. Detalle: " + exception.getMessage(),
                     exception
             );
         }
@@ -79,8 +79,8 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
             }
         } catch (SQLException exception) {
             throw DataFondaControlException.reportar(
-                    "Error al listar todos los inventarios.",
-                    "SQLException al listar todos los inventarios: " + exception.getMessage(),
+                    "No fue posible listar todos los inventarios.",
+                    "SQLException en 'listAll' con SQL=[" + sql + "]. Detalle: " + exception.getMessage(),
                     exception
             );
         }
@@ -104,8 +104,8 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
             }
         } catch (SQLException exception) {
             throw DataFondaControlException.reportar(
-                    "Error al listar los inventarios por código.",
-                    "SQLException al listar inventarios por código: " + exception.getMessage(),
+                    "No fue posible obtener el inventario por código.",
+                    "SQLException en 'listByCodigo' con SQL=[" + sql + "], código=[" + uuid + "]. Detalle: " + exception.getMessage(),
                     exception
             );
         }
@@ -129,14 +129,14 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
             int rowsUpdated = ps.executeUpdate();
             if (rowsUpdated == 0) {
                 throw DataFondaControlException.reportar(
-                        "No se encontró el registro para actualizar.",
-                        "No hay registro con el código especificado: " + uuid
+                        "No se encontró el inventario para actualizar.",
+                        "No hay registro con el código=[" + uuid + "] para aplicar el update en 'update(...)'."
                 );
             }
         } catch (SQLException exception) {
             throw DataFondaControlException.reportar(
                     "Error al actualizar el inventario.",
-                    "SQLException al actualizar el inventario: " + exception.getMessage(),
+                    "SQLException en 'update' con SQL=[" + sql + "], código=[" + uuid + "]. Detalle: " + exception.getMessage(),
                     exception
             );
         }
@@ -158,8 +158,8 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
             }
         } catch (SQLException exception) {
             throw DataFondaControlException.reportar(
-                    "Error al buscar el inventario por ID.",
-                    "SQLException al buscar inventario por ID: " + exception.getMessage(),
+                    "No fue posible encontrar el inventario por ID.",
+                    "SQLException en 'findById' con SQL=[" + sql + "], código=[" + codigo + "]. Detalle: " + exception.getMessage(),
                     exception
             );
         }
@@ -189,8 +189,8 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
         if (UtilObjeto.esNulo(entity)) {
             throw new IllegalArgumentException("La entidad no puede ser nula.");
         }
-        if (entity.getNombreProducto() == null || entity.getNombreProducto().isBlank()) {
-            throw new IllegalArgumentException("El nombre del producto no puede ser nulo ni vacío.");
+        if (UtilTexto.getInstancia().esNula(entity.getNombreProducto())) {
+            throw new IllegalArgumentException("El nombre del producto no puede ser nulo ni estar vacío.");
         }
         if (entity.getNombreProducto().length() > 50) {
             throw new IllegalArgumentException("El nombre del producto no puede exceder los 50 caracteres.");

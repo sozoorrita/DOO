@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public final class SesionTrabajoDTO {
+
     private UUID codigo;
     private UUID idUsuario;
     private String nombreUsuario;
@@ -18,29 +19,29 @@ public final class SesionTrabajoDTO {
     private LocalDateTime fechaCierre;
 
     public SesionTrabajoDTO() {
-        this.codigo = null; // UUID será asignado por la base de datos
-        this.idUsuario = UtilUUID.obtenerValorDefecto();
-        this.nombreUsuario = UtilTexto.getInstancia().obtenerValorDefecto();
-        this.baseCaja = UtilMoneda.obtenerValorDefecto();
-        this.fechaApertura = UtilFecha.obtenerValorDefecto();
-        this.fechaCierre = null; // Puede ser nulo al momento de crear
+        setCodigo(UtilUUID.obtenerValorDefecto());
+        setIdUsuario(UtilUUID.obtenerValorDefecto());
+        setNombreUsuario(UtilTexto.getInstancia().obtenerValorDefecto());
+        setBaseCaja(UtilMoneda.obtenerValorDefecto());
+        setFechaApertura(UtilFecha.obtenerValorDefecto());
+        setFechaCierre(null);
     }
 
-    public SesionTrabajoDTO(UUID codigo, UUID idUsuario, String nombreUsuario, BigDecimal baseCaja,
-                            LocalDateTime fechaApertura, LocalDateTime fechaCierre) {
-        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
-        this.idUsuario = UtilUUID.obtenerValorDefecto(idUsuario);
-        this.nombreUsuario = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombreUsuario);
-        this.baseCaja = UtilMoneda.obtenerValorDefecto(baseCaja);
-        this.fechaApertura = UtilFecha.obtenerValorDefecto(fechaApertura);
-        this.fechaCierre = UtilFecha.obtenerValorDefecto(fechaCierre);
+    public SesionTrabajoDTO(final UUID codigo, final UUID idUsuario, final String nombreUsuario,
+                            final BigDecimal baseCaja, final LocalDateTime fechaApertura, final LocalDateTime fechaCierre) {
+        setCodigo(codigo);
+        setIdUsuario(idUsuario);
+        setNombreUsuario(nombreUsuario);
+        setBaseCaja(baseCaja);
+        setFechaApertura(fechaApertura);
+        setFechaCierre(fechaCierre);
     }
 
     public UUID getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(UUID codigo) {
+    public void setCodigo(final UUID codigo) {
         this.codigo = UtilUUID.obtenerValorDefecto(codigo);
     }
 
@@ -48,7 +49,7 @@ public final class SesionTrabajoDTO {
         return idUsuario;
     }
 
-    public void setIdUsuario(UUID idUsuario) {
+    public void setIdUsuario(final UUID idUsuario) {
         this.idUsuario = UtilUUID.obtenerValorDefecto(idUsuario);
     }
 
@@ -56,7 +57,7 @@ public final class SesionTrabajoDTO {
         return nombreUsuario;
     }
 
-    public void setNombreUsuario(String nombreUsuario) {
+    public void setNombreUsuario(final String nombreUsuario) {
         this.nombreUsuario = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombreUsuario);
     }
 
@@ -64,7 +65,7 @@ public final class SesionTrabajoDTO {
         return baseCaja;
     }
 
-    public void setBaseCaja(BigDecimal baseCaja) {
+    public void setBaseCaja(final BigDecimal baseCaja) {
         this.baseCaja = UtilMoneda.obtenerValorDefecto(baseCaja);
     }
 
@@ -72,7 +73,7 @@ public final class SesionTrabajoDTO {
         return fechaApertura;
     }
 
-    public void setFechaApertura(LocalDateTime fechaApertura) {
+    public void setFechaApertura(final LocalDateTime fechaApertura) {
         this.fechaApertura = UtilFecha.obtenerValorDefecto(fechaApertura);
     }
 
@@ -80,7 +81,7 @@ public final class SesionTrabajoDTO {
         return fechaCierre;
     }
 
-    public void setFechaCierre(LocalDateTime fechaCierre) {
+    public void setFechaCierre(final LocalDateTime fechaCierre) {
         this.fechaCierre = UtilFecha.obtenerValorDefecto(fechaCierre);
     }
 }

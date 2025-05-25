@@ -2,6 +2,7 @@ package co.edu.uco.FondaControl.entity;
 
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 
 import java.util.UUID;
 
@@ -12,17 +13,17 @@ public final class UsuarioEntity {
     private String contrasena;
 
     public UsuarioEntity() {
-        this.id = null; // Para que lo genere la BD
-        this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
-        this.codigoRol = UtilUUID.obtenerValorDefecto();
-        this.contrasena = UtilTexto.getInstancia().obtenerValorDefecto();
+        setId(UtilUUID.obtenerValorDefecto());
+        setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
+        setCodigoRol(UtilUUID.obtenerValorDefecto());
+        setContrasena(UtilTexto.getInstancia().obtenerValorDefecto());
     }
 
     public UsuarioEntity(final UUID id) {
         setId(id);
-        this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
-        this.codigoRol = UtilUUID.obtenerValorDefecto();
-        this.contrasena = UtilTexto.getInstancia().obtenerValorDefecto();
+        setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
+        setCodigoRol(UtilUUID.obtenerValorDefecto());
+        setContrasena(UtilTexto.getInstancia().obtenerValorDefecto());
     }
 
     public UsuarioEntity(final UUID id, final String nombre, final UUID codigoRol, final String contrasena) {
@@ -45,7 +46,7 @@ public final class UsuarioEntity {
     }
 
     public void setId(final UUID id) {
-        this.id = UtilUUID.obtenerValorDefecto(id, null); // Mantener nulo si no es válido
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     public String getNombre() {

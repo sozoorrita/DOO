@@ -57,8 +57,6 @@ public class InformeCajaImpl implements InformeCajaFacade {
     }
 
     private InformeCajaDomain mapToDomain(InformeCajaDTO dto) {
-        // Aquí deberías transformar el DTO a Domain
-        // Esto depende de si tienes ventas incluidas en el DTO, si no las tienes, agrégalas manualmente
         return new InformeCajaDomain(
                 dto.getCodigo(),
                 dto.getCodigoSesionTrabajo(),

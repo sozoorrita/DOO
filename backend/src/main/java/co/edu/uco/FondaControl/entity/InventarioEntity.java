@@ -2,7 +2,7 @@ package co.edu.uco.FondaControl.entity;
 
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
-
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 
 import java.util.UUID;
 
@@ -12,7 +12,14 @@ public final class InventarioEntity {
     private int cantidad;
     private UUID codigoIndicador;
 
-    public InventarioEntity(UUID codigo, String nombreProducto, int cantidad, UUID codigoIndicador) {
+    public InventarioEntity() {
+        setCodigo(UtilUUID.obtenerValorDefecto());
+        setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
+        setCantidad(0);
+        setCodigoIndicador(UtilUUID.obtenerValorDefecto());
+    }
+
+    public InventarioEntity(final UUID codigo, final String nombreProducto, final int cantidad, final UUID codigoIndicador) {
         setCodigo(codigo);
         setNombreProducto(nombreProducto);
         setCantidad(cantidad);
@@ -24,6 +31,14 @@ public final class InventarioEntity {
         setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
         setCantidad(0);
         setCodigoIndicador(UtilUUID.obtenerValorDefecto());
+    }
+
+    public static InventarioEntity obtenerValorDefecto() {
+        return new InventarioEntity();
+    }
+
+    public static InventarioEntity obtenerValorDefecto(final InventarioEntity entidad) {
+        return UtilObjeto.getInstancia().obtenerValorDefecto(entidad, obtenerValorDefecto());
     }
 
     public UUID getCodigo() {
@@ -47,7 +62,7 @@ public final class InventarioEntity {
     }
 
     public void setCantidad(final int cantidad) {
-        this.cantidad = Math.max(0, cantidad); // Evitar valores negativos
+        this.cantidad = Math.max(0, cantidad);
     }
 
     public UUID getCodigoIndicador() {

@@ -3,6 +3,7 @@ package co.edu.uco.FondaControl.entity;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilFecha;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilMoneda;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,13 +26,18 @@ public final class InformeCajaEntity {
         setPagoTransferencia(UtilMoneda.obtenerValorDefecto());
     }
 
-    public InformeCajaEntity(final UUID codigo, final UUID codigoSesionTrabajo, final LocalDate fecha, final BigDecimal totalVenta, final BigDecimal pagoEfectivo, final BigDecimal pagoTransferencia) {
+    public InformeCajaEntity(final UUID codigo, final UUID codigoSesionTrabajo, final LocalDate fecha,
+                             final BigDecimal totalVenta, final BigDecimal pagoEfectivo, final BigDecimal pagoTransferencia) {
         setCodigo(codigo);
         setCodigoSesionTrabajo(codigoSesionTrabajo);
         setFecha(fecha);
         setTotalVenta(totalVenta);
         setPagoEfectivo(pagoEfectivo);
         setPagoTransferencia(pagoTransferencia);
+    }
+
+    public static InformeCajaEntity obtenerValorDefecto() {
+        return new InformeCajaEntity();
     }
 
     public UUID getCodigo() {
@@ -55,7 +61,7 @@ public final class InformeCajaEntity {
     }
 
     public void setFecha(final LocalDate fecha) {
-        this.fecha = (fecha != null) ? fecha : UtilFecha.obtenerValorDefecto().toLocalDate();
+        this.fecha = UtilObjeto.getInstancia().esNulo(fecha) ? UtilFecha.obtenerValorDefecto().toLocalDate() : fecha;
     }
 
     public BigDecimal getTotalVenta() {

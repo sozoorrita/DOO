@@ -1,8 +1,9 @@
 package co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.impl.postgresql;
 
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
-import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.IndicadorInventarioDAO;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.entity.IndicadorInventarioEntity;
+import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.IndicadorInventarioDAO;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -20,18 +21,15 @@ public class IndicadorInventarioPostgreSQLDAO implements IndicadorInventarioDAO 
     @Override
     public void create(IndicadorInventarioEntity entity) throws DataFondaControlException {
         validarEntidad(entity);
-        final String sql = "INSERT INTO indicador_inventario (nombre) VALUES (?) RETURNING codigo";
+        final String sql = "INSERT INTO indicador_inventario (codigo, nombre) VALUES (?, ?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, entity.getNombre());
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    entity.setCodigo((UUID) rs.getObject("codigo"));
-                }
-            }
+            ps.setObject(1, entity.getCodigo());
+            ps.setString(2, entity.getNombre());
+            ps.executeUpdate();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
                     "No fue posible registrar el indicador de inventario.",
-                    "SQLException en 'create' con SQL=[" + sql + "], nombre=[" + entity.getNombre() + "]. Detalle: " + e.getMessage(),
+                    "SQLException en 'create' con SQL=[" + sql + "], código=[" + entity.getCodigo() + "], nombre=[" + entity.getNombre() + "]. Detalle: " + e.getMessage(),
                     e
             );
         }
@@ -58,7 +56,7 @@ public class IndicadorInventarioPostgreSQLDAO implements IndicadorInventarioDAO 
 
     @Override
     public List<IndicadorInventarioEntity> listByFilter(IndicadorInventarioEntity entity) throws DataFondaControlException {
-        if (entity == null || entity.getNombre() == null || entity.getNombre().length() > 50) {
+        if (entity == null || UtilTexto.getInstancia().esNula(entity.getNombre()) || entity.getNombre().length() > 50) {
             throw new IllegalArgumentException("El nombre no puede ser nulo ni exceder los 50 caracteres.");
         }
 
@@ -177,7 +175,6 @@ public class IndicadorInventarioPostgreSQLDAO implements IndicadorInventarioDAO 
         }
     }
 
-
     @Override
     public void update(List<IndicadorInventarioEntity> entities) throws DataFondaControlException {
         if (entities == null || entities.isEmpty()) {
@@ -219,7 +216,7 @@ public class IndicadorInventarioPostgreSQLDAO implements IndicadorInventarioDAO 
         if (entity == null) {
             throw new IllegalArgumentException("La entidad no puede ser nula.");
         }
-        if (entity.getNombre() == null || entity.getNombre().isBlank()) {
+        if (UtilTexto.getInstancia().esNula(entity.getNombre())) {
             throw new IllegalArgumentException("El nombre no puede ser nulo ni estar vacío.");
         }
         if (entity.getNombre().length() > 50) {

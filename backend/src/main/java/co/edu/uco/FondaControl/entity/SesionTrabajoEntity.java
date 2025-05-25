@@ -17,20 +17,20 @@ public final class SesionTrabajoEntity {
     private LocalDateTime fechaCierre;
 
     public SesionTrabajoEntity() {
-        this.codigo = null; // Será generado por la base de datos
-        this.idUsuario = UsuarioEntity.obtenerValorDefecto();
-        this.baseCaja = UtilMoneda.obtenerValorDefecto();
-        this.fechaApertura = UtilFecha.obtenerValorDefecto();
-        this.fechaCierre = null; // Puede iniciar como null
+        setCodigo(UtilUUID.obtenerValorDefecto());
+        setIdUsuario(UsuarioEntity.obtenerValorDefecto());
+        setBaseCaja(UtilMoneda.obtenerValorDefecto());
+        setFechaApertura(UtilFecha.obtenerValorDefecto());
+        setFechaCierre(null); // Fecha de cierre opcional
     }
 
     public SesionTrabajoEntity(final UUID codigo, final UsuarioEntity idUsuario, final BigDecimal baseCaja,
                                final LocalDateTime fechaApertura, final LocalDateTime fechaCierre) {
-        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
-        this.idUsuario = (idUsuario != null) ? idUsuario : UsuarioEntity.obtenerValorDefecto();
-        this.baseCaja = UtilMoneda.asegurarNoNegativo(baseCaja);
-        this.fechaApertura = UtilFecha.asegurarFechaValida(fechaApertura);
-        this.fechaCierre = UtilFecha.asegurarFechaValida(fechaCierre);
+        setCodigo(codigo);
+        setIdUsuario(idUsuario);
+        setBaseCaja(baseCaja);
+        setFechaApertura(fechaApertura);
+        setFechaCierre(fechaCierre);
     }
 
     public UUID getCodigo() {

@@ -1,5 +1,6 @@
 package co.edu.uco.FondaControl.data.dao.entity.mesa;
 
+import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 import co.edu.uco.FondaControl.entity.MesaEntity;
 import co.edu.uco.FondaControl.data.dao.entity.CreateDAO;
 import co.edu.uco.FondaControl.data.dao.entity.RetrieveDAO;
@@ -15,5 +16,5 @@ public interface MesaDAO extends
     UpdateDAO<MesaEntity, UUID>,
     DeleteDAO<UUID> {
 
-    List<MesaEntity> listByEstado(UUID codigoEstadoMesa);
+    List<MesaEntity> listByEstado(UUID codigoEstadoMesa) throws DataFondaControlException;
 }

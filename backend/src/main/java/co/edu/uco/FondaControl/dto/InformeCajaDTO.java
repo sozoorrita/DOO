@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public final class InformeCajaDTO {
+
     private UUID codigo;
     private UUID codigoSesionTrabajo;
     private LocalDate fecha;
@@ -17,34 +18,29 @@ public final class InformeCajaDTO {
     private BigDecimal pagoTransferencia;
 
     public InformeCajaDTO() {
-        this.codigo = null; // Deja que la base de datos lo genere
-        this.codigoSesionTrabajo = UtilUUID.generarNuevoUUID(); // Este sí puedes generarlo
-        this.fecha = UtilFecha.obtenerValorDefecto().toLocalDate();
-        this.totalVenta = UtilMoneda.obtenerValorDefecto();
-        this.pagoEfectivo = UtilMoneda.obtenerValorDefecto();
-        this.pagoTransferencia = UtilMoneda.obtenerValorDefecto();
+        setCodigo(UtilUUID.obtenerValorDefecto());
+        setCodigoSesionTrabajo(UtilUUID.obtenerValorDefecto());
+        setFecha(UtilFecha.obtenerValorDefecto().toLocalDate());
+        setTotalVenta(UtilMoneda.obtenerValorDefecto());
+        setPagoEfectivo(UtilMoneda.obtenerValorDefecto());
+        setPagoTransferencia(UtilMoneda.obtenerValorDefecto());
     }
 
-    public InformeCajaDTO(UUID codigo, UUID codigoSesionTrabajo, LocalDate fecha, BigDecimal totalVenta, BigDecimal pagoEfectivo, BigDecimal pagoTransferencia) {
-        this.codigo = UtilUUID.obtenerValorDefecto(codigo); // ya no se autogenera si llega null
-        this.codigoSesionTrabajo = UtilUUID.obtenerValorDefecto(codigoSesionTrabajo);
-        this.fecha = (fecha != null) ? fecha : UtilFecha.obtenerValorDefecto().toLocalDate();
-        this.totalVenta = UtilMoneda.obtenerValorDefecto(totalVenta);
-        this.pagoEfectivo = UtilMoneda.obtenerValorDefecto(pagoEfectivo);
-        this.pagoTransferencia = UtilMoneda.obtenerValorDefecto(pagoTransferencia);
+    public InformeCajaDTO(final UUID codigo, final UUID codigoSesionTrabajo, final LocalDate fecha,
+                          final BigDecimal totalVenta, final BigDecimal pagoEfectivo, final BigDecimal pagoTransferencia) {
+        setCodigo(codigo);
+        setCodigoSesionTrabajo(codigoSesionTrabajo);
+        setFecha(fecha);
+        setTotalVenta(totalVenta);
+        setPagoEfectivo(pagoEfectivo);
+        setPagoTransferencia(pagoTransferencia);
     }
 
-    // Getters y Setters
-    // ...
-
-
-
-    // Getters y Setters seguros
     public UUID getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(UUID codigo) {
+    public void setCodigo(final UUID codigo) {
         this.codigo = UtilUUID.obtenerValorDefecto(codigo);
     }
 
@@ -52,7 +48,7 @@ public final class InformeCajaDTO {
         return codigoSesionTrabajo;
     }
 
-    public void setCodigoSesionTrabajo(UUID codigoSesionTrabajo) {
+    public void setCodigoSesionTrabajo(final UUID codigoSesionTrabajo) {
         this.codigoSesionTrabajo = UtilUUID.obtenerValorDefecto(codigoSesionTrabajo);
     }
 
@@ -60,7 +56,7 @@ public final class InformeCajaDTO {
         return fecha;
     }
 
-    public void setFecha(LocalDate fecha) {
+    public void setFecha(final LocalDate fecha) {
         this.fecha = (fecha != null) ? fecha : UtilFecha.obtenerValorDefecto().toLocalDate();
     }
 
@@ -68,7 +64,7 @@ public final class InformeCajaDTO {
         return totalVenta;
     }
 
-    public void setTotalVenta(BigDecimal totalVenta) {
+    public void setTotalVenta(final BigDecimal totalVenta) {
         this.totalVenta = UtilMoneda.obtenerValorDefecto(totalVenta);
     }
 
@@ -76,7 +72,7 @@ public final class InformeCajaDTO {
         return pagoEfectivo;
     }
 
-    public void setPagoEfectivo(BigDecimal pagoEfectivo) {
+    public void setPagoEfectivo(final BigDecimal pagoEfectivo) {
         this.pagoEfectivo = UtilMoneda.obtenerValorDefecto(pagoEfectivo);
     }
 
@@ -84,7 +80,7 @@ public final class InformeCajaDTO {
         return pagoTransferencia;
     }
 
-    public void setPagoTransferencia(BigDecimal pagoTransferencia) {
+    public void setPagoTransferencia(final BigDecimal pagoTransferencia) {
         this.pagoTransferencia = UtilMoneda.obtenerValorDefecto(pagoTransferencia);
     }
 }

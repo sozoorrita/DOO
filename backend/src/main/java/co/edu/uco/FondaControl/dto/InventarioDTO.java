@@ -1,11 +1,12 @@
 package co.edu.uco.FondaControl.dto;
 
-import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
-import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
-
 import java.util.UUID;
 
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
+
 public final class InventarioDTO {
+
     private UUID codigo;
     private String nombreProducto;
     private int cantidad;
@@ -13,20 +14,28 @@ public final class InventarioDTO {
     private String nombreIndicador;
 
     public InventarioDTO() {
-        this.codigo = null; // UUID se generará en la base de datos
-        this.nombreProducto = UtilTexto.getInstancia().obtenerValorDefecto();
-        this.cantidad = 0;
-        this.codigoIndicador = UtilUUID.obtenerValorDefecto();
-        this.nombreIndicador = UtilTexto.getInstancia().obtenerValorDefecto();
+        setCodigo(UtilUUID.obtenerValorDefecto());
+        setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
+        setCantidad(0);
+        setCodigoIndicador(UtilUUID.obtenerValorDefecto());
+        setNombreIndicador(UtilTexto.getInstancia().obtenerValorDefecto());
+    }
+
+    public InventarioDTO(final UUID codigo) {
+        setCodigo(codigo);
+        setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
+        setCantidad(0);
+        setCodigoIndicador(UtilUUID.obtenerValorDefecto());
+        setNombreIndicador(UtilTexto.getInstancia().obtenerValorDefecto());
     }
 
     public InventarioDTO(final UUID codigo, final String nombreProducto, final int cantidad,
                          final UUID codigoIndicador, final String nombreIndicador) {
-        this.codigo = codigo; // Puede venir de la base de datos
-        this.nombreProducto = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombreProducto);
-        this.cantidad = Math.max(cantidad, 0);
-        this.codigoIndicador = UtilUUID.obtenerValorDefecto(codigoIndicador);
-        this.nombreIndicador = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombreIndicador);
+        setCodigo(codigo);
+        setNombreProducto(nombreProducto);
+        setCantidad(cantidad);
+        setCodigoIndicador(codigoIndicador);
+        setNombreIndicador(nombreIndicador);
     }
 
     public UUID getCodigo() {
@@ -34,7 +43,7 @@ public final class InventarioDTO {
     }
 
     public void setCodigo(final UUID codigo) {
-        this.codigo = codigo; // permitir null para que sea generado en BD
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
     }
 
     public String getNombreProducto() {
@@ -50,7 +59,7 @@ public final class InventarioDTO {
     }
 
     public void setCantidad(final int cantidad) {
-        this.cantidad = Math.max(cantidad, 0);
+        this.cantidad = Math.max(0, cantidad);
     }
 
     public UUID getCodigoIndicador() {

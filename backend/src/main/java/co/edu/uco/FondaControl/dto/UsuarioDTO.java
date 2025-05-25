@@ -1,29 +1,29 @@
 package co.edu.uco.FondaControl.dto;
 
+import java.util.UUID;
+
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
-import java.util.UUID;
-
 public final class UsuarioDTO {
+
     private UUID id;
     private String nombre;
     private UUID codigoRol;
     private String contrasena;
 
     public UsuarioDTO() {
-        // id queda en null para que lo genere la base de datos
-        this.id = null;
-        this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
-        this.codigoRol = UtilUUID.obtenerValorDefecto();
-        this.contrasena = UtilTexto.getInstancia().obtenerValorDefecto();
+        setId(UtilUUID.obtenerValorDefecto());
+        setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
+        setCodigoRol(UtilUUID.obtenerValorDefecto());
+        setContrasena(UtilTexto.getInstancia().obtenerValorDefecto());
     }
 
     public UsuarioDTO(final UUID id) {
         setId(id);
-        this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
-        this.codigoRol = UtilUUID.obtenerValorDefecto();
-        this.contrasena = UtilTexto.getInstancia().obtenerValorDefecto();
+        setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
+        setCodigoRol(UtilUUID.obtenerValorDefecto());
+        setContrasena(UtilTexto.getInstancia().obtenerValorDefecto());
     }
 
     public UsuarioDTO(final UUID id, final String nombre, final UUID codigoRol, final String contrasena) {
@@ -42,7 +42,7 @@ public final class UsuarioDTO {
     }
 
     public void setId(final UUID id) {
-        this.id = UtilUUID.obtenerValorDefecto(id, null); // Si no es válido, dejarlo en null
+        this.id = UtilUUID.obtenerValorDefecto(id);
     }
 
     public String getNombre() {
@@ -70,34 +70,27 @@ public final class UsuarioDTO {
     }
 
     public static class Builder {
-        private UUID id;
-        private String nombre;
-        private UUID codigoRol;
-        private String contrasena;
+        private UUID id = UtilUUID.obtenerValorDefecto();
+        private String nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+        private UUID codigoRol = UtilUUID.obtenerValorDefecto();
+        private String contrasena = UtilTexto.getInstancia().obtenerValorDefecto();
 
-        public Builder() {
-            this.id = null; // No se asigna UUID por defecto
-            this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
-            this.codigoRol = UtilUUID.obtenerValorDefecto();
-            this.contrasena = UtilTexto.getInstancia().obtenerValorDefecto();
-        }
-
-        public Builder id(UUID id) {
+        public Builder id(final UUID id) {
             this.id = id;
             return this;
         }
 
-        public Builder nombre(String nombre) {
+        public Builder nombre(final String nombre) {
             this.nombre = nombre;
             return this;
         }
 
-        public Builder codigoRol(UUID codigoRol) {
+        public Builder codigoRol(final UUID codigoRol) {
             this.codigoRol = codigoRol;
             return this;
         }
 
-        public Builder contrasena(String contrasena) {
+        public Builder contrasena(final String contrasena) {
             this.contrasena = contrasena;
             return this;
         }

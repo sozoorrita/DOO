@@ -3,6 +3,7 @@ package co.edu.uco.FondaControl.data.dao.entity.Usuario.imp.postgresql;
 import co.edu.uco.FondaControl.data.dao.entity.Usuario.UsuarioDAO;
 import co.edu.uco.FondaControl.entity.UsuarioEntity;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 
 import java.sql.Connection;
@@ -22,21 +23,21 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
     @Override
     public void create(UsuarioEntity entity) throws DataFondaControlException {
         validarEntidad(entity);
-        var sql = "INSERT INTO usuario (nombre, contrasena, codigorol) VALUES (?, ?, ?) RETURNING id";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, entity.getNombre());
-            ps.setString(2, entity.getContrasena());
-            ps.setObject(3, entity.getCodigoRol());
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                entity.setId((UUID) rs.getObject("id")); // Asignar ID generado desde la DB
-            }
-        }
 
-        catch (SQLException e) {
+        final String sql = "INSERT INTO usuario (id, nombre, contrasena, codigorol) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setObject(1, entity.getId());
+            ps.setString(2, entity.getNombre());
+            ps.setString(3, entity.getContrasena());
+            ps.setObject(4, entity.getCodigoRol());
+
+            ps.executeUpdate();
+        } catch (SQLException e) {
             throw DataFondaControlException.reportar(
                     "No fue posible registrar el usuario en la base de datos.",
-                    "Se produjo un SQLException en 'create' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], ID=[" + entity.getId() + "]. Detalle: " + e.getMessage(),
+                    "SQLException en 'create' de UsuarioPostgreSQLDAO. SQL=[" + sql +
+                            "], ID=[" + entity.getId() + "], nombre=[" + entity.getNombre() +
+                            "], contraseña=[REDACTADA], codigorol=[" + entity.getCodigoRol() + "]. Detalle: " + e.getMessage(),
                     e
             );
         }
@@ -49,17 +50,26 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
         }
         validarEntidad(entity);
 
-        var sql = "UPDATE usuario SET nombre = ?, contrasena = ?, codigorol = ? WHERE id = ?";
+        final String sql = "UPDATE usuario SET nombre = ?, contrasena = ?, codigorol = ? WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, entity.getNombre());
             ps.setString(2, entity.getContrasena());
             ps.setObject(3, entity.getCodigoRol());
             ps.setObject(4, uuid);
-            ps.executeUpdate();
+
+            int filasActualizadas = ps.executeUpdate();
+            if (filasActualizadas == 0) {
+                throw DataFondaControlException.reportar(
+                        "No se encontró el usuario para actualizar.",
+                        "No existe un registro en la tabla 'usuario' con el ID=[" + uuid + "] para ejecutar 'update(...)'."
+                );
+            }
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
                     "No fue posible actualizar los datos del usuario.",
-                    "SQLException en 'update' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], UUID=[" + uuid + "]. Detalle: " + e.getMessage(),
+                    "SQLException en 'update' de UsuarioPostgreSQLDAO. SQL=[" + sql +
+                            "], UUID=[" + uuid + "], nombre=[" + entity.getNombre() +
+                            "], codigorol=[" + entity.getCodigoRol() + "]. Detalle: " + e.getMessage(),
                     e
             );
         }
@@ -71,10 +81,16 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
             throw new IllegalArgumentException("El ID no puede ser nulo.");
         }
 
-        var sql = "DELETE FROM usuario WHERE id = ?";
+        final String sql = "DELETE FROM usuario WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setObject(1, id);
-            ps.executeUpdate();
+            int filasEliminadas = ps.executeUpdate();
+            if (filasEliminadas == 0) {
+                throw DataFondaControlException.reportar(
+                        "No se encontró el usuario a eliminar.",
+                        "No existe un registro en la tabla 'usuario' con el ID=[" + id + "] para ejecutar 'delete(...)'."
+                );
+            }
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
                     "No fue posible eliminar el usuario.",
@@ -84,14 +100,13 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
         }
     }
 
-
     @Override
     public UsuarioEntity findById(UUID id) throws DataFondaControlException {
         if (UtilObjeto.esNulo(id)) {
             throw new IllegalArgumentException("El ID no puede ser nulo.");
         }
 
-        var sql = "SELECT id, nombre, contrasena, codigorol FROM usuario WHERE id = ?";
+        final String sql = "SELECT id, nombre, contrasena, codigorol FROM usuario WHERE id = ?";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setObject(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -119,15 +134,14 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
         if (UtilObjeto.esNulo(entity)) {
             throw new IllegalArgumentException("La entidad de usuario no puede ser nula.");
         }
-        if (entity.getNombre() == null || entity.getNombre().isBlank()) {
+        if (UtilTexto.getInstancia().esNula(entity.getNombre())) {
             throw new IllegalArgumentException("El nombre del usuario no puede ser nulo ni vacío.");
         }
-        if (entity.getContrasena() == null || entity.getContrasena().isBlank()) {
+        if (UtilTexto.getInstancia().esNula(entity.getContrasena())) {
             throw new IllegalArgumentException("La contraseña no puede ser nula ni vacía.");
         }
         if (UtilObjeto.esNulo(entity.getCodigoRol())) {
             throw new IllegalArgumentException("El código de rol no puede ser nulo.");
         }
     }
-
 }

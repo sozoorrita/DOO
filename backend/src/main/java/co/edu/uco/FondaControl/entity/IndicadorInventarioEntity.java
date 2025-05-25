@@ -11,9 +11,8 @@ public final class IndicadorInventarioEntity {
     private String nombre;
 
     public IndicadorInventarioEntity() {
-        // No se asigna UUID porque lo genera la base de datos
-        this.codigo = null;
-        this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+        setCodigo(UtilUUID.obtenerValorDefecto());
+        setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
     }
 
     public IndicadorInventarioEntity(final UUID codigo, final String nombre) {
@@ -21,7 +20,7 @@ public final class IndicadorInventarioEntity {
         setNombre(nombre);
     }
 
-    public IndicadorInventarioEntity(UUID codigoIndicador) {
+    public IndicadorInventarioEntity(final UUID codigoIndicador) {
         setCodigo(codigoIndicador);
         setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
     }
@@ -30,8 +29,8 @@ public final class IndicadorInventarioEntity {
         return new IndicadorInventarioEntity();
     }
 
-    public static UUID obtenerCodigoDefecto(final IndicadorInventarioEntity indicador) {
-        return UtilObjeto.getInstancia().obtenerValorDefecto(indicador, obtenerValorDefecto()).getCodigo();
+    public static IndicadorInventarioEntity obtenerValorDefecto(final IndicadorInventarioEntity entidad) {
+        return UtilObjeto.getInstancia().obtenerValorDefecto(entidad, obtenerValorDefecto());
     }
 
     public UUID getCodigo() {
@@ -39,8 +38,7 @@ public final class IndicadorInventarioEntity {
     }
 
     public void setCodigo(final UUID codigo) {
-        // Permitimos null, ya que lo genera la BD
-        this.codigo = UtilUUID.obtenerValorDefecto(codigo, null);
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
     }
 
     public String getNombre() {
@@ -48,10 +46,6 @@ public final class IndicadorInventarioEntity {
     }
 
     public void setNombre(final String nombre) {
-        if (nombre == null || nombre.isBlank()) {
-            this.nombre = UtilTexto.getInstancia().obtenerValorDefecto();
-        } else {
-            this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
-        }
+        this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
     }
 }
