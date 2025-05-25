@@ -9,11 +9,12 @@ import co.edu.uco.FondaControl.dto.SesionTrabajoDTO;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 
-public class SesionTrabajoImpl implements SesionTrabajoFacade {
+
+public class SesionTrabajoImp implements SesionTrabajoFacade {
 
     private final SesionTrabajoBusinessLogic businessLogic;
 
-    public SesionTrabajoImpl(SesionTrabajoBusinessLogic businessLogic) {
+    public SesionTrabajoImp(SesionTrabajoBusinessLogic businessLogic) {
         this.businessLogic = businessLogic;
     }
 

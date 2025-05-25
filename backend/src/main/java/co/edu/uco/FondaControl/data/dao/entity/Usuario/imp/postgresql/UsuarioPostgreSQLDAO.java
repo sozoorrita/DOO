@@ -7,130 +7,128 @@ import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 
 public class UsuarioPostgreSQLDAO implements UsuarioDAO {
 
-    private final Connection connection;
+    private final Connection conexion;
 
-    public UsuarioPostgreSQLDAO(Connection connection) {
-        this.connection = connection;
+    public UsuarioPostgreSQLDAO(final Connection conexion) {
+        this.conexion = conexion;
     }
 
     @Override
-    public void create(UsuarioEntity entity) throws DataFondaControlException {
+    public void create(final UsuarioEntity entity) throws DataFondaControlException {
         validarEntidad(entity);
+        final var sql = new StringBuilder("INSERT INTO usuario (id, nombre, contrasena, codigorol) VALUES (?, ?, ?, ?)");
 
-        final String sql = "INSERT INTO usuario (id, nombre, contrasena, codigorol) VALUES (?, ?, ?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, entity.getId());
-            ps.setString(2, entity.getNombre());
-            ps.setString(3, entity.getContrasena());
-            ps.setObject(4, entity.getCodigoRol());
+        try (var sentencia = conexion.prepareStatement(sql.toString())) {
+            sentencia.setObject(1, entity.getId());
+            sentencia.setString(2, entity.getNombre());
+            sentencia.setString(3, entity.getContrasena());
+            sentencia.setObject(4, entity.getCodigoRol());
 
-            ps.executeUpdate();
-        } catch (SQLException e) {
+            sentencia.executeUpdate();
+        } catch (final SQLException excepcion) {
             throw DataFondaControlException.reportar(
                     "No fue posible registrar el usuario en la base de datos.",
-                    "SQLException en 'create' de UsuarioPostgreSQLDAO. SQL=[" + sql +
-                            "], ID=[" + entity.getId() + "], nombre=[" + entity.getNombre() +
-                            "], contraseña=[REDACTADA], codigorol=[" + entity.getCodigoRol() + "]. Detalle: " + e.getMessage(),
-                    e
+                    "SQLException en 'create' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], ID=[" + entity.getId() + "], nombre=[" + entity.getNombre() + "], contraseña=[REDACTADA], código de rol=[" + entity.getCodigoRol() + "]. Detalles: " + excepcion.getMessage(),
+                    excepcion
             );
         }
     }
 
     @Override
-    public void update(UUID uuid, UsuarioEntity entity) throws DataFondaControlException {
+    public void update(final UUID uuid, final UsuarioEntity entity) throws DataFondaControlException {
         if (UtilObjeto.esNulo(uuid)) {
             throw new IllegalArgumentException("El UUID no puede ser nulo.");
         }
         validarEntidad(entity);
 
-        final String sql = "UPDATE usuario SET nombre = ?, contrasena = ?, codigorol = ? WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setString(1, entity.getNombre());
-            ps.setString(2, entity.getContrasena());
-            ps.setObject(3, entity.getCodigoRol());
-            ps.setObject(4, uuid);
+        final var sql = new StringBuilder("UPDATE usuario SET nombre = ?, contrasena = ?, codigorol = ? WHERE id = ?");
 
-            int filasActualizadas = ps.executeUpdate();
+        try (var sentencia = conexion.prepareStatement(sql.toString())) {
+            sentencia.setString(1, entity.getNombre());
+            sentencia.setString(2, entity.getContrasena());
+            sentencia.setObject(3, entity.getCodigoRol());
+            sentencia.setObject(4, uuid);
+
+            var filasActualizadas = sentencia.executeUpdate();
             if (filasActualizadas == 0) {
                 throw DataFondaControlException.reportar(
                         "No se encontró el usuario para actualizar.",
-                        "No existe un registro en la tabla 'usuario' con el ID=[" + uuid + "] para ejecutar 'update(...)'."
+                        "No existe un registro en la tabla 'usuario' con ID=[" + uuid + "] para ejecutar 'update(...)'."
                 );
             }
-        } catch (SQLException e) {
+        } catch (final SQLException excepcion) {
             throw DataFondaControlException.reportar(
                     "No fue posible actualizar los datos del usuario.",
-                    "SQLException en 'update' de UsuarioPostgreSQLDAO. SQL=[" + sql +
-                            "], UUID=[" + uuid + "], nombre=[" + entity.getNombre() +
-                            "], codigorol=[" + entity.getCodigoRol() + "]. Detalle: " + e.getMessage(),
-                    e
+                    "SQLException en 'update' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], UUID=[" + uuid + "], nombre=[" + entity.getNombre() + "], código de rol=[" + entity.getCodigoRol() + "]. Detalles: " + excepcion.getMessage(),
+                    excepcion
             );
         }
     }
 
     @Override
-    public void delete(UUID id) throws DataFondaControlException {
+    public void delete(final UUID id) throws DataFondaControlException {
         if (UtilObjeto.esNulo(id)) {
             throw new IllegalArgumentException("El ID no puede ser nulo.");
         }
 
-        final String sql = "DELETE FROM usuario WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, id);
-            int filasEliminadas = ps.executeUpdate();
+        final var sql = new StringBuilder("DELETE FROM usuario WHERE id = ?");
+
+        try (var sentencia = conexion.prepareStatement(sql.toString())) {
+            sentencia.setObject(1, id);
+
+            var filasEliminadas = sentencia.executeUpdate();
             if (filasEliminadas == 0) {
                 throw DataFondaControlException.reportar(
                         "No se encontró el usuario a eliminar.",
-                        "No existe un registro en la tabla 'usuario' con el ID=[" + id + "] para ejecutar 'delete(...)'."
+                        "No existe un registro con el ID=[" + id + "] para ejecutar la operación 'delete(...)'."
                 );
             }
-        } catch (SQLException e) {
+        } catch (final SQLException excepcion) {
             throw DataFondaControlException.reportar(
                     "No fue posible eliminar el usuario.",
-                    "SQLException en 'delete' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], ID=[" + id + "]. Detalle: " + e.getMessage(),
-                    e
+                    "SQLException en 'delete' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], ID=[" + id + "]. Detalles: " + excepcion.getMessage(),
+                    excepcion
             );
         }
     }
 
     @Override
-    public UsuarioEntity findById(UUID id) throws DataFondaControlException {
+    public UsuarioEntity findById(final UUID id) throws DataFondaControlException {
         if (UtilObjeto.esNulo(id)) {
             throw new IllegalArgumentException("El ID no puede ser nulo.");
         }
 
-        final String sql = "SELECT id, nombre, contrasena, codigorol FROM usuario WHERE id = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
+        final var sql = new StringBuilder("SELECT id, nombre, contrasena, codigorol FROM usuario WHERE id = ?");
+
+        try (var sentencia = conexion.prepareStatement(sql.toString())) {
+            sentencia.setObject(1, id);
+            try (var resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
                     return new UsuarioEntity(
-                            (UUID) rs.getObject("id"),
-                            rs.getString("nombre"),
-                            (UUID) rs.getObject("codigorol"),
-                            rs.getString("contrasena")
+                            (UUID) resultado.getObject("id"),
+                            resultado.getString("nombre"),
+                            (UUID) resultado.getObject("codigorol"),
+                            resultado.getString("contrasena")
                     );
                 }
             }
-        } catch (SQLException e) {
+        } catch (final SQLException excepcion) {
             throw DataFondaControlException.reportar(
                     "No fue posible obtener el usuario con el ID proporcionado.",
-                    "SQLException en 'findById' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], ID=[" + id + "]. Detalle: " + e.getMessage(),
-                    e
+                    "SQLException en 'findById' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], ID=[" + id + "]. Detalles: " + excepcion.getMessage(),
+                    excepcion
             );
         }
 
         return null;
     }
 
-    private void validarEntidad(UsuarioEntity entity) {
+    private void validarEntidad(final UsuarioEntity entity) {
         if (UtilObjeto.esNulo(entity)) {
             throw new IllegalArgumentException("La entidad de usuario no puede ser nula.");
         }

@@ -11,13 +11,13 @@ import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.data.dao.entity.Usuario.UsuarioDAO;
 import co.edu.uco.FondaControl.entity.UsuarioEntity;
 
-public class UsuarioImp implements UsuarioBusinessLogic {
+public class UsuarioImpl implements UsuarioBusinessLogic {
 
-    private static final Logger LOGGER = Logger.getLogger(UsuarioImp.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(UsuarioImpl.class.getName());
 
     private final UsuarioDAO usuarioDAO;
 
-    public UsuarioImp(UsuarioDAO usuarioDAO) {
+    public UsuarioImpl(UsuarioDAO usuarioDAO) {
         this.usuarioDAO = usuarioDAO;
     }
 

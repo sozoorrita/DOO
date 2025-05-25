@@ -9,7 +9,7 @@ import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilMoneda;
 
 import java.math.BigDecimal;
 
-public class InformeCajaImp implements InformeCajaBusinessLogic {
+public class InformeCajaImpl implements InformeCajaBusinessLogic {
 
     @Override
     public void consolidarventasInformeCaja(InformeCajaDomain informeCajaDomain) {

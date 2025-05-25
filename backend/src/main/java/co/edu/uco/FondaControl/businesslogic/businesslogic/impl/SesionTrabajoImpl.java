@@ -12,11 +12,11 @@ import co.edu.uco.FondaControl.entity.UsuarioEntity;
 
 import java.time.LocalDateTime;
 
-public class SesionTrabajoImp implements SesionTrabajoBusinessLogic {
+public class SesionTrabajoImpl implements SesionTrabajoBusinessLogic {
 
     private final DAOFactory factory;
 
-    public SesionTrabajoImp(DAOFactory factory) {
+    public SesionTrabajoImpl(DAOFactory factory) {
         this.factory = factory;
     }
 

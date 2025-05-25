@@ -20,7 +20,6 @@ public final class InventarioDomain {
         setIndicador(IndicadorInventarioDomain.obtenerValorDefecto());
     }
 
-    // Constructor con parámetros
     public InventarioDomain(final UUID codigo, final String nombreProducto, final int cantidad, final IndicadorInventarioDomain indicador) {
         setCodigo(codigo);
         setNombreProducto(nombreProducto);
@@ -28,17 +27,16 @@ public final class InventarioDomain {
         setIndicador(indicador);
     }
 
-    // Método estático para obtener un objeto por defecto
+
     public static InventarioDomain obtenerValorDefecto() {
         return new InventarioDomain();
     }
 
-    // Método estático para obtener el código de un inventario (usado como valor por defecto)
+
     public static UUID obtenerValorDefecto(final InventarioDomain inventario) {
         return UtilObjeto.getInstancia().obtenerValorDefecto(inventario, obtenerValorDefecto()).getCodigo();
     }
 
-    // Getters y Setters
     public UUID getCodigo() {
         return codigo;
     }
@@ -78,4 +76,5 @@ public final class InventarioDomain {
     private void setIndicador(final IndicadorInventarioDomain indicador) {
         this.indicador = UtilObjeto.getInstancia().obtenerValorDefecto(indicador, IndicadorInventarioDomain.obtenerValorDefecto());
     }
+
 }

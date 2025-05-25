@@ -3,7 +3,7 @@ package co.edu.uco.FondaControl.businesslogic.facade.imp;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.InformeCajaBusinessLogic;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.InformeCajaDomain;
-import co.edu.uco.FondaControl.businesslogic.businesslogic.impl.InformeCajaImp;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.impl.InformeCajaImpl;
 import co.edu.uco.FondaControl.businesslogic.facade.InformeCajaFacade;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
@@ -12,14 +12,14 @@ import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import co.edu.uco.FondaControl.data.dao.factory.Factory;
 import co.edu.uco.FondaControl.dto.InformeCajaDTO;
 
-public class InformeCajaImpl implements InformeCajaFacade {
+public class InformeCajaImp implements InformeCajaFacade {
 
     private final DAOFactory daoFactory;
     private final InformeCajaBusinessLogic businessLogic;
 
-    public InformeCajaImpl() throws FondaControlException {
+    public InformeCajaImp() throws FondaControlException {
         this.daoFactory = DAOFactory.getDAOFactory(Factory.POSTGRESQL);
-        this.businessLogic = new InformeCajaImp(); // usar implementación de lógica
+        this.businessLogic = new InformeCajaImpl(); // usar implementación de lógica
     }
 
     @Override
@@ -34,14 +34,14 @@ public class InformeCajaImpl implements InformeCajaFacade {
         try {
             daoFactory.iniciarTransaccion();
 
-            // Convertir DTO a Domain
+
             InformeCajaDomain domain = mapToDomain(informeCaja);
 
-            // Aplicar lógica de negocio
+
             businessLogic.consolidarventasInformeCaja(domain);
 
-            // Convertir y actualizar en base de datos si lo deseas
-            daoFactory.getInformeCajaDAO().update(informeCaja); // o mapToEntity(domain)
+
+            daoFactory.getInformeCajaDAO().update(informeCaja);
 
             daoFactory.confirmarTransaccion();
         } catch (Exception e) {
@@ -64,7 +64,7 @@ public class InformeCajaImpl implements InformeCajaFacade {
                 dto.getTotalVenta(),
                 dto.getPagoEfectivo(),
                 dto.getPagoTransferencia(),
-                java.util.List.of() // Si aún no tienes ventas en el DTO
+                java.util.List.of()
         );
     }
 }

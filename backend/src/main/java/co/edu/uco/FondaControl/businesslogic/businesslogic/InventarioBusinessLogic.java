@@ -6,7 +6,7 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import java.util.UUID;
 
 public interface InventarioBusinessLogic {
-    void actualizarCantidadEnInventario(InventarioDomain inventarioDomain) throws FondaControlException;
+    void actualizarCantidadEnInventario(UUID codigo,InventarioDomain inventario) throws FondaControlException;
     void consultarCantidadInventario(UUID codigo) throws FondaControlException;
     void gestionarInventarioManualmente(InventarioDomain inventarioDomain) throws FondaControlException;
 }

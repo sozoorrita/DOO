@@ -9,7 +9,12 @@ import java.util.UUID;
 public interface IndicadorInventarioBusinessLogic {
 
     void evaluarIndicadorInventario(UUID codigo, IndicadorInventarioDomain indicadorInventarioDomain) throws FondaControlException;
-    void configurarIndicadorInventario(UUID codigo,IndicadorInventarioDomain indicadorInventarioDomain) throws FondaControlException;
+
+    void configurarIndicadorInventario(UUID codigo, IndicadorInventarioDomain indicadorInventarioDomain) throws FondaControlException;
+
     void registrarIndicadorInventario(IndicadorInventarioDomain indicadorInventarioDomain) throws FondaControlException;
+
     List<IndicadorInventarioDomain> consultarIndicadorInventario(UUID codigo) throws FondaControlException;
+
+
 }

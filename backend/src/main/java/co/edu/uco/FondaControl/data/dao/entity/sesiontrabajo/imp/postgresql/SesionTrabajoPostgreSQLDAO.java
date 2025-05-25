@@ -6,128 +6,117 @@ import co.edu.uco.FondaControl.entity.UsuarioEntity;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.UUID;
 
-public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
+public final class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
 
-    private final Connection connection;
+    private final Connection conexion;
 
-    public SesionTrabajoPostgreSQLDAO(Connection connection) {
-        this.connection = connection;
+    public SesionTrabajoPostgreSQLDAO(final Connection conexion) {
+        this.conexion = conexion;
     }
 
     @Override
-    public void create(SesionTrabajoEntity entity) throws DataFondaControlException {
+    public void create(final SesionTrabajoEntity entity) throws DataFondaControlException {
         validarEntidad(entity);
 
-        final String sql = "INSERT INTO sesiontrabajo (codigo, idusuario, fechaapertura, fechacierre, basecaja) VALUES (?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, entity.getCodigo());
-            ps.setObject(2, entity.getIdUsuario().getCodigo());
-            ps.setTimestamp(3, java.sql.Timestamp.valueOf(entity.getFechaApertura()));
-            ps.setTimestamp(4, entity.getFechaCierre() != null ? java.sql.Timestamp.valueOf(entity.getFechaCierre()) : null);
-            ps.setBigDecimal(5, entity.getBaseCaja());
+        final var sql = new StringBuilder("INSERT INTO sesiontrabajo (codigo, idusuario, fechaapertura, fechacierre, basecaja) VALUES (?, ?, ?, ?, ?)");
 
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw DataFondaControlException.reportar(
-                    "No fue posible registrar la sesión de trabajo.",
-                    "SQLException en 'create' de SesionTrabajoPostgreSQLDAO. SQL=[" + sql + "], código=[" + entity.getCodigo() +
-                            "], idUsuario=[" + entity.getIdUsuario().getCodigo() + "], baseCaja=[" + entity.getBaseCaja() +
-                            "], fechaApertura=[" + entity.getFechaApertura() + "], fechaCierre=[" + entity.getFechaCierre() + "]. Detalle: " + e.getMessage(),
-                    e
-            );
+        try (final var sentencia = conexion.prepareStatement(sql.toString())) {
+            sentencia.setObject(1, entity.getCodigo());
+            sentencia.setObject(2, entity.getIdUsuario().getCodigo());
+            sentencia.setTimestamp(3, Timestamp.valueOf(entity.getFechaApertura()));
+            sentencia.setTimestamp(4, entity.getFechaCierre() != null ? Timestamp.valueOf(entity.getFechaCierre()) : null);
+            sentencia.setBigDecimal(5, entity.getBaseCaja());
+
+            sentencia.executeUpdate();
+        } catch (final SQLException excepcion) {
+            var mensajeUsuario = "No fue posible registrar la sesión de trabajo.";
+            var mensajeTecnico = "SQLException en 'create' de SesionTrabajoPostgreSQLDAO. SQL=[" + sql + "], código=[" + entity.getCodigo() + "], idUsuario=[" + entity.getIdUsuario().getCodigo() + "], baseCaja=[" + entity.getBaseCaja() + "], fechaApertura=[" + entity.getFechaApertura() + "], fechaCierre=[" + entity.getFechaCierre() + "].";
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, excepcion);
         }
     }
 
     @Override
-    public void update(UUID codigo, SesionTrabajoEntity entity) throws DataFondaControlException {
+    public void update(final UUID codigo, final SesionTrabajoEntity entity) throws DataFondaControlException {
         if (UtilObjeto.esNulo(codigo)) {
             throw new IllegalArgumentException("El código no puede ser nulo.");
         }
         validarEntidad(entity);
 
-        final String sql = "UPDATE sesiontrabajo SET idusuario = ?, fechaapertura = ?, fechacierre = ?, basecaja = ? WHERE codigo = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, entity.getIdUsuario().getCodigo());
-            ps.setTimestamp(2, java.sql.Timestamp.valueOf(entity.getFechaApertura()));
-            ps.setTimestamp(3, entity.getFechaCierre() != null ? java.sql.Timestamp.valueOf(entity.getFechaCierre()) : null);
-            ps.setBigDecimal(4, entity.getBaseCaja());
-            ps.setObject(5, codigo);
+        final var sql = new StringBuilder("UPDATE sesiontrabajo SET idusuario = ?, fechaapertura = ?, fechacierre = ?, basecaja = ? WHERE codigo = ?");
 
-            int rowsUpdated = ps.executeUpdate();
-            if (rowsUpdated == 0) {
+        try (final var sentencia = conexion.prepareStatement(sql.toString())) {
+            sentencia.setObject(1, entity.getIdUsuario().getCodigo());
+            sentencia.setTimestamp(2, Timestamp.valueOf(entity.getFechaApertura()));
+            sentencia.setTimestamp(3, entity.getFechaCierre() != null ? Timestamp.valueOf(entity.getFechaCierre()) : null);
+            sentencia.setBigDecimal(4, entity.getBaseCaja());
+            sentencia.setObject(5, codigo);
+
+            final var filasActualizadas = sentencia.executeUpdate();
+            if (filasActualizadas == 0) {
                 throw DataFondaControlException.reportar(
                         "No se encontró la sesión de trabajo para actualizar.",
                         "No existe sesión con código=[" + codigo + "] para ejecutar 'update(...)'."
                 );
             }
-        } catch (SQLException e) {
-            throw DataFondaControlException.reportar(
-                    "Error al actualizar la sesión de trabajo.",
-                    "SQLException en 'update' de SesionTrabajoPostgreSQLDAO. SQL=[" + sql + "], código=[" + codigo +
-                            "], idUsuario=[" + entity.getIdUsuario().getCodigo() + "], baseCaja=[" + entity.getBaseCaja() +
-                            "], fechaApertura=[" + entity.getFechaApertura() + "], fechaCierre=[" + entity.getFechaCierre() + "]. Detalle: " + e.getMessage(),
-                    e
-            );
+        } catch (final SQLException excepcion) {
+            var mensajeUsuario = "Error al actualizar la sesión de trabajo.";
+            var mensajeTecnico = "SQLException en 'update' de SesionTrabajoPostgreSQLDAO. SQL=[" + sql + "], código=[" + codigo + "], idUsuario=[" + entity.getIdUsuario().getCodigo() + "], baseCaja=[" + entity.getBaseCaja() + "], fechaApertura=[" + entity.getFechaApertura() + "], fechaCierre=[" + entity.getFechaCierre() + "].";
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, excepcion);
         }
     }
 
     @Override
-    public SesionTrabajoEntity findById(UUID codigo) throws DataFondaControlException {
+    public SesionTrabajoEntity findById(final UUID codigo) throws DataFondaControlException {
         if (UtilObjeto.esNulo(codigo)) {
             throw new IllegalArgumentException("El código no puede ser nulo.");
         }
 
-        final String sql = "SELECT codigo, idusuario, fechaapertura, fechacierre, basecaja FROM sesiontrabajo WHERE codigo = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, codigo);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapToEntity(rs);
+        final var sql = new StringBuilder("SELECT codigo, idusuario, fechaapertura, fechacierre, basecaja FROM sesiontrabajo WHERE codigo = ?");
+
+        try (final var sentencia = conexion.prepareStatement(sql.toString())) {
+            sentencia.setObject(1, codigo);
+            try (final var resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
+                    return mapToEntity(resultado);
                 }
             }
-        } catch (SQLException e) {
-            throw DataFondaControlException.reportar(
-                    "Error al buscar la sesión de trabajo por código.",
-                    "SQLException en 'findById' de SesionTrabajoPostgreSQLDAO. SQL=[" + sql + "], código=[" + codigo + "]. Detalle: " + e.getMessage(),
-                    e
-            );
+        } catch (final SQLException excepcion) {
+            var mensajeUsuario = "Error al buscar la sesión de trabajo por código.";
+            var mensajeTecnico = "SQLException en 'findById' de SesionTrabajoPostgreSQLDAO. SQL=[" + sql + "], código=[" + codigo + "].";
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, excepcion);
         }
 
         return null;
     }
 
     @Override
-    public SesionTrabajoEntity findByUsuario(UUID idUsuario) throws DataFondaControlException {
+    public SesionTrabajoEntity findByUsuario(final UUID idUsuario) throws DataFondaControlException {
         if (UtilObjeto.esNulo(idUsuario)) {
             throw new IllegalArgumentException("El ID de usuario no puede ser nulo.");
         }
 
-        final String sql = "SELECT codigo, idusuario, fechaapertura, fechacierre, basecaja FROM sesiontrabajo WHERE idusuario = ?";
-        try (PreparedStatement ps = connection.prepareStatement(sql)) {
-            ps.setObject(1, idUsuario);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return mapToEntity(rs);
+        final var sql = new StringBuilder("SELECT codigo, idusuario, fechaapertura, fechacierre, basecaja FROM sesiontrabajo WHERE idusuario = ?");
+
+        try (final var sentencia = conexion.prepareStatement(sql.toString())) {
+            sentencia.setObject(1, idUsuario);
+            try (final var resultado = sentencia.executeQuery()) {
+                if (resultado.next()) {
+                    return mapToEntity(resultado);
                 }
             }
-        } catch (SQLException e) {
-            throw DataFondaControlException.reportar(
-                    "Error al buscar la sesión de trabajo por usuario.",
-                    "SQLException en 'findByUsuario' de SesionTrabajoPostgreSQLDAO. SQL=[" + sql + "], idUsuario=[" + idUsuario + "]. Detalle: " + e.getMessage(),
-                    e
-            );
+        } catch (final SQLException excepcion) {
+            var mensajeUsuario = "Error al buscar la sesión de trabajo por usuario.";
+            var mensajeTecnico = "SQLException en 'findByUsuario' de SesionTrabajoPostgreSQLDAO. SQL=[" + sql + "], idUsuario=[" + idUsuario + "].";
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, excepcion);
         }
 
         return null;
     }
 
-    private SesionTrabajoEntity mapToEntity(ResultSet rs) throws SQLException {
+    private SesionTrabajoEntity mapToEntity(final ResultSet rs) throws SQLException {
         return new SesionTrabajoEntity(
                 (UUID) rs.getObject("codigo"),
                 UsuarioEntity.obtenerDesdeUUID((UUID) rs.getObject("idusuario")),
@@ -137,7 +126,7 @@ public class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
         );
     }
 
-    private void validarEntidad(SesionTrabajoEntity entity) {
+    private void validarEntidad(final SesionTrabajoEntity entity) {
         if (UtilObjeto.esNulo(entity)) {
             throw new IllegalArgumentException("La entidad no puede ser nula.");
         }

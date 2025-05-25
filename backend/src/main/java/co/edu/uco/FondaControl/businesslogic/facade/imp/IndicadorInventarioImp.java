@@ -3,7 +3,7 @@ package co.edu.uco.FondaControl.businesslogic.facade.imp;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.IndicadorInventarioBusinessLogic;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.IndicadorInventarioDomain;
-import co.edu.uco.FondaControl.businesslogic.businesslogic.impl.IndicadorInventarioBusinessLogicImpl;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.impl.IndicadorInventarioImpl;
 import co.edu.uco.FondaControl.businesslogic.facade.IndicadorInventarioFacade;
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
@@ -18,14 +18,14 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 
-public class IndicadorInventarioImpl implements IndicadorInventarioFacade {
+public class IndicadorInventarioImp implements IndicadorInventarioFacade {
 
     private final DAOFactory daoFactory;
     private final IndicadorInventarioBusinessLogic businessLogic;
 
-    public IndicadorInventarioImpl() throws DataFondaControlException {
+    public IndicadorInventarioImp() throws DataFondaControlException {
         this.daoFactory = DAOFactory.getDAOFactory(Factory.POSTGRESQL);
-        this.businessLogic = new IndicadorInventarioBusinessLogicImpl(daoFactory);
+        this.businessLogic = new IndicadorInventarioImpl(daoFactory);
     }
 
     @Override

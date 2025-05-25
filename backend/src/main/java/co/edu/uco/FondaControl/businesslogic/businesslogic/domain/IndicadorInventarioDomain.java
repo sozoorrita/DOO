@@ -43,4 +43,15 @@ public final class IndicadorInventarioDomain {
     private void setNombre(final String nombre) {
         this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
     }
+    private static String validarNombre(final String nombre) {
+        final var texto = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
+        if (UtilTexto.getInstancia().esNula(texto)) {
+            throw new IllegalArgumentException("El nombre del indicador no puede ser nulo ni vacío.");
+        }
+        if (texto.length() > 50) {
+            throw new IllegalArgumentException("El nombre del indicador no puede exceder los 50 caracteres.");
+        }
+        return texto;
+    }
+
 }

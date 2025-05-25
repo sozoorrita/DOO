@@ -6,28 +6,27 @@ import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.InventarioDoma
 import co.edu.uco.FondaControl.businesslogic.facade.InventarioFacade;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.InventarioDTO;
-import co.edu.uco.FondaControl.entity.IndicadorInventarioEntity;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 
 import java.util.UUID;
 
 
-public class InventarioImpl implements InventarioFacade {
+public class InventarioImp implements InventarioFacade {
 
     private final InventarioBusinessLogic businessLogic;
 
-    public InventarioImpl(InventarioBusinessLogic businessLogic) {
+    public InventarioImp(InventarioBusinessLogic businessLogic) {
         this.businessLogic = businessLogic;
     }
 
     @Override
-    public void actualizarCantidadEnInventario(InventarioDTO inventario) throws FondaControlException {
+    public void actualizarCantidadEnInventario(UUID codigo,InventarioDTO inventario) throws FondaControlException {
         if (UtilObjeto.esNulo(inventario)) {
             throw new IllegalArgumentException("El inventario no puede ser nulo.");
         }
         InventarioDomain domain = mapToDomain(inventario);
-        businessLogic.actualizarCantidadEnInventario(domain);
+        businessLogic.actualizarCantidadEnInventario(codigo,domain);
     }
 
     @Override

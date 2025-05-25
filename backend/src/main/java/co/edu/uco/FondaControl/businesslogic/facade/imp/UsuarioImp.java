@@ -9,11 +9,11 @@ import co.edu.uco.FondaControl.dto.UsuarioDTO;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 
-public class UsuarioImpl implements UsuarioFacade {
+public class UsuarioImp implements UsuarioFacade {
 
     private final UsuarioBusinessLogic businessLogic;
 
-    public UsuarioImpl(UsuarioBusinessLogic businessLogic) {
+    public UsuarioImp(UsuarioBusinessLogic businessLogic) {
         this.businessLogic = businessLogic;
     }
 
