@@ -1,5 +1,6 @@
-package co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.IndicadorInventario;
+package co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.IndicadorInventario.entity;
 
+import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.EntityAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.IndicadorInventarioDomain;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.entity.IndicadorInventarioEntity;

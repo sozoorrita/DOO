@@ -8,8 +8,21 @@ public final class UtilTexto {
     // Constante para representar un valor vacío
     public static final String VACIO = "";
 
+    public boolean estaVacia(final String valor) {
+        return VACIO.equals(quitarEspaciosBlancoInicioFin(valor));
+    }
+    private static final String PATRON_SOLO_LETRAS_ESPACIOS = "^[a-zA-ZÁÉÍÓÚáéíóúñÑ ]+$";
+
     // Constructor privado para evitar instanciación externa
     private UtilTexto() {
+    }
+
+    public boolean patronEsValido(final String valor, final String patron) {
+
+        return obtenerValorDefecto(valor).matches(obtenerValorDefecto (patron));
+    }
+    public boolean contieneSoloLetrasYEspacios(final String valor) {
+        return patronEsValido(quitarEspaciosBlancoInicioFin(valor), PATRON_SOLO_LETRAS_ESPACIOS);
     }
 
     // Método para obtener la instancia única
@@ -29,6 +42,7 @@ public final class UtilTexto {
 
     // Sobrecarga para usar un valor vacío como valor por defecto
     public String obtenerValorDefecto(final String valor) {
+
         return obtenerValorDefecto(valor, VACIO);
     }
 

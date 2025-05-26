@@ -53,7 +53,7 @@ public class EstadoMesaImp implements EstadoMesaFacade {
                 .collect(Collectors.toList());
     }
 
-    // ---------- Mapeo ----------
+
 
     private EstadoMesaDomain mapToDomain(EstadoMesaDTO dto) {
         return EstadoMesaDomain.crear(
@@ -69,7 +69,6 @@ public class EstadoMesaImp implements EstadoMesaFacade {
         );
     }
 
-    // ---------- Validaciones ----------
 
     private void validarEntrada(UUID codigo, EstadoMesaDTO dto) {
         if (UtilObjeto.esNulo(codigo) || UtilObjeto.esNulo(dto)) {
