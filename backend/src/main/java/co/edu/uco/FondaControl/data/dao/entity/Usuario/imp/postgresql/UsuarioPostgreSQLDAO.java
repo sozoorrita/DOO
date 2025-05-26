@@ -8,6 +8,8 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlExceptio
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class UsuarioPostgreSQLDAO implements UsuarioDAO {
@@ -33,7 +35,7 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
         } catch (final SQLException excepcion) {
             throw DataFondaControlException.reportar(
                     "No fue posible registrar el usuario en la base de datos.",
-                    "SQLException en 'create' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], ID=[" + entity.getId() + "], nombre=[" + entity.getNombre() + "], contraseña=[REDACTADA], código de rol=[" + entity.getCodigoRol() + "]. Detalles: " + excepcion.getMessage(),
+                    "SQLException en 'create' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], ID=[" + entity.getId() + "], nombre=[" + entity.getNombre() + "], código de rol=[" + entity.getCodigoRol() + "]. Detalles: " + excepcion.getMessage(),
                     excepcion
             );
         }
@@ -64,7 +66,7 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
         } catch (final SQLException excepcion) {
             throw DataFondaControlException.reportar(
                     "No fue posible actualizar los datos del usuario.",
-                    "SQLException en 'update' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], UUID=[" + uuid + "], nombre=[" + entity.getNombre() + "], código de rol=[" + entity.getCodigoRol() + "]. Detalles: " + excepcion.getMessage(),
+                    "SQLException en 'update' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], UUID=[" + uuid + "]. Detalles: " + excepcion.getMessage(),
                     excepcion
             );
         }
@@ -85,7 +87,7 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
             if (filasEliminadas == 0) {
                 throw DataFondaControlException.reportar(
                         "No se encontró el usuario a eliminar.",
-                        "No existe un registro con el ID=[" + id + "] para ejecutar la operación 'delete(...)'."
+                        "No existe un registro con el ID=[" + id + "] para ejecutar 'delete(...)'."
                 );
             }
         } catch (final SQLException excepcion) {
@@ -126,6 +128,101 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
         }
 
         return null;
+    }
+
+    @Override
+    public List<UsuarioEntity> listByCodigo(final UUID id) throws DataFondaControlException {
+        final var sql = new StringBuilder("SELECT id, nombre, contrasena, codigorol FROM usuario WHERE id = ?");
+        final var resultados = new ArrayList<UsuarioEntity>();
+
+        try (var sentencia = conexion.prepareStatement(sql.toString())) {
+            sentencia.setObject(1, id);
+
+            try (var resultado = sentencia.executeQuery()) {
+                while (resultado.next()) {
+                    resultados.add(new UsuarioEntity(
+                            (UUID) resultado.getObject("id"),
+                            resultado.getString("nombre"),
+                            (UUID) resultado.getObject("codigorol"),
+                            resultado.getString("contrasena")
+                    ));
+                }
+            }
+
+        } catch (final SQLException excepcion) {
+            throw DataFondaControlException.reportar(
+                    "No fue posible consultar usuarios por ID.",
+                    "SQLException en 'listByCodigo' de UsuarioPostgreSQLDAO. SQL=[" + sql + "], ID=[" + id + "]. Detalles: " + excepcion.getMessage(),
+                    excepcion
+            );
+        }
+
+        return resultados;
+    }
+
+    @Override
+    public List<UsuarioEntity> listByFilter(final UsuarioEntity filtro) throws DataFondaControlException {
+        final var sql = new StringBuilder("SELECT id, nombre, contrasena, codigorol FROM usuario WHERE 1=1 ");
+        final var resultados = new ArrayList<UsuarioEntity>();
+
+        if (!UtilTexto.getInstancia().esNula(filtro.getNombre())) {
+            sql.append(" AND LOWER(nombre) LIKE LOWER(?) ");
+        }
+
+        try (var sentencia = conexion.prepareStatement(sql.toString())) {
+            int index = 1;
+            if (!UtilTexto.getInstancia().esNula(filtro.getNombre())) {
+                sentencia.setString(index++, "%" + filtro.getNombre() + "%");
+            }
+
+            try (var resultado = sentencia.executeQuery()) {
+                while (resultado.next()) {
+                    resultados.add(new UsuarioEntity(
+                            (UUID) resultado.getObject("id"),
+                            resultado.getString("nombre"),
+                            (UUID) resultado.getObject("codigorol"),
+                            resultado.getString("contrasena")
+                    ));
+                }
+            }
+
+        } catch (final SQLException excepcion) {
+            throw DataFondaControlException.reportar(
+                    "No fue posible consultar usuarios por filtro.",
+                    "SQLException en 'listByFilter' de UsuarioPostgreSQLDAO. SQL=[" + sql + "]. Detalles: " + excepcion.getMessage(),
+                    excepcion
+            );
+        }
+
+        return resultados;
+    }
+
+    // (Opcional)
+    public List<UsuarioEntity> listAll() throws DataFondaControlException {
+        final var sql = new StringBuilder("SELECT id, nombre, contrasena, codigorol FROM usuario");
+        final var resultados = new ArrayList<UsuarioEntity>();
+
+        try (var sentencia = conexion.prepareStatement(sql.toString());
+             var resultado = sentencia.executeQuery()) {
+
+            while (resultado.next()) {
+                resultados.add(new UsuarioEntity(
+                        (UUID) resultado.getObject("id"),
+                        resultado.getString("nombre"),
+                        (UUID) resultado.getObject("codigorol"),
+                        resultado.getString("contrasena")
+                ));
+            }
+
+        } catch (final SQLException excepcion) {
+            throw DataFondaControlException.reportar(
+                    "No fue posible consultar todos los usuarios.",
+                    "SQLException en 'listAll' de UsuarioPostgreSQLDAO. SQL=[" + sql + "]. Detalles: " + excepcion.getMessage(),
+                    excepcion
+            );
+        }
+
+        return resultados;
     }
 
     private void validarEntidad(final UsuarioEntity entity) {
