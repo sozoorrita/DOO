@@ -1,23 +1,17 @@
 package co.edu.uco.FondaControl.dto;
 
+import java.util.UUID;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
-
-import java.util.UUID;
 
 public final class TipoVentaDTO {
     private UUID codigo;
     private String nombre;
 
-    public TipoVentaDTO() {
+    private TipoVentaDTO() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
-    }
-
-    public TipoVentaDTO(final UUID codigo, final String nombre) {
-        setCodigo(codigo);
-        setNombre(nombre);
     }
 
     private TipoVentaDTO(final Builder builder) {
@@ -26,7 +20,7 @@ public final class TipoVentaDTO {
     }
 
     public static TipoVentaDTO obtenerValorDefecto() {
-        return new TipoVentaDTO();
+        return builder().crear();
     }
 
     public static TipoVentaDTO obtenerValorDefecto(final TipoVentaDTO entidad) {
@@ -46,14 +40,21 @@ public final class TipoVentaDTO {
     }
 
     public void setNombre(final String nombre) {
-        this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
+        String valor = UtilTexto.getInstancia().obtenerValorDefecto(nombre);
+        this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(valor);
     }
 
-    public static class Builder {
-        private UUID codigo;
-        private String nombre;
+    public static Builder builder() {
+        return new Builder();
+    }
 
-        public Builder codigo(UUID codigo) {
+    public static final class Builder {
+        private UUID codigo = UtilUUID.obtenerValorDefecto();
+        private String nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+
+        private Builder() {}
+
+        public Builder codigo(final UUID codigo) {
             this.codigo = codigo;
             return this;
         }
@@ -66,9 +67,5 @@ public final class TipoVentaDTO {
         public TipoVentaDTO crear() {
             return new TipoVentaDTO(this);
         }
-    }
-
-    public static Builder builder() {
-        return new Builder();
     }
 }

@@ -2,75 +2,154 @@ package co.edu.uco.FondaControl.entity;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
-public class VentaEntity {
+public final class VentaEntity {
+    private UUID codigo;
+    private LocalDateTime fecha;
+    private double totalVenta;
+    private UUID codigoFormaPago;
+    private UUID codigoTipoVenta;
+    private UUID codigoSesionTrabajo;
+    private UUID codigoMesa;
 
-	private UUID codigoVenta;
-	private LocalDateTime fecha;
-	private double totalVenta;
-	private UUID codigoFormaPago;
-	private UUID codigoTipoVenta;
-	private UUID codigoSesionTrabajo;
-	private UUID codigoMesa;
+    private VentaEntity() {
+        setCodigo(UtilUUID.obtenerValorDefecto());
+        setFecha(LocalDateTime.now());
+        setTotalVenta(0.0);
+        setCodigoFormaPago(UtilUUID.obtenerValorDefecto());
+        setCodigoTipoVenta(UtilUUID.obtenerValorDefecto());
+        setCodigoSesionTrabajo(UtilUUID.obtenerValorDefecto());
+        setCodigoMesa(UtilUUID.obtenerValorDefecto());
+    }
 
-	public VentaEntity() {
-		this.codigoVenta = UUID.randomUUID();
-		this.fecha = LocalDateTime.now();
-	}
+    private VentaEntity(final Builder builder) {
+        setCodigo(builder.codigo);
+        setFecha(builder.fecha);
+        setTotalVenta(builder.totalVenta);
+        setCodigoFormaPago(builder.codigoFormaPago);
+        setCodigoTipoVenta(builder.codigoTipoVenta);
+        setCodigoSesionTrabajo(builder.codigoSesionTrabajo);
+        setCodigoMesa(builder.codigoMesa);
+    }
 
-	public UUID getCodigoVenta() {
-		return codigoVenta;
-	}
+    public static VentaEntity obtenerValorDefecto() {
+        return builder().crear();
+    }
 
-	public void setCodigoVenta(UUID codigoVenta) {
-		this.codigoVenta = codigoVenta;
-	}
+    public static VentaEntity obtenerValorDefecto(final VentaEntity entidad) {
+        return UtilObjeto.getInstancia().obtenerValorDefecto(entidad, obtenerValorDefecto());
+    }
 
-	public LocalDateTime getFecha() {
-		return fecha;
-	}
+    public UUID getCodigo() {
+        return codigo;
+    }
 
-	public void setFecha(LocalDateTime fecha) {
-		this.fecha = fecha;
-	}
+    public void setCodigo(final UUID codigo) {
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
+    }
 
-	public double getTotalVenta() {
-		return totalVenta;
-	}
+    public LocalDateTime getFecha() {
+        return fecha;
+    }
 
-	public void setTotalVenta(double totalVenta) {
-		this.totalVenta = totalVenta;
-	}
+    public void setFecha(final LocalDateTime fecha) {
+        this.fecha = fecha == null ? LocalDateTime.now() : fecha;
+    }
 
-	public UUID getCodigoFormaPago() {
-		return codigoFormaPago;
-	}
+    public double getTotalVenta() {
+        return totalVenta;
+    }
 
-	public void setCodigoFormaPago(UUID codigoFormaPago) {
-		this.codigoFormaPago = codigoFormaPago;
-	}
+    public void setTotalVenta(final double totalVenta) {
+        this.totalVenta = totalVenta;
+    }
 
-	public UUID getCodigoTipoVenta() {
-		return codigoTipoVenta;
-	}
+    public UUID getCodigoFormaPago() {
+        return codigoFormaPago;
+    }
 
-	public void setCodigoTipoVenta(UUID codigoTipoVenta) {
-		this.codigoTipoVenta = codigoTipoVenta;
-	}
+    public void setCodigoFormaPago(final UUID codigoFormaPago) {
+        this.codigoFormaPago = UtilUUID.obtenerValorDefecto(codigoFormaPago);
+    }
 
-	public UUID getCodigoSesionTrabajo() {
-		return codigoSesionTrabajo;
-	}
+    public UUID getCodigoTipoVenta() {
+        return codigoTipoVenta;
+    }
 
-	public void setCodigoSesionTrabajo(UUID codigoSesionTrabajo) {
-		this.codigoSesionTrabajo = codigoSesionTrabajo;
-	}
+    public void setCodigoTipoVenta(final UUID codigoTipoVenta) {
+        this.codigoTipoVenta = UtilUUID.obtenerValorDefecto(codigoTipoVenta);
+    }
 
-	public UUID getCodigoMesa() {
-		return codigoMesa;
-	}
+    public UUID getCodigoSesionTrabajo() {
+        return codigoSesionTrabajo;
+    }
 
-	public void setCodigoMesa(UUID codigoMesa) {
-		this.codigoMesa = codigoMesa;
-	}
+    public void setCodigoSesionTrabajo(final UUID codigoSesionTrabajo) {
+        this.codigoSesionTrabajo = UtilUUID.obtenerValorDefecto(codigoSesionTrabajo);
+    }
+
+    public UUID getCodigoMesa() {
+        return codigoMesa;
+    }
+
+    public void setCodigoMesa(final UUID codigoMesa) {
+        this.codigoMesa = UtilUUID.obtenerValorDefecto(codigoMesa);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private UUID codigo = UtilUUID.obtenerValorDefecto();
+        private LocalDateTime fecha = LocalDateTime.now();
+        private double totalVenta = 0.0;
+        private UUID codigoFormaPago = UtilUUID.obtenerValorDefecto();
+        private UUID codigoTipoVenta = UtilUUID.obtenerValorDefecto();
+        private UUID codigoSesionTrabajo = UtilUUID.obtenerValorDefecto();
+        private UUID codigoMesa = UtilUUID.obtenerValorDefecto();
+
+        private Builder() {}
+
+        public Builder codigo(final UUID codigo) {
+            this.codigo = codigo;
+            return this;
+        }
+
+        public Builder fecha(final LocalDateTime fecha) {
+            this.fecha = fecha;
+            return this;
+        }
+
+        public Builder totalVenta(final double totalVenta) {
+            this.totalVenta = totalVenta;
+            return this;
+        }
+
+        public Builder codigoFormaPago(final UUID codigoFormaPago) {
+            this.codigoFormaPago = codigoFormaPago;
+            return this;
+        }
+
+        public Builder codigoTipoVenta(final UUID codigoTipoVenta) {
+            this.codigoTipoVenta = codigoTipoVenta;
+            return this;
+        }
+
+        public Builder codigoSesionTrabajo(final UUID codigoSesionTrabajo) {
+            this.codigoSesionTrabajo = codigoSesionTrabajo;
+            return this;
+        }
+
+        public Builder codigoMesa(final UUID codigoMesa) {
+            this.codigoMesa = codigoMesa;
+            return this;
+        }
+
+        public VentaEntity crear() {
+            return new VentaEntity(this);
+        }
+    }
 }

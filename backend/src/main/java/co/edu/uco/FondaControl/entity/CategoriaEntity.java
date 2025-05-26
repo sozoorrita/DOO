@@ -1,46 +1,71 @@
 package co.edu.uco.FondaControl.entity;
 
 import java.util.UUID;
-
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
-public class CategoriaEntity {
+public final class CategoriaEntity {
+    private UUID codigo;
+    private String nombre;
 
-	private UUID codigoCategoria;
-	private String nombre;
+    private CategoriaEntity() {
+        setCodigo(UtilUUID.obtenerValorDefecto());
+        setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
+    }
 
-	public CategoriaEntity() {
-		setCodigoCategoria(UtilUUID.obtenerValorDefecto());
-		UtilTexto.getInstancia();
-		setNombre(UtilTexto.obtenerValorDefecto());
-	}
+    private CategoriaEntity(final Builder builder) {
+        setCodigo(builder.codigo);
+        setNombre(builder.nombre);
+    }
 
-	public CategoriaEntity(final UUID codigoCategoria) {
-		setCodigoCategoria(codigoCategoria);
-		UtilTexto.getInstancia();
-		setNombre(UtilTexto.obtenerValorDefecto());
-	}
+    public static CategoriaEntity obtenerValorDefecto() {
+        return builder().crear();
+    }
 
-	public CategoriaEntity(final UUID codigoCategoria, final String nombre) {
-		setCodigoCategoria(codigoCategoria);
-		setNombre(nombre);
-	}
+    public static CategoriaEntity obtenerValorDefecto(final CategoriaEntity entidad) {
+        return UtilObjeto.getInstancia().obtenerValorDefecto(entidad, obtenerValorDefecto());
+    }
 
-	public UUID getCodigoCategoria() {
-		return codigoCategoria;
-	}
+    public UUID getCodigo() {
+        return codigo;
+    }
 
-	public void setCodigoCategoria(UUID codigoCategoria) {
-		this.codigoCategoria = codigoCategoria;
-	}
+    public void setCodigo(final UUID codigo) {
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
+    }
 
-	public String getNombre() {
-		return nombre;
-	}
+    public String getNombre() {
+        return nombre;
+    }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+    public void setNombre(final String nombre) {
+        String valor = UtilTexto.getInstancia().obtenerValorDefecto(nombre);
+        this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(valor);
+    }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private UUID codigo = UtilUUID.obtenerValorDefecto();
+        private String nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+
+        private Builder() {}
+
+        public Builder codigo(final UUID codigo) {
+            this.codigo = codigo;
+            return this;
+        }
+
+        public Builder nombre(final String nombre) {
+            this.nombre = nombre;
+            return this;
+        }
+
+        public CategoriaEntity crear() {
+            return new CategoriaEntity(this);
+        }
+    }
 }

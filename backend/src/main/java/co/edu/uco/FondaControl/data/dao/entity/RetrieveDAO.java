@@ -5,9 +5,11 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlExceptio
 import java.util.List;
 
 public interface RetrieveDAO<E, CODIGO> {
-    List<E> listByFilter(E entity) throws DataFondaControlException;
-    List<E> listAll() throws DataFondaControlException;
-    List<E> listByCodigo(CODIGO codigo) throws DataFondaControlException;
+	List<E> listByFilter(E entity) throws DataFondaControlException;
 
-    E findById(CODIGO codigo) throws DataFondaControlException;
+	List<E> listAll() throws DataFondaControlException;
+
+	List<E> listByCodigo(CODIGO codigo) throws DataFondaControlException;
+
+	E findById(CODIGO codigo) throws DataFondaControlException;
 }

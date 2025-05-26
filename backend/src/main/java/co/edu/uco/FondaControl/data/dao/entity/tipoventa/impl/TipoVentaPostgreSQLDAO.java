@@ -1,8 +1,8 @@
-package co.edu.uco.FondaControl.data.dao.entity.subcategoria.impl;
+package co.edu.uco.FondaControl.data.dao.entity.tipoventa.impl;
 
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
-import co.edu.uco.FondaControl.data.dao.entity.subcategoria.SubcategoriaDAO;
-import co.edu.uco.FondaControl.entity.SubcategoriaEntity;
+import co.edu.uco.FondaControl.data.dao.entity.tipoventa.TipoVentaDAO;
+import co.edu.uco.FondaControl.entity.TipoVentaEntity;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 
 import java.sql.Connection;
@@ -13,50 +13,48 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class SubcategoriaPostgreSQLDAO implements SubcategoriaDAO {
+public class TipoVentaPostgreSQLDAO implements TipoVentaDAO {
     private final Connection conexion;
 
     private static final String SQL_INSERT =
-        "INSERT INTO subcategoria(codigo, nombre, codigocategoria) VALUES (?, ?, ?)";
+        "INSERT INTO tipoventa(codigo, nombre) VALUES (?, ?)";
     private static final String SQL_UPDATE =
-        "UPDATE subcategoria SET nombre = ?, codigocategoria = ? WHERE codigo = ?";
+        "UPDATE tipoventa SET nombre = ? WHERE codigo = ?";
     private static final String SQL_DELETE =
-        "DELETE FROM subcategoria WHERE codigo = ?";
+        "DELETE FROM tipoventa WHERE codigo = ?";
     private static final String SQL_FIND_BY_ID =
-        "SELECT * FROM subcategoria WHERE codigo = ?";
+        "SELECT * FROM tipoventa WHERE codigo = ?";
     private static final String SQL_LIST_ALL =
-        "SELECT * FROM subcategoria";
+        "SELECT * FROM tipoventa";
 
-    public SubcategoriaPostgreSQLDAO(final Connection conexion) {
+    public TipoVentaPostgreSQLDAO(final Connection conexion) {
         this.conexion = conexion;
     }
 
     @Override
-    public void create(final SubcategoriaEntity entity) throws DataFondaControlException {
+    public void create(final TipoVentaEntity entity) throws DataFondaControlException {
         try (PreparedStatement ps = conexion.prepareStatement(SQL_INSERT)) {
             ps.setObject(1, entity.getCodigo());
             ps.setString(2, entity.getNombre());
-            ps.setObject(3, entity.getCodigoCategoria());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al crear subcategoría",
-                "create@subcategoria - " + e.getMessage(), e
+                "Error al crear tipo de venta",
+                "create@tipoventa - " + e.getMessage(), e
             );
         }
     }
 
     @Override
-    public void update(final UUID id, final SubcategoriaEntity entity) throws DataFondaControlException {
+    public void update(final UUID id, final TipoVentaEntity entity) throws DataFondaControlException {
         try (PreparedStatement ps = conexion.prepareStatement(SQL_UPDATE)) {
             ps.setString(1, entity.getNombre());
-            ps.setObject(2, entity.getCodigoCategoria());
-            ps.setObject(3, id);
+            ps.setObject(2, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al actualizar subcategoría",
-                "update@subcategoria - " + e.getMessage(), e
+                "Error al actualizar tipo de venta",
+                "update@tipoventa - " + e.getMessage(), e
             );
         }
     }
@@ -68,14 +66,14 @@ public class SubcategoriaPostgreSQLDAO implements SubcategoriaDAO {
             ps.executeUpdate();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al eliminar subcategoría",
-                "delete@subcategoria - " + e.getMessage(), e
+                "Error al eliminar tipo de venta",
+                "delete@tipoventa - " + e.getMessage(), e
             );
         }
     }
 
     @Override
-    public SubcategoriaEntity findById(final UUID id) throws DataFondaControlException {
+    public TipoVentaEntity findById(final UUID id) throws DataFondaControlException {
         try (PreparedStatement ps = conexion.prepareStatement(SQL_FIND_BY_ID)) {
             ps.setObject(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -83,15 +81,15 @@ public class SubcategoriaPostgreSQLDAO implements SubcategoriaDAO {
             }
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al buscar subcategoría por ID",
-                "findById@subcategoria - " + e.getMessage(), e
+                "Error al buscar tipo de venta por ID",
+                "findById@tipoventa - " + e.getMessage(), e
             );
         }
     }
 
     @Override
-    public List<SubcategoriaEntity> listAll() throws DataFondaControlException {
-        List<SubcategoriaEntity> results = new ArrayList<>();
+    public List<TipoVentaEntity> listAll() throws DataFondaControlException {
+        List<TipoVentaEntity> results = new ArrayList<>();
         try (PreparedStatement ps = conexion.prepareStatement(SQL_LIST_ALL);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -100,21 +98,21 @@ public class SubcategoriaPostgreSQLDAO implements SubcategoriaDAO {
             return results;
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al listar subcategorías",
-                "listAll@subcategoria - " + e.getMessage(), e
+                "Error al listar tipos de venta",
+                "listAll@tipoventa - " + e.getMessage(), e
             );
         }
     }
 
     @Override
-    public List<SubcategoriaEntity> listByFilter(final SubcategoriaEntity filter) throws DataFondaControlException {
+    public List<TipoVentaEntity> listByFilter(final TipoVentaEntity filter) throws DataFondaControlException {
         StringBuilder sql = new StringBuilder(SQL_LIST_ALL);
         List<Object> params = new ArrayList<>();
         if (!UtilTexto.getInstancia().esNula(filter.getNombre())) {
             sql.append(" WHERE LOWER(nombre) LIKE LOWER(?)");
             params.add("%" + filter.getNombre() + "%");
         }
-        List<SubcategoriaEntity> results = new ArrayList<>();
+        List<TipoVentaEntity> results = new ArrayList<>();
         try (PreparedStatement ps = conexion.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
                 ps.setObject(i + 1, params.get(i));
@@ -127,23 +125,28 @@ public class SubcategoriaPostgreSQLDAO implements SubcategoriaDAO {
             return results;
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al filtrar subcategorías",
-                "listByFilter@subcategoria - " + e.getMessage(), e
+                "Error al filtrar tipos de venta",
+                "listByFilter@tipoventa - " + e.getMessage(), e
             );
         }
     }
 
     @Override
-    public List<SubcategoriaEntity> listByCodigo(final UUID codigo) throws DataFondaControlException {
-        SubcategoriaEntity entity = findById(codigo);
+    public List<TipoVentaEntity> listByCodigo(final UUID codigo) throws DataFondaControlException {
+        TipoVentaEntity entity = findById(codigo);
         return entity == null ? List.of() : List.of(entity);
     }
 
-    private SubcategoriaEntity mapRow(final ResultSet rs) throws SQLException {
-        return SubcategoriaEntity.builder()
+    private TipoVentaEntity mapRow(final ResultSet rs) throws SQLException {
+        return TipoVentaEntity.builder()
             .codigo(rs.getObject("codigo", UUID.class))
             .nombre(rs.getString("nombre"))
-            .codigoCategoria(rs.getObject("codigocategoria", UUID.class))
             .crear();
     }
+
+	@Override
+	public List<TipoVentaEntity> listByNombre(String nombre) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
