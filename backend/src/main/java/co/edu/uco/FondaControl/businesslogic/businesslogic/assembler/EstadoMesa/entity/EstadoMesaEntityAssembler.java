@@ -24,7 +24,10 @@ public final class EstadoMesaEntityAssembler implements EntityAssembler<EstadoMe
     public EstadoMesaEntity toEntity(final EstadoMesaDomain domain) {
         return UtilObjeto.getInstancia().esNulo(domain)
                 ? EstadoMesaEntity.obtenerValorDefecto()
-                : new EstadoMesaEntity(domain.getCodigo(), domain.getNombre());
+                : EstadoMesaEntity.builder()
+                .codigo(domain.getCodigo())
+                .nombre(domain.getNombre())
+                .crear();
     }
 
     @Override

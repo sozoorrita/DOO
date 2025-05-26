@@ -99,14 +99,16 @@ public final class EstadoMesaImpl implements EstadoMesaBusinessLogic {
     }
 
     private void validarNoExistaEstadoMesaConMismoNombre(final String nombre) throws BusinessLogicFondaControlException, DataFondaControlException {
-        final var filtro = new EstadoMesaEntity();
-        filtro.setNombre(nombre);
+        final var filtro = EstadoMesaEntity.builder()
+                .nombre(nombre)
+                .crear();
 
         final var resultado = factory.getEstadoMesaDAO().listByFilter(filtro);
         if (!resultado.isEmpty()) {
             throw BusinessLogicFondaControlException.reportar("Ya existe un estado de mesa con el mismo nombre.");
         }
     }
+
 
     private UUID generarNuevoCodigoEstadoMesa() throws DataFondaControlException {
         UUID nuevoCodigo;
