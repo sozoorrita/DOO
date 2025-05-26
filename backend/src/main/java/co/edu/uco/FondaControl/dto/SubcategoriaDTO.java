@@ -1,52 +1,88 @@
 package co.edu.uco.FondaControl.dto;
 
 import java.util.UUID;
-
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
-public class SubcategoriaDTO {
+public final class SubcategoriaDTO {
+    private UUID codigo;
+    private String nombre;
+    private UUID codigoCategoria;
 
-	private UUID codigoSubcategoria;
-	public String nombre;
-	private UUID codigoCategoria;
+    private SubcategoriaDTO() {
+        setCodigo(UtilUUID.obtenerValorDefecto());
+        setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
+        setCodigoCategoria(UtilUUID.obtenerValorDefecto());
+    }
 
-	public SubcategoriaDTO() {
-		setCodigoSubcategoria(UtilUUID.obtenerValorDefecto());
-		setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
-	}
+    private SubcategoriaDTO(final Builder builder) {
+        setCodigo(builder.codigo);
+        setNombre(builder.nombre);
+        setCodigoCategoria(builder.codigoCategoria);
+    }
 
-	public SubcategoriaDTO(final UUID codigoSubcategoria) {
-		setCodigoSubcategoria(codigoSubcategoria);
-		setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
-	}
+    public static SubcategoriaDTO obtenerValorDefecto() {
+        return builder().crear();
+    }
 
-	public SubcategoriaDTO(final UUID codigoSubcategoria, final String nombre) {
-		setCodigoSubcategoria(codigoSubcategoria);
-		setNombre(nombre);
-	}
+    public static SubcategoriaDTO obtenerValorDefecto(final SubcategoriaDTO entidad) {
+        return UtilObjeto.getInstancia().obtenerValorDefecto(entidad, obtenerValorDefecto());
+    }
 
-	public UUID getCodigoSubcategoria() {
-		return codigoSubcategoria;
-	}
+    public UUID getCodigo() {
+        return codigo;
+    }
 
-	public void setCodigoSubcategoria(UUID codigoSubcategoria) {
-		this.codigoSubcategoria = codigoSubcategoria;
-	}
+    public void setCodigo(final UUID codigo) {
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
+    }
 
-	public String getNombre() {
-		return nombre;
-	}
+    public String getNombre() {
+        return nombre;
+    }
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
-	}
+    public void setNombre(final String nombre) {
+        String valor = UtilTexto.getInstancia().obtenerValorDefecto(nombre);
+        this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(valor);
+    }
 
-	public UUID getCodigoCategoria() {
-		return codigoCategoria;
-	}
+    public UUID getCodigoCategoria() {
+        return codigoCategoria;
+    }
 
-	public void setCodigoCategoria(UUID codigoCategoria) {
-		this.codigoCategoria = codigoCategoria;
-	}
+    public void setCodigoCategoria(final UUID codigoCategoria) {
+        this.codigoCategoria = UtilUUID.obtenerValorDefecto(codigoCategoria);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private UUID codigo = UtilUUID.obtenerValorDefecto();
+        private String nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+        private UUID codigoCategoria = UtilUUID.obtenerValorDefecto();
+
+        private Builder() {}
+
+        public Builder codigo(final UUID codigo) {
+            this.codigo = codigo;
+            return this;
+        }
+
+        public Builder nombre(final String nombre) {
+            this.nombre = nombre;
+            return this;
+        }
+
+        public Builder codigoCategoria(final UUID codigoCategoria) {
+            this.codigoCategoria = codigoCategoria;
+            return this;
+        }
+
+        public SubcategoriaDTO crear() {
+            return new SubcategoriaDTO(this);
+        }
+    }
 }

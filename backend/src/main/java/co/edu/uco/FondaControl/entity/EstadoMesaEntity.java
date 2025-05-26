@@ -10,18 +10,18 @@ public final class EstadoMesaEntity {
     private UUID codigo;
     private String nombre;
 
-    public EstadoMesaEntity() {
+    private EstadoMesaEntity() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
     }
 
-    public EstadoMesaEntity(final UUID codigo, final String nombre) {
-        setCodigo(codigo);
-        setNombre(nombre);
+    private EstadoMesaEntity(final Builder builder) {
+        setCodigo(builder.codigo);
+        setNombre(builder.nombre);
     }
 
     public static EstadoMesaEntity obtenerValorDefecto() {
-        return new EstadoMesaEntity();
+        return builder().crear();
     }
 
     public static EstadoMesaEntity obtenerValorDefecto(final EstadoMesaEntity entidad) {
@@ -42,5 +42,30 @@ public final class EstadoMesaEntity {
 
     public void setNombre(final String nombre) {
         this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private UUID codigo = UtilUUID.obtenerValorDefecto();
+        private String nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+
+        private Builder() {}
+
+        public Builder codigo(final UUID codigo) {
+            this.codigo = codigo;
+            return this;
+        }
+
+        public Builder nombre(final String nombre) {
+            this.nombre = nombre;
+            return this;
+        }
+
+        public EstadoMesaEntity crear() {
+            return new EstadoMesaEntity(this);
+        }
     }
 }

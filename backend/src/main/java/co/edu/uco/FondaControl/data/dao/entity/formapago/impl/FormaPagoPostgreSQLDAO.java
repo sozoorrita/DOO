@@ -1,8 +1,8 @@
-package co.edu.uco.FondaControl.data.dao.entity.detalleventa.impl;
+package co.edu.uco.FondaControl.data.dao.entity.formapago.impl;
 
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
-import co.edu.uco.FondaControl.data.dao.entity.detalleventa.DetalleVentaDAO;
-import co.edu.uco.FondaControl.entity.DetalleVentaEntity;
+import co.edu.uco.FondaControl.data.dao.entity.formapago.FormaPagoDAO;
+import co.edu.uco.FondaControl.entity.FormaPagoEntity;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 
 import java.sql.Connection;
@@ -13,52 +13,48 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class DetalleVentaPostgreSQLDAO implements DetalleVentaDAO {
+public class FormaPagoPostgreSQLDAO implements FormaPagoDAO {
     private final Connection conexion;
 
     private static final String SQL_INSERT =
-        "INSERT INTO detalleventa(codigo, nombreproducto, precioaplicado, cantidad) VALUES (?, ?, ?, ?)";
+        "INSERT INTO formapago(codigo, nombre) VALUES (?, ?)";
     private static final String SQL_UPDATE =
-        "UPDATE detalleventa SET nombreproducto = ?, precioaplicado = ?, cantidad = ? WHERE codigo = ?";
+        "UPDATE formapago SET nombre = ? WHERE codigo = ?";
     private static final String SQL_DELETE =
-        "DELETE FROM detalleventa WHERE codigo = ?";
+        "DELETE FROM formapago WHERE codigo = ?";
     private static final String SQL_FIND_BY_ID =
-        "SELECT * FROM detalleventa WHERE codigo = ?";
+        "SELECT * FROM formapago WHERE codigo = ?";
     private static final String SQL_LIST_ALL =
-        "SELECT * FROM detalleventa";
+        "SELECT * FROM formapago";
 
-    public DetalleVentaPostgreSQLDAO(final Connection conexion) {
+    public FormaPagoPostgreSQLDAO(final Connection conexion) {
         this.conexion = conexion;
     }
 
     @Override
-    public void create(final DetalleVentaEntity entity) throws DataFondaControlException {
+    public void create(final FormaPagoEntity entity) throws DataFondaControlException {
         try (PreparedStatement ps = conexion.prepareStatement(SQL_INSERT)) {
             ps.setObject(1, entity.getCodigo());
-            ps.setString(2, entity.getNombreProducto());
-            ps.setDouble(3, entity.getPrecioAplicado());
-            ps.setInt(4, entity.getCantidad());
+            ps.setString(2, entity.getNombre());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al crear detalle de venta",
-                "create@detalleventa - " + e.getMessage(), e
+                "Error al crear forma de pago",
+                "create@formapago - " + e.getMessage(), e
             );
         }
     }
 
     @Override
-    public void update(final UUID id, final DetalleVentaEntity entity) throws DataFondaControlException {
+    public void update(final UUID id, final FormaPagoEntity entity) throws DataFondaControlException {
         try (PreparedStatement ps = conexion.prepareStatement(SQL_UPDATE)) {
-            ps.setString(1, entity.getNombreProducto());
-            ps.setDouble(2, entity.getPrecioAplicado());
-            ps.setInt(3, entity.getCantidad());
-            ps.setObject(4, id);
+            ps.setString(1, entity.getNombre());
+            ps.setObject(2, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al actualizar detalle de venta",
-                "update@detalleventa - " + e.getMessage(), e
+                "Error al actualizar forma de pago",
+                "update@formapago - " + e.getMessage(), e
             );
         }
     }
@@ -70,21 +66,21 @@ public class DetalleVentaPostgreSQLDAO implements DetalleVentaDAO {
             ps.executeUpdate();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al eliminar detalle de venta",
-                "delete@detalleventa - " + e.getMessage(), e
+                "Error al eliminar forma de pago",
+                "delete@formapago - " + e.getMessage(), e
             );
         }
     }
 
     @Override
-    public List<DetalleVentaEntity> listByFilter(final DetalleVentaEntity filter) throws DataFondaControlException {
+    public List<FormaPagoEntity> listByFilter(final FormaPagoEntity filter) throws DataFondaControlException {
         StringBuilder sql = new StringBuilder(SQL_LIST_ALL);
         List<Object> params = new ArrayList<>();
-        if (!UtilTexto.getInstancia().esNula(filter.getNombreProducto())) {
-            sql.append(" WHERE LOWER(nombreproducto) LIKE LOWER(?)");
-            params.add("%" + filter.getNombreProducto() + "%");
+        if (!UtilTexto.getInstancia().esNula(filter.getNombre())) {
+            sql.append(" WHERE LOWER(nombre) LIKE LOWER(?)");
+            params.add("%" + filter.getNombre() + "%");
         }
-        List<DetalleVentaEntity> results = new ArrayList<>();
+        List<FormaPagoEntity> results = new ArrayList<>();
         try (PreparedStatement ps = conexion.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
                 ps.setObject(i + 1, params.get(i));
@@ -97,15 +93,15 @@ public class DetalleVentaPostgreSQLDAO implements DetalleVentaDAO {
             return results;
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al filtrar detalle de venta",
-                "listByFilter@detalleventa - " + e.getMessage(), e
+                "Error al filtrar formas de pago",
+                "listByFilter@formapago - " + e.getMessage(), e
             );
         }
     }
 
     @Override
-    public List<DetalleVentaEntity> listAll() throws DataFondaControlException {
-        List<DetalleVentaEntity> results = new ArrayList<>();
+    public List<FormaPagoEntity> listAll() throws DataFondaControlException {
+        List<FormaPagoEntity> results = new ArrayList<>();
         try (PreparedStatement ps = conexion.prepareStatement(SQL_LIST_ALL);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
@@ -114,19 +110,20 @@ public class DetalleVentaPostgreSQLDAO implements DetalleVentaDAO {
             return results;
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al listar detalles de venta",
-                "listAll@detalleventa - " + e.getMessage(), e
+                "Error al listar formas de pago",
+                "listAll@formapago - " + e.getMessage(), e
             );
         }
     }
 
     @Override
-    public List<DetalleVentaEntity> listByCodigo(final UUID codigo) throws DataFondaControlException {
-        DetalleVentaEntity entity = findById(codigo);
+    public List<FormaPagoEntity> listByCodigo(final UUID codigo) throws DataFondaControlException {
+        FormaPagoEntity entity = findById(codigo);
         return entity == null ? List.of() : List.of(entity);
     }
 
-    public DetalleVentaEntity findById(final UUID id) throws DataFondaControlException {
+    @Override
+    public FormaPagoEntity findById(final UUID id) throws DataFondaControlException {
         try (PreparedStatement ps = conexion.prepareStatement(SQL_FIND_BY_ID)) {
             ps.setObject(1, id);
             try (ResultSet rs = ps.executeQuery()) {
@@ -134,18 +131,22 @@ public class DetalleVentaPostgreSQLDAO implements DetalleVentaDAO {
             }
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al buscar detalle de venta por ID",
-                "findById@detalleventa - " + e.getMessage(), e
+                "Error al buscar forma de pago por ID",
+                "findById@formapago - " + e.getMessage(), e
             );
         }
     }
 
-    private DetalleVentaEntity mapRow(final ResultSet rs) throws SQLException {
-        return DetalleVentaEntity.builder()
+    private FormaPagoEntity mapRow(final ResultSet rs) throws SQLException {
+        return FormaPagoEntity.builder()
             .codigo(rs.getObject("codigo", UUID.class))
-            .nombreProducto(rs.getString("nombreproducto"))
-            .precioAplicado(rs.getDouble("precioaplicado"))
-            .cantidad(rs.getInt("cantidad"))
+            .nombre(rs.getString("nombre"))
             .crear();
     }
+
+	@Override
+	public List<FormaPagoEntity> listByNombre(String nombre) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

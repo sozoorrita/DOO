@@ -31,12 +31,12 @@ public final class UtilTexto {
     }
 
     // Verifica si un valor es nulo
-    public boolean esNula(final String valor) {
+    public static boolean esNula(final String valor) {
         return UtilObjeto.getInstancia().esNulo(valor);
     }
 
     // Devuelve un valor por defecto si el original es nulo o vacío
-    public String obtenerValorDefecto(final String valorOriginal, final String valorDefecto) {
+    public static String obtenerValorDefecto(final String valorOriginal, final String valorDefecto) {
         return (esNula(valorOriginal) || valorOriginal.trim().isEmpty()) ? valorDefecto : valorOriginal;
     }
 
@@ -46,7 +46,7 @@ public final class UtilTexto {
         return obtenerValorDefecto(valor, VACIO);
     }
 
-    public String obtenerValorDefecto() {
+    public static String obtenerValorDefecto() {
         return VACIO;
     }
 

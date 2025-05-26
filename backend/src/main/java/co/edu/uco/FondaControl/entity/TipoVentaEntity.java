@@ -1,27 +1,26 @@
 package co.edu.uco.FondaControl.entity;
 
+import java.util.UUID;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
-
-import java.util.UUID;
 
 public final class TipoVentaEntity {
     private UUID codigo;
     private String nombre;
 
-    public TipoVentaEntity() {
+    private TipoVentaEntity() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
     }
 
-    public TipoVentaEntity(final UUID codigo, final String nombre) {
-        setCodigo(codigo);
-        setNombre(nombre);
+    private TipoVentaEntity(final Builder builder) {
+        setCodigo(builder.codigo);
+        setNombre(builder.nombre);
     }
 
     public static TipoVentaEntity obtenerValorDefecto() {
-        return new TipoVentaEntity();
+        return builder().crear();
     }
 
     public static TipoVentaEntity obtenerValorDefecto(final TipoVentaEntity entidad) {
@@ -41,6 +40,32 @@ public final class TipoVentaEntity {
     }
 
     public void setNombre(final String nombre) {
-        this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
+        String valor = UtilTexto.getInstancia().obtenerValorDefecto(nombre);
+        this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(valor);
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private UUID codigo = UtilUUID.obtenerValorDefecto();
+        private String nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+
+        private Builder() {}
+
+        public Builder codigo(final UUID codigo) {
+            this.codigo = codigo;
+            return this;
+        }
+
+        public Builder nombre(final String nombre) {
+            this.nombre = nombre;
+            return this;
+        }
+
+        public TipoVentaEntity crear() {
+            return new TipoVentaEntity(this);
+        }
     }
 }
