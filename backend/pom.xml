@@ -16,23 +16,31 @@
 	<artifactId>FondaControl</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>FondaControl</name>
-	<description>Aplicacion Backend que permite llevar a cabo toda la lógica de negocio para el Gestor de Ventas e Inventario FondaControl.</description>
+	<description>Aplicación Backend que permite llevar a cabo toda la lógica de negocio para el Gestor de Ventas e Inventario FondaControl.</description>
 
 	<properties>
 		<java.version>24</java.version>
+		<maven.compiler.source>${java.version}</maven.compiler.source>
+		<maven.compiler.target>${java.version}</maven.compiler.target>
 	</properties>
 
 	<dependencies>
-		<!-- Spring Boot Web -->
+		<!-- Core Spring Boot (incluye logging, context, etc) -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+		</dependency>
+
+		<!-- Spring Web (REST API, controllers, etc) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
-		<!-- Spring Boot Starter (necesario para SpringApplication y contexto) -->
+		<!-- JDBC Starter (para trabajar con DataSource y JDBC puro) -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter</artifactId>
+			<artifactId>spring-boot-starter-jdbc</artifactId>
 		</dependency>
 
 		<!-- PostgreSQL Driver -->
@@ -42,7 +50,7 @@
 			<version>42.7.2</version>
 		</dependency>
 
-		<!-- Spring Boot Test -->
+		<!-- Spring Boot Testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
@@ -52,6 +60,7 @@
 
 	<build>
 		<plugins>
+			<!-- Plugin para construir y empaquetar como app Spring Boot -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
