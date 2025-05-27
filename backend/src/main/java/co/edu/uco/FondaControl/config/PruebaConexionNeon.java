@@ -30,7 +30,8 @@ public class PruebaConexionNeon implements CommandLineRunner {
             if (resultSet.next()) {
                 System.out.println("✅ Conexión exitosa a Neon. Versión del servidor: " + resultSet.getString(1));
             } else {
-                System.out.println("⚠ Conexión establecida, pero sin resultados.");
+            	
+                System.out.println("⚠️ Conexión establecida, pero sin resultados.");
             }
         } catch (Exception e) {
             System.err.println("❌ Error al conectar con Neon PostgreSQL: " + e.getMessage());
@@ -38,3 +39,4 @@ public class PruebaConexionNeon implements CommandLineRunner {
         }
     }
 }
+

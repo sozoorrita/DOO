@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
-
 public final class InformeCajaDomain {
 
     private UUID codigo;
@@ -19,28 +18,24 @@ public final class InformeCajaDomain {
     private BigDecimal totalVenta;
     private BigDecimal pagoEfectivo;
     private BigDecimal pagoTransferencia;
-    private Collection<Venta> ventas;
 
-    InformeCajaDomain() {
+    public InformeCajaDomain() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setCodigoSesionTrabajo(UtilUUID.obtenerValorDefecto());
         setFecha(UtilFecha.obtenerValorDefecto().toLocalDate());
         setTotalVenta(UtilMoneda.obtenerValorDefecto());
         setPagoEfectivo(UtilMoneda.obtenerValorDefecto());
         setPagoTransferencia(UtilMoneda.obtenerValorDefecto());
-        setVentas(new ArrayList<>());
     }
 
     public InformeCajaDomain(final UUID codigo, final UUID codigoSesionTrabajo, final LocalDate fecha,
-                             final BigDecimal totalVenta, final BigDecimal pagoEfectivo, final BigDecimal pagoTransferencia,
-                             final Collection<Venta> ventas) {
+                             final BigDecimal totalVenta, final BigDecimal pagoEfectivo, final BigDecimal pagoTransferencia) {
         setCodigo(codigo);
         setCodigoSesionTrabajo(codigoSesionTrabajo);
         setFecha(fecha);
         setTotalVenta(totalVenta);
         setPagoEfectivo(pagoEfectivo);
         setPagoTransferencia(pagoTransferencia);
-        setVentas(ventas);
     }
 
     public static InformeCajaDomain obtenerValorDefecto() {
@@ -83,7 +78,7 @@ public final class InformeCajaDomain {
         return pagoEfectivo;
     }
 
-    private void setPagoEfectivo(final BigDecimal pagoEfectivo) {
+    public void setPagoEfectivo(final BigDecimal pagoEfectivo) {
         this.pagoEfectivo = UtilMoneda.asegurarNoNegativo(pagoEfectivo);
     }
 
@@ -91,32 +86,7 @@ public final class InformeCajaDomain {
         return pagoTransferencia;
     }
 
-    private void setPagoTransferencia(final BigDecimal pagoTransferencia) {
+    public void setPagoTransferencia(final BigDecimal pagoTransferencia) {
         this.pagoTransferencia = UtilMoneda.asegurarNoNegativo(pagoTransferencia);
-    }
-
-    public Collection<Venta> getVentas() {
-        return ventas;
-    }
-
-    public void setVentas(Collection<Venta> ventas) {
-        this.ventas = UtilObjeto.getInstancia().esNulo(ventas) ? new ArrayList<>() : ventas;
-    }
-
-    // Subclase interna para representar una venta individual
-    public static final class Venta {
-        private BigDecimal monto;
-
-        public Venta(BigDecimal monto) {
-            this.monto = UtilMoneda.asegurarNoNegativo(monto);
-        }
-
-        public BigDecimal getMonto() {
-            return monto;
-        }
-
-        public void setMonto(BigDecimal monto) {
-            this.monto = UtilMoneda.asegurarNoNegativo(monto);
-        }
     }
 }
