@@ -37,14 +37,14 @@ public final class InformeCajaEntityAssembler implements EntityAssembler<Informe
     @Override
     public InformeCajaDomain toDomain(final InformeCajaEntity entity) {
         final var entidad = UtilObjeto.getInstancia().obtenerValorDefecto(entity, InformeCajaEntity.obtenerValorDefecto());
+
         return new InformeCajaDomain(
                 entidad.getCodigo(),
                 entidad.getCodigoSesionTrabajo(),
                 entidad.getFecha(),
                 entidad.getTotalVenta(),
                 entidad.getPagoEfectivo(),
-                entidad.getPagoTransferencia(),
-                new ArrayList<>() // No hay mapeo de ventas en el Entity
+                entidad.getPagoTransferencia()
         );
     }
 

@@ -25,7 +25,7 @@ public final class UsuarioDomain {
         setContrasena(contrasena);
     }
 
-    static UsuarioDomain obtenerValorDefecto() {
+    public static UsuarioDomain obtenerValorDefecto() {
         return new UsuarioDomain();
     }
 
