@@ -7,53 +7,58 @@ import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.EntityAssem
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.ProductoDomain;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.entity.ProductoEntity;
+import co.edu.uco.FondaControl.entity.SubcategoriaEntity;
 
 public final class ProductoEntityAssembler implements EntityAssembler<ProductoEntity, ProductoDomain> {
 
-    private static final ProductoEntityAssembler INSTANCIA = new ProductoEntityAssembler();
+    private static final ProductoEntityAssembler INSTANCE = new ProductoEntityAssembler();
 
     private ProductoEntityAssembler() {
         super();
     }
 
-    public static ProductoEntityAssembler getInstancia() {
-        return INSTANCIA;
+    public static ProductoEntityAssembler getInstance() {
+        return INSTANCE;
     }
 
     @Override
     public ProductoEntity toEntity(final ProductoDomain domain) {
-        if (UtilObjeto.esNulo(domain)) {
+        if (UtilObjeto.getInstancia().esNulo(domain)) {
             return ProductoEntity.obtenerValorDefecto();
         }
-        var entity = new ProductoEntity();
-        entity.setCodigoProducto(domain.getCodigo());
-        entity.setNombre(domain.getNombre());
-        entity.setPrecioLugar(domain.getPrecioLugar());
-        entity.setPrecioLlevar(domain.getPrecioLlevar());
-        entity.setCodigoSubcategoria(domain.getCodigoSubcategoria());
-        entity.setLimiteCantidad(domain.getLimiteCantidad());
-        return entity;
+        final SubcategoriaEntity subEntity = SubcategoriaEntity.builder()
+                .codigo(domain.getCodigoSubcategoria())
+                .crear();
+
+        return ProductoEntity.builder()
+                .codigo(domain.getCodigo())
+                .nombre(domain.getNombre())
+                .precioLugar(domain.getPrecioLugar())
+                .precioLlevar(domain.getPrecioLlevar())
+                .subcategoria(subEntity)
+                .limiteCantidad(domain.getLimiteCantidad())
+                .crear();
     }
 
     @Override
     public ProductoDomain toDomain(final ProductoEntity entity) {
-        var safe = ProductoEntity.obtenerValorDefecto(entity);
+        final ProductoEntity safe = ProductoEntity.obtenerValorDefecto(entity);
         return new ProductoDomain(
-                safe.getCodigoProducto(),
-                safe.getNombreProducto(),
+                safe.getCodigo(),
+                safe.getNombre(),
                 safe.getPrecioLugar(),
                 safe.getPrecioLlevar(),
-                safe.getCodigoSubcategoria() != null ? safe.getCodigoSubcategoria().getCodigoSubcategoria() : null,
+                safe.getSubcategoria().getCodigo(),
                 safe.getLimiteCantidad()
         );
     }
 
     @Override
     public List<ProductoDomain> toDomainList(final List<ProductoEntity> entityList) {
-        final List<ProductoDomain> resultado = new ArrayList<>();
-        for (ProductoEntity entity : entityList) {
-            resultado.add(toDomain(entity));
+        final List<ProductoDomain> list = new ArrayList<>();
+        for (final ProductoEntity entity : entityList) {
+            list.add(toDomain(entity));
         }
-        return resultado;
+        return list;
     }
 }
