@@ -11,26 +11,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v3/estado-mesas")
-public class EstadoMesaController {
+@RequestMapping("/api/v4/formas-pago")
+public class FormaPagoController {
 
 	@GetMapping
 	public String consultar() {
-		return "Consultar todos los estados de mesa";
+		return "Consultar todas las formas de pago";
 	}
 
 	@PostMapping
 	public String registrar() {
-		return "Registrar un nuevo estado de mesa";
+		return "Registrar una nueva forma de pago";
 	}
 
 	@PutMapping("/{codigo}")
 	public String modificar(@PathVariable UUID codigo) {
-		return "Modificar el estado de mesa con código " + codigo;
+		return "Modificar la forma de pago con código " + codigo;
 	}
 
 	@DeleteMapping("/{codigo}")
 	public String eliminar(@PathVariable UUID codigo) {
-		return "Eliminar el estado de mesa con código " + codigo;
+		return "Eliminar la forma de pago con código " + codigo;
 	}
 }

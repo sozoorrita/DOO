@@ -3,7 +3,7 @@ package co.edu.uco.FondaControl.api;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v5/mesas")
+@RequestMapping("/api/v8/mesas")
 public class MesaController {
 
     @GetMapping

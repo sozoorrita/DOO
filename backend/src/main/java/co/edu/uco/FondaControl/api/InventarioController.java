@@ -3,7 +3,7 @@ package co.edu.uco.FondaControl.api;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v2/inventarios")
+@RequestMapping("/api/v7/inventarios")
 public class InventarioController {
 
 

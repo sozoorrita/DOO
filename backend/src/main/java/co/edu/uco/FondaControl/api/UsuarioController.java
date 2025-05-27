@@ -3,7 +3,7 @@ package co.edu.uco.FondaControl.api;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v7/usuarios")
+@RequestMapping("/api/v14/usuarios")
 public class UsuarioController {
 
     @GetMapping

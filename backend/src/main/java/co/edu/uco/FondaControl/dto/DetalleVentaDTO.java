@@ -101,5 +101,15 @@ public final class DetalleVentaDTO {
         public DetalleVentaDTO crear() {
             return new DetalleVentaDTO(this);
         }
+
+		public Builder codigoDetalleVenta(UUID codigoDetalleVenta) {
+			// TODO Auto-generated method stub
+			return null;
+		}
     }
+
+	public UUID getCodigoDetalleVenta() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

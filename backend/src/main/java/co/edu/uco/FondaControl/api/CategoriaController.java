@@ -11,26 +11,26 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v3/estado-mesas")
-public class EstadoMesaController {
+@RequestMapping("/api/v1/categorias")
+public class CategoriaController {
 
 	@GetMapping
 	public String consultar() {
-		return "Consultar todos los estados de mesa";
+		return "Consultar todas las categorías";
 	}
 
 	@PostMapping
 	public String registrar() {
-		return "Registrar un nuevo estado de mesa";
+		return "Registrar una nueva categoría";
 	}
 
 	@PutMapping("/{codigo}")
 	public String modificar(@PathVariable UUID codigo) {
-		return "Modificar el estado de mesa con código " + codigo;
+		return "Modificar la categoría con código " + codigo;
 	}
 
 	@DeleteMapping("/{codigo}")
 	public String eliminar(@PathVariable UUID codigo) {
-		return "Eliminar el estado de mesa con código " + codigo;
+		return "Eliminar la categoría con código " + codigo;
 	}
 }

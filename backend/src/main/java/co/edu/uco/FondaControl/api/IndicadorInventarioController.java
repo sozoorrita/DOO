@@ -2,7 +2,7 @@ package co.edu.uco.FondaControl.api;
 
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/api/v1/indicador-inventarios")
+@RequestMapping("/api/v5/indicador-inventarios")
 public class IndicadorInventarioController {
 
 

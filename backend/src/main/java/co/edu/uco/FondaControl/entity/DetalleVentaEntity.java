@@ -11,7 +11,7 @@ public final class DetalleVentaEntity {
     private double precioAplicado;
     private int cantidad;
 
-    private DetalleVentaEntity() {
+    public DetalleVentaEntity(UUID uuid) {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
         setPrecioAplicado(0.0);
@@ -102,4 +102,9 @@ public final class DetalleVentaEntity {
             return new DetalleVentaEntity(this);
         }
     }
+
+	public UUID getCodigoDetalleVenta() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
