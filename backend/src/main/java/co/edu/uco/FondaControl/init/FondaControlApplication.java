@@ -10,4 +10,3 @@ public class FondaControlApplication {
 		SpringApplication.run(FondaControlApplication.class, args);
 	}
 }
-
