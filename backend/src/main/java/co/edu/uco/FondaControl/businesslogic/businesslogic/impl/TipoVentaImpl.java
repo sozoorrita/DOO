@@ -114,4 +114,16 @@ public final class TipoVentaImpl implements TipoVentaBusinessLogic {
 
         return nuevoCodigo;
     }
+
+	@Override
+	public void modificarTipoVenta(TipoVentaDomain tipoVentaDomain) throws FondaControlException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void eliminarTipoVenta(TipoVentaDomain tipoVentaDomain) throws FondaControlException {
+		// TODO Auto-generated method stub
+		
+	}
 }

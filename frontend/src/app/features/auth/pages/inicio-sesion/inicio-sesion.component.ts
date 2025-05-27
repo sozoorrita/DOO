@@ -32,7 +32,7 @@ export class InicioSesionComponent implements OnInit {
     this.facade.login(email, password).subscribe({
       next: res => {
         localStorage.setItem('token', res.token);
-        this.router.navigate(['/usuarios']);
+        this.router.navigate(['/session/abrir']);
       },
       error: err => {
         this.errorMsg = err.error?.message || 'Error al iniciar sesión';

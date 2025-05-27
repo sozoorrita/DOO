@@ -38,7 +38,7 @@ public final class DetalleVentaDomain {
 		return codigoDetalleVenta;
 	}
 
-	private void setCodigoDetalleVenta(final UUID codigoDetalleVenta) {
+	public void setCodigoDetalleVenta(final UUID codigoDetalleVenta) {
 		this.codigoDetalleVenta = UtilUUID.obtenerValorDefecto(codigoDetalleVenta);
 	}
 

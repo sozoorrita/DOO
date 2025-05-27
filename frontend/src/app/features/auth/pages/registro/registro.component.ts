@@ -33,7 +33,7 @@ export class RegistroComponent implements OnInit {
     this.facade.register(name, email, password).subscribe({
       next: res => {
         localStorage.setItem('token', res.token);
-        this.router.navigate(['/usuarios']);
+        this.router.navigate(['/session/abrir']);
       },
       error: err => {
         this.errorMsg = err.error?.message || 'Error al registrarse';
