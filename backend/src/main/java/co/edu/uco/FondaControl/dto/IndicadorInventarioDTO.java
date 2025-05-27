@@ -10,6 +10,11 @@ public final class IndicadorInventarioDTO {
     private UUID codigo;
     private String nombre;
 
+    public static IndicadorInventarioDTO obtenerValorDefecto() {
+        return new IndicadorInventarioDTO();
+    }
+
+
     public IndicadorInventarioDTO() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
