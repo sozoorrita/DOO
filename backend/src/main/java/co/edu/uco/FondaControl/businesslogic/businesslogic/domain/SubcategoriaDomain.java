@@ -34,7 +34,7 @@ public final class SubcategoriaDomain {
 		return codigo;
 	}
 
-	private void setCodigo(final UUID codigo) {
+	public void setCodigo(final UUID codigo) {
 		this.codigo = UtilUUID.obtenerValorDefecto(codigo);
 	}
 
