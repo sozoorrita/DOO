@@ -1,0 +1,11 @@
+<div class="content-wrapper">
+  <h2>Mesas</h2>
+  <div class="mesas-grid">
+    <mat-card *ngFor="let m of mesas" class="mesa-card" [ngClass]="m.estado"
+      (click)="irVentaMesa(m.id)">
+      <mat-card-title>Mesa {{ m.numero }}</mat-card-title>
+      <mat-card-subtitle>{{ m.estado }}</mat-card-subtitle>
+    </mat-card>
+  </div>
+  <button mat-raised-button color="primary" routerLink="venta-normal">Venta Normal</button>
+</div>

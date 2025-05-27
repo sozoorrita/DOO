@@ -1,1 +1,38 @@
-/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+
+body { margin: 0; font-family: Roboto, sans-serif; }
+
+/* ------ Auth ------ */
+.auth-container {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url('assets/images/login-bg.png') no-repeat center / cover;
+}
+.auth-card {
+  width: 360px;
+  padding: 24px;
+}
+.full-width { width: 100%; }
+.error { color: red; margin: 8px 0; }
+.mt-2 { margin-top: 16px; }
+
+/* ------ Layout ------ */
+.sidenav-container {
+  height: 100vh;
+}
+.content-wrapper {
+  padding: 16px;
+}
+
+/* ------ POS Mesas ------ */
+.mesas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 16px;
+}
+.mesa-card {
+  cursor: pointer;
+  text-align: center;
+}
