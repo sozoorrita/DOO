@@ -10,34 +10,33 @@ import co.edu.uco.FondaControl.entity.DetalleVentaEntity;
 
 public final class DetalleVentaEntityAssembler implements EntityAssembler<DetalleVentaEntity, DetalleVentaDomain> {
 
-    private static final DetalleVentaEntityAssembler INSTANCIA = new DetalleVentaEntityAssembler();
+    private static final DetalleVentaEntityAssembler INSTANCE = new DetalleVentaEntityAssembler();
 
     private DetalleVentaEntityAssembler() {
         super();
     }
 
-    public static DetalleVentaEntityAssembler getInstancia() {
-        return INSTANCIA;
+    public static DetalleVentaEntityAssembler getInstance() {
+        return INSTANCE;
     }
 
     @Override
     public DetalleVentaEntity toEntity(final DetalleVentaDomain domain) {
-        if (UtilObjeto.esNulo(domain)) {
-            return DetalleVentaEntity.obtenerValorDefecto();
-        }
-        var entity = new DetalleVentaEntity();
-        entity.setCodigoDetalleVenta(domain.getCodigoDetalleVenta());
-        entity.setNombreProducto(domain.getNombreProducto());
-        entity.setPrecioAplicado(domain.getPrecioAplicado());
-        entity.setCantidad(domain.getCantidad());
-        return entity;
+        return UtilObjeto.getInstancia().esNulo(domain)
+                ? DetalleVentaEntity.obtenerValorDefecto()
+                : DetalleVentaEntity.builder()
+                .codigo(domain.getCodigoDetalleVenta())
+                .nombreProducto(domain.getNombreProducto())
+                .precioAplicado(domain.getPrecioAplicado())
+                .cantidad(domain.getCantidad())
+                .crear();
     }
 
     @Override
     public DetalleVentaDomain toDomain(final DetalleVentaEntity entity) {
-        var safe = DetalleVentaEntity.obtenerValorDefecto(entity);
+        final var safe = DetalleVentaEntity.obtenerValorDefecto(entity);
         return new DetalleVentaDomain(
-                safe.getCodigoDetalleVenta(),
+                safe.getCodigo(),
                 safe.getNombreProducto(),
                 safe.getPrecioAplicado(),
                 safe.getCantidad()
@@ -46,10 +45,10 @@ public final class DetalleVentaEntityAssembler implements EntityAssembler<Detall
 
     @Override
     public List<DetalleVentaDomain> toDomainList(final List<DetalleVentaEntity> entityList) {
-        final List<DetalleVentaDomain> resultado = new ArrayList<>();
-        for (DetalleVentaEntity entity : entityList) {
-            resultado.add(toDomain(entity));
+        final var result = new ArrayList<DetalleVentaDomain>();
+        for (final var entity : entityList) {
+            result.add(toDomain(entity));
         }
-        return resultado;
+        return result;
     }
 }

@@ -8,6 +8,7 @@ import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Venta.dto.V
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.VentaDomain;
 import co.edu.uco.FondaControl.businesslogic.facade.VentaFacade;
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
+import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
@@ -19,7 +20,7 @@ public final class VentaImp implements VentaFacade {
     private final DAOFactory daoFactory;
     private final VentaBusinessLogic businessLogic;
 
-    public VentaImp() {
+    public VentaImp() throws DataFondaControlException {
         this.daoFactory = DAOFactory.getDAOFactory(Factory.POSTGRESQL);
         this.businessLogic = new co.edu.uco.FondaControl.businesslogic.businesslogic.impl.VentaImpl(daoFactory);
     }
@@ -61,3 +62,52 @@ public final class VentaImp implements VentaFacade {
             throw e;
         } catch (Exception e) {
             daoFactory.cancelarTransaccion();
+            throw BusinessLogicFondaControlException.reportar("Error modificando venta.", e.getMessage(), e);
+        } finally {
+            daoFactory.cerrarConexion();
+        }
+    }
+
+    @Override
+    public void eliminarVenta(final VentaDTO venta) throws FondaControlException {
+        if (UtilObjeto.esNulo(venta)) {
+            throw BusinessLogicFondaControlException.reportar("La venta a eliminar no puede ser nula.", "venta es nula");
+        }
+        final UUID codigo = venta.getCodigo();
+        try {
+            daoFactory.iniciarTransaccion();
+            businessLogic.eliminarVenta(codigo);
+            daoFactory.confirmarTransaccion();
+        } catch (FondaControlException e) {
+            daoFactory.cancelarTransaccion();
+            throw e;
+        } catch (Exception e) {
+            daoFactory.cancelarTransaccion();
+            throw BusinessLogicFondaControlException.reportar("Error eliminando venta.", e.getMessage(), e);
+        } finally {
+            daoFactory.cerrarConexion();
+        }
+    }
+
+    @Override
+    public List<VentaDTO> consultarVenta(final VentaDTO filtro) throws FondaControlException {
+        if (UtilObjeto.esNulo(filtro)) {
+            throw BusinessLogicFondaControlException.reportar("El filtro de venta no puede ser nulo.", "filtro es nulo");
+        }
+        try {
+            daoFactory.iniciarTransaccion();
+            final VentaDomain domainFiltro = VentaDTOAssembler.getInstancia().toDomain(filtro);
+            final List<VentaDomain> dominios = businessLogic.consultarVenta(domainFiltro);
+            daoFactory.confirmarTransaccion();
+            return VentaDTOAssembler.getInstancia().toDtoList(dominios);
+        } catch (FondaControlException e) {
+            daoFactory.cancelarTransaccion();
+            throw e;
+        } catch (Exception e) {
+            daoFactory.cancelarTransaccion();
+            throw BusinessLogicFondaControlException.reportar("Error consultando ventas.", e.getMessage(), e);
+        } finally {
+            daoFactory.cerrarConexion();
+        }
+    }
+}

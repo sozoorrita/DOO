@@ -5,60 +5,78 @@ import java.util.List;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.DTOAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.ProductoDomain;
-import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.dto.ProductoDTO;
+import co.edu.uco.FondaControl.dto.SubcategoriaDTO;
 
 public final class ProductoDTOAssembler implements DTOAssembler<ProductoDTO, ProductoDomain> {
 
-    private static final ProductoDTOAssembler INSTANCIA = new ProductoDTOAssembler();
+    private static final ProductoDTOAssembler INSTANCE = new ProductoDTOAssembler();
 
     private ProductoDTOAssembler() {
         super();
     }
 
-    public static ProductoDTOAssembler getInstancia() {
-        return INSTANCIA;
+    public static ProductoDTOAssembler getInstance() {
+        return INSTANCE;
     }
 
     @Override
     public ProductoDTO toDto(final ProductoDomain domain) {
-        return ProductoDTO.builder()
-                .codigoProducto(domain.getCodigo())
-                .nombre(UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(domain.getNombre()))
-                .precioLugar(domain.getPrecioLugar())
-                .precioLlevar(domain.getPrecioLlevar())
-                .limiteCantidad(domain.getLimiteCantidad())
+        final var safeDomain = UtilObjeto.getInstancia().esNulo(domain)
+                ? ProductoDomain.obtenerValorDefecto()
+                : domain;
+
+        final ProductoDTO dto = new ProductoDTO();
+        dto.setCodigoProducto(safeDomain.getCodigo());
+        dto.setNombre(safeDomain.getNombre());
+        dto.setPrecioLugar(safeDomain.getPrecioLugar());
+        dto.setPrecioLlevar(safeDomain.getPrecioLlevar());
+
+        final SubcategoriaDTO subDto = SubcategoriaDTO.builder()
+                .codigo(safeDomain.getCodigoSubcategoria())
                 .crear();
+        dto.setCodigoSubcategoria(subDto);
+
+        dto.setLimiteCantidad(safeDomain.getLimiteCantidad());
+        return dto;
     }
 
     @Override
     public ProductoDomain toDomain(final ProductoDTO dto) {
+        if (UtilObjeto.getInstancia().esNulo(dto)) {
+            return ProductoDomain.obtenerValorDefecto();
+        }
+        final SubcategoriaDTO subDto = UtilObjeto.getInstancia()
+                .esNulo(dto.getCodigoSubcategoria())
+                ? SubcategoriaDTO.obtenerValorDefecto()
+                : dto.getCodigoSubcategoria();
+
         return new ProductoDomain(
                 dto.getCodigoProducto(),
                 dto.getNombre(),
                 dto.getPrecioLugar(),
                 dto.getPrecioLlevar(),
-                dto.getCodigoSubcategoria(),
+                subDto.getCodigo(),
                 dto.getLimiteCantidad()
         );
     }
 
     @Override
-    public List<ProductoDTO> toDtoList(final List<ProductoDomain> domainList) {
-        final List<ProductoDTO> resultado = new ArrayList<>();
-        for (ProductoDomain domain : domainList) {
-            resultado.add(toDto(domain));
+    public List<ProductoDomain> toDomainList(final List<ProductoDTO> dtoList) {
+        final List<ProductoDomain> list = new ArrayList<>();
+        for (final ProductoDTO dto : dtoList) {
+            list.add(toDomain(dto));
         }
-        return resultado;
+        return list;
     }
 
     @Override
-    public List<ProductoDomain> toDomainList(final List<ProductoDTO> dtoList) {
-        final List<ProductoDomain> resultado = new ArrayList<>();
-        for (ProductoDTO dto : dtoList) {
-            resultado.add(toDomain(dto));
+    public List<ProductoDTO> toDtoList(final List<ProductoDomain> domainList) {
+        final List<ProductoDTO> list = new ArrayList<>();
+        for (final ProductoDomain domain : domainList) {
+            list.add(toDto(domain));
         }
-        return resultado;
+        return list;
     }
 }
