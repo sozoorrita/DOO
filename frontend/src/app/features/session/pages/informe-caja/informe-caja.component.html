@@ -1,0 +1,6 @@
+<div class="content-wrapper">
+  <h2>Cierre de Caja</h2>
+  <!-- Mostrar resumen de ventas, totales y botón de cierre -->
+  <p>Total ventas hoy: {{ totalVentas | currency }}</p>
+  <button mat-raised-button color="warn" (click)="cerrarSesion()">Cerrar Caja</button>
+</div>

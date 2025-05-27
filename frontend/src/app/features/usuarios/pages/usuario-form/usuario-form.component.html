@@ -1,0 +1,18 @@
+<h2>{{ editing ? 'Editar Usuario' : 'Nuevo Usuario' }}</h2>
+<form [formGroup]="form" (ngSubmit)="onSubmit()" class="usuario-form">
+  <mat-form-field appearance="fill">
+    <mat-label>Nombre</mat-label>
+    <input matInput formControlName="nombre" />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Email</mat-label>
+    <input matInput formControlName="email" />
+  </mat-form-field>
+  <mat-form-field appearance="fill">
+    <mat-label>Contraseña</mat-label>
+    <input matInput type="password" formControlName="password" />
+  </mat-form-field>
+  <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
+    {{ editing ? 'Actualizar' : 'Crear' }}
+  </button>
+</form>
