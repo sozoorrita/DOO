@@ -1,8 +1,8 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { VentaFacade } from '../../../../core/facades/venta.facade';
-import { ProductoFacade } from '../../../../core/facades/producto.facade';
+import { VentaFacade } from '../../../../core/facades/venta.service';
+import { ProductoFacade } from '../../../../core/facades/producto.service';
 import { Producto } from '../../../../core/models/producto.model';
 
 @Component({

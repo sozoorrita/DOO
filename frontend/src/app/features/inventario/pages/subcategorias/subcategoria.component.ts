@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Subcategoria } from '../../../../core/models/subcategoria.model';
-import { InventarioFacade } from '../../../../core/facades/inventario.facade';
+import { InventarioFacade } from '../../../../core/facades/inventario.service';
 import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({

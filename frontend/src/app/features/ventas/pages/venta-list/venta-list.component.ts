@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { VentaFacade } from '../../../../core/facades/venta.facade';
+import { VentaFacade } from '../../../../core/facades/venta.service';
 import { Venta } from '../../../../core/models/venta.model';
 import { Router } from '@angular/router';
 

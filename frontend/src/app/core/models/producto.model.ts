@@ -1,7 +1,8 @@
 export interface Producto {
   codigo: string;
   nombre: string;
-  precioLugar: string;
-  precioLlevar: number;
-  limiteCantidad: number;
+  descripcion?: string;
+  precio: number;
+  codigoCategoria: string;
+  codigoSubcategoria: string;
 }

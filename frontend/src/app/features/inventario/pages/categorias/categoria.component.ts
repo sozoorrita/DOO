@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Categoria } from '../../../../core/models/categoria.model';
-import { InventarioFacade } from '../../../../core/facades/inventario.facade';
+import { InventarioFacade } from '../../../../core/facades/inventario.service';
 import { Router } from '@angular/router';
 
 @Component({

@@ -1,4 +1,4 @@
 export interface Categoria {
-  codigo: string;
+  codigo: string; // UUID
   nombre: string;
 }

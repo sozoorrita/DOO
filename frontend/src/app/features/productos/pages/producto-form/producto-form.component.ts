@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductoFacade } from '../../../../core/facades/producto.facade';
+import { ProductoFacade } from '../../../../core/facades/producto.service';
 
 @Component({
   selector: 'app-producto-form',

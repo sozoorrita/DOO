@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProductoFacade } from '../../../../core/facades/producto.facade';
+import { ProductoFacade } from '../../../../core/facades/producto.service';
 import { Producto } from '../../../../core/models/producto.model';
 import { Router } from '@angular/router';
 

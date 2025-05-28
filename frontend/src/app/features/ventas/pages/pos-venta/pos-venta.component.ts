@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl }        from '@angular/forms';
 import { Observable }         from 'rxjs';
 import { map, startWith }     from 'rxjs/operators';
-import { ProductoFacade } from '../../../../core/facades/producto.facade';
+import { ProductoFacade } from '../../../../core/facades/producto.service';
 import { Producto } from '../../../../core/models/producto.model';
-import { VentaFacade } from '../../../../core/facades/venta.facade';
+import { VentaFacade } from '../../../../core/facades/venta.service';
 import { VentaItem } from '../../../../core/models/venta-item.model';
 import { Router } from '@angular/router';
 
