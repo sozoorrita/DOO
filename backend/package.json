@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "@angular/core": "^19.2.14",
+    "@angular/forms": "^19.2.14",
+    "tslib": "^2.8.1"
+  }
+}

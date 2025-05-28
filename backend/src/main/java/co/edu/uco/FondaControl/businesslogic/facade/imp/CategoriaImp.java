@@ -8,18 +8,18 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import co.edu.uco.FondaControl.businesslogic.facade.CategoriaFacade;
 import co.edu.uco.FondaControl.dto.CategoriaDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional
 public class CategoriaImp implements CategoriaFacade {
     private final CategoriaBusinessLogic logic;
 
-    @Autowired
-    public CategoriaImp(DAOFactory dao) {
-        this.logic = new CategoriaImpl(dao);
+    public CategoriaImp(DAOFactory daoFactory) {
+        this.logic = new CategoriaImpl(daoFactory);
     }
 
     @Override
@@ -36,10 +36,12 @@ public class CategoriaImp implements CategoriaFacade {
 
     @Override
     public void eliminarCategoria(CategoriaDTO dto) throws FondaControlException {
-        logic.eliminarCategoria(CategoriaDTOAssembler.getInstancia().toDomain(dto).getCodigo());
+        CategoriaDomain domain = CategoriaDTOAssembler.getInstancia().toDomain(dto);
+        logic.eliminarCategoria(domain.getCodigo());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<CategoriaDTO> consultarCategoria(CategoriaDTO dto) throws FondaControlException {
         CategoriaDomain filter = CategoriaDTOAssembler.getInstancia().toDomain(dto);
         var domains = logic.consultarCategoria(filter);

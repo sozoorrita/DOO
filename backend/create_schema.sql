@@ -44,7 +44,7 @@ CREATE TABLE TipoVenta (
 -- 7) Forma de pago
 CREATE TABLE FormaPago (
   codigo UUID PRIMARY KEY NOT NULL,
-  tipoPago VARCHAR(50) NOT NULL
+  nombre VARCHAR(50) NOT NULL
 );
 
 -- 8) Usuario (→ rol)
