@@ -60,7 +60,7 @@ CREATE TABLE usuario (
 CREATE TABLE sesion_trabajo (
   codigo UUID PRIMARY KEY NOT NULL,
   idUsuario UUID NOT NULL
-    REFERENCES usuario(codigo),
+    REFERENCES usuario(id),
   baseCaja      DOUBLE NOT NULL,   
   fechaApertura TIMESTAMP NOT NULL,
   fechaCierre   TIMESTAMP NOT NULL,
