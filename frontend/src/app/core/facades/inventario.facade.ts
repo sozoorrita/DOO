@@ -1,17 +1,26 @@
+// src/app/core/facades/inventario.facade.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-
-interface LoginResponse { token: string; }
+import { Categoria } from '../models/categoria.model';
+import { Subcategoria } from '../models/subcategoria.model';
+import { Producto } from '../models/producto.model';
 
 @Injectable({ providedIn: 'root' })
-export class AuthFacade {
+export class InventarioFacade {
   private base = '/api/inventario';
+
   constructor(private http: HttpClient) {}
-  login(email: string, pw: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.base}/login`, { email, pw });
+
+  getCategorias(): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(`${this.base}/categorias`);
   }
-  register(name: string, email: string, pw: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.base}/register`, { name, email, pw });
+
+  getSubcategorias(catId: string): Observable<Subcategoria[]> {
+    return this.http.get<Subcategoria[]>(`${this.base}/categorias/${catId}/subcategorias`);
+  }
+
+  getProductos(subId: string): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.base}/subcategorias/${subId}/productos`);
   }
 }

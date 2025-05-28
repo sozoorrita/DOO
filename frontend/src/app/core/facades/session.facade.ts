@@ -1,17 +1,26 @@
+// src/app/core/facades/session.facade.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Session } from '../models/session.model';
 
-interface LoginResponse { token: string; }
+interface Report { total: number; }
 
 @Injectable({ providedIn: 'root' })
-export class AuthFacade {
+export class SessionFacade {
   private base = '/api/sessions';
+
   constructor(private http: HttpClient) {}
-  login(email: string, pw: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.base}/login`, { email, pw });
+
+  open(payload: { usuarioId: string; baseCaja: number }): Observable<Session> {
+    return this.http.post<Session>(`${this.base}/open`, payload);
   }
-  register(name: string, email: string, pw: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.base}/register`, { name, email, pw });
+
+  close(): Observable<void> {
+    return this.http.post<void>(`${this.base}/close`, {});
+  }
+
+  getReport(): Observable<Report> {
+    return this.http.get<Report>(`${this.base}/report`);
   }
 }

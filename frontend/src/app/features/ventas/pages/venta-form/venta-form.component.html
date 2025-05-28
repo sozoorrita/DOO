@@ -1,62 +1,47 @@
-<!-- src/app/features/ventas/pages/venta-form/venta-form.component.html -->
 <form [formGroup]="form" (ngSubmit)="onSubmit()" class="venta-form">
-
-  <!-- Selección de Usuario -->
-  <mat-form-field appearance="fill">
-    <mat-label>Usuario</mat-label>
-    <input matInput formControlName="usuarioId" placeholder="ID del usuario" />
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Usuario ID</mat-label>
+    <input matInput formControlName="usuarioId" />
   </mat-form-field>
-
-  <!-- Fecha de la Venta -->
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" class="full-width">
+    <mat-label>Mesa ID</mat-label>
+    <input matInput formControlName="mesaId" />
+  </mat-form-field>
+  <mat-form-field appearance="fill" class="full-width">
     <mat-label>Fecha</mat-label>
     <input matInput type="date" formControlName="fecha" />
   </mat-form-field>
 
-  <!-- Lista Dinámica de Ítems -->
   <div formArrayName="items" class="items">
     <div *ngFor="let g of items.controls; let i = index" [formGroupName]="i" class="item-row">
-      
-      <!-- Producto -->
       <mat-form-field appearance="fill">
         <mat-label>Producto</mat-label>
         <mat-select formControlName="productoId">
           <mat-option *ngFor="let p of productos" [value]="p.id">{{ p.nombre }}</mat-option>
         </mat-select>
       </mat-form-field>
-
-      <!-- Cantidad -->
       <mat-form-field appearance="fill">
         <mat-label>Cantidad</mat-label>
         <input matInput type="number" formControlName="cantidad" />
       </mat-form-field>
-
-      <!-- Precio Unitario (solo lectura) -->
       <mat-form-field appearance="fill">
         <mat-label>Precio</mat-label>
         <input matInput formControlName="precio" [disabled]="true" />
       </mat-form-field>
-
-      <!-- Botón para eliminar ítem -->
       <button mat-icon-button color="warn" (click)="removeItem(i)" type="button">
         <mat-icon>delete</mat-icon>
       </button>
-
     </div>
   </div>
 
-  <!-- Botón para agregar nuevo ítem -->
   <button mat-button type="button" (click)="addItem()">Añadir ítem</button>
 
-  <!-- Total de la Venta (solo lectura) -->
-  <mat-form-field appearance="fill">
+  <mat-form-field appearance="fill" class="full-width">
     <mat-label>Total</mat-label>
     <input matInput formControlName="total" [disabled]="true" />
   </mat-form-field>
 
-  <!-- Botón de envío -->
   <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid">
     {{ editing ? 'Actualizar' : 'Crear' }} Venta
   </button>
-
 </form>
