@@ -1,11 +1,9 @@
 package co.edu.uco.FondaControl.businesslogic.businesslogic.impl;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.UsuarioBusinessLogic;
-
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Usuario.entity.UsuarioEntityAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.UsuarioDomain;
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
-import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
@@ -78,7 +76,6 @@ public final class UsuarioImpl implements UsuarioBusinessLogic {
         }
     }
 
-
     private void validarCodigo(final UUID codigo) throws BusinessLogicFondaControlException {
         if (UtilObjeto.getInstancia().esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
             throw BusinessLogicFondaControlException.reportar(
@@ -118,7 +115,7 @@ public final class UsuarioImpl implements UsuarioBusinessLogic {
         }
     }
 
-    private void validarNoExistaUsuarioConMismoId(final UUID id) throws DataFondaControlException, BusinessLogicFondaControlException {
+    private void validarNoExistaUsuarioConMismoId(final UUID id) throws FondaControlException {
         final var resultado = factory.getUsuarioDAO().listByCodigo(id);
         if (!resultado.isEmpty()) {
             throw BusinessLogicFondaControlException.reportar(
@@ -128,7 +125,7 @@ public final class UsuarioImpl implements UsuarioBusinessLogic {
         }
     }
 
-    private UUID generarNuevoCodigoUsuario() throws DataFondaControlException {
+    private UUID generarNuevoCodigoUsuario() throws FondaControlException {
         UUID nuevoCodigo;
         boolean yaExiste;
 
