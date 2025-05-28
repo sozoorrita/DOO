@@ -18,7 +18,7 @@ public class IndicadorInventarioController {
     @Autowired
     private IndicadorInventarioFacade facade;
 
-    @GetMapping
+    @GetMapping("/dummy")
     public List<IndicadorInventarioDTO> consultar(@RequestParam(required = false) UUID codigo) throws FondaControlException {
         IndicadorInventarioDTO filtro = IndicadorInventarioDTO.obtenerValorDefecto();
         if (!UtilUUID.esValorDefecto(codigo)) {
