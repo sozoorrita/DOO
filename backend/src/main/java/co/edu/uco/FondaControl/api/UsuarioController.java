@@ -8,7 +8,7 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.UsuarioDTO;
 
 @RestController
-@RequestMapping("/api/v14/usuarios")
+@RequestMapping("/api/v1/usuarios")
 public class UsuarioController {
 
     private final UsuarioFacade usuarioFacade;

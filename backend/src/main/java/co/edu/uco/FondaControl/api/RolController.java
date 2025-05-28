@@ -12,7 +12,7 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.RolDTO;
 
 @RestController
-@RequestMapping("/api/v10/roles")
+@RequestMapping("/api/v1/roles")
 public class RolController {
 
     private final RolFacade rolFacade;

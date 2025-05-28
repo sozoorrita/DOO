@@ -8,7 +8,7 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.SesionTrabajoDTO;
 
 @RestController
-@RequestMapping("/api/v11/sesion-trabajo")
+@RequestMapping("/api/v1/sesion-trabajo")
 public class SesionTrabajoController {
 
     private final SesionTrabajoFacade sesionTrabajoFacade;

@@ -12,7 +12,7 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.TipoVentaDTO;
 
 @RestController
-@RequestMapping("/api/v13/tipos-venta")
+@RequestMapping("/api/v1/tipos-venta")
 public class TipoVentaController {
 
     private final TipoVentaFacade tipoVentaFacade;

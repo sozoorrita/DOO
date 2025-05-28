@@ -11,7 +11,7 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.MesaDTO;
 
 @RestController
-@RequestMapping("/api/v8/mesas")
+@RequestMapping("/api/v1/mesas")
 public class MesaController {
 
     private final MesaFacade mesaFacade;

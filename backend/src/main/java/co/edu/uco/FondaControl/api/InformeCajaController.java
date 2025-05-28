@@ -8,7 +8,7 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.InformeCajaDTO;
 
 @RestController
-@RequestMapping("/api/v6/informe-caja")
+@RequestMapping("/api/v1/informe-caja")
 public class InformeCajaController {
 
     private final InformeCajaFacade informeCajaFacade;

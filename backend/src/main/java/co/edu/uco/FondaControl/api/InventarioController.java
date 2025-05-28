@@ -11,7 +11,7 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.InventarioDTO;
 
 @RestController
-@RequestMapping("/api/v7/inventarios")
+@RequestMapping("/api/v1/inventarios")
 public class InventarioController {
 
     private final InventarioFacade inventarioFacade;

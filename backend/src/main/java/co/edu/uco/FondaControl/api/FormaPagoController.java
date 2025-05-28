@@ -12,7 +12,7 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.FormaPagoDTO;
 
 @RestController
-@RequestMapping("/api/v4/formas-pago")
+@RequestMapping("/api/v1/formas-pago")
 public class FormaPagoController {
 
     private final FormaPagoFacade formaPagoFacade;

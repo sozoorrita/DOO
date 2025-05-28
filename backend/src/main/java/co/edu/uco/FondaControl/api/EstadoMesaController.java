@@ -12,7 +12,7 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.EstadoMesaDTO;
 
 @RestController
-@RequestMapping("/api/v3/estado-mesas")
+@RequestMapping("/api/v1/estado-mesas")
 public class EstadoMesaController {
 
     private final EstadoMesaFacade estadoMesaFacade;

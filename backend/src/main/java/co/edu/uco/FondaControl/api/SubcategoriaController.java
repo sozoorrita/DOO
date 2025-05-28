@@ -12,7 +12,7 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.SubcategoriaDTO;
 
 @RestController
-@RequestMapping("/api/v12/subcategorias")
+@RequestMapping("/api/v1/subcategorias")
 public class SubcategoriaController {
 
     private final SubcategoriaFacade subcategoriaFacade;

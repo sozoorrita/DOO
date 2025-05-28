@@ -12,7 +12,7 @@ import co.edu.uco.FondaControl.dto.IndicadorInventarioDTO;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
 @RestController
-@RequestMapping("/api/v5/indicador-inventarios")
+@RequestMapping("/api/v1/indicador-inventarios")
 public class IndicadorInventarioController {
 
     private final IndicadorInventarioFacade facade;

@@ -12,7 +12,7 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.ProductoDTO;
 
 @RestController
-@RequestMapping("/api/v9/productos")
+@RequestMapping("/api/v1/productos")
 public class ProductoController {
 
     private final ProductoFacade productoFacade;
