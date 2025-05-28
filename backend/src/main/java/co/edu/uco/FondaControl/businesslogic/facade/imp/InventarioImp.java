@@ -14,7 +14,9 @@ import co.edu.uco.FondaControl.data.dao.factory.Factory;
 import co.edu.uco.FondaControl.dto.InventarioDTO;
 
 import java.util.UUID;
+import org.springframework.stereotype.Service;
 
+@Service
 public final class InventarioImp implements InventarioFacade {
 
     private final DAOFactory daoFactory;

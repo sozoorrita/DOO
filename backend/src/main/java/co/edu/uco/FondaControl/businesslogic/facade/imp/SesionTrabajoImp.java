@@ -6,7 +6,9 @@ import co.edu.uco.FondaControl.businesslogic.facade.SesionTrabajoFacade;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.dto.SesionTrabajoDTO;
+import org.springframework.stereotype.Service;
 
+@Service
 public final class SesionTrabajoImp implements SesionTrabajoFacade {
 
     private final SesionTrabajoBusinessLogic businessLogic;

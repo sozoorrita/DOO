@@ -1,8 +1,7 @@
 package co.edu.uco.FondaControl.businesslogic.businesslogic.impl;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.MesaBusinessLogic;
-
-import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Mesa.Entity.MesaEntityAssembler;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Mesa.entity.MesaEntityAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.MesaDomain;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.EstadoMesaDomain;
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
@@ -27,85 +26,85 @@ public final class MesaImpl implements MesaBusinessLogic {
 
     @Override
     public void evaluarMesa(final UUID codigo, final MesaDomain domain) throws FondaControlException {
-        validarCodigo(codigo);
-        validarDomain(domain);
-        validarIntegridadIdentificador(domain.getIdentificador());
-        daoFactory.getMesaDAO().update(codigo, MesaEntityAssembler.getInstance().toEntity(domain));
+        if (UtilObjeto.getInstancia().esNulo(domain)) {
+            throw new IllegalArgumentException("La mesa no puede ser nula.");
+        }
+        if (UtilObjeto.getInstancia().esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
+            throw new IllegalArgumentException("El código de la mesa no puede ser nulo ni por defecto.");
+        }
+        
+        String id = domain.getIdentificador();
+        if (id.length() > 10) {
+            throw BusinessLogicFondaControlException.reportar(
+                "El identificador de la mesa no puede exceder los 10 caracteres.");
+        }
+        
+        EstadoMesaDomain estado = domain.getEstado();
+        if (UtilObjeto.getInstancia().esNulo(estado)) {
+            throw BusinessLogicFondaControlException.reportar(
+                "El estado de la mesa es obligatorio.");
+        }
+        
+        MesaEntity entity = MesaEntityAssembler.getInstance().toEntity(domain);
+        daoFactory.getMesaDAO().update(codigo, entity);
     }
 
     @Override
     public void configurarMesa(final UUID codigo, final MesaDomain domain) throws FondaControlException {
-        validarCodigo(codigo);
-        validarDomain(domain);
-        final var entity = MesaEntityAssembler.getInstance().toEntity(domain);
+        if (UtilObjeto.getInstancia().esNulo(domain)) {
+            throw new IllegalArgumentException("La mesa no puede ser nula.");
+        }
+        if (UtilObjeto.getInstancia().esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
+            throw new IllegalArgumentException("El código de la mesa no puede ser nulo ni por defecto.");
+        }
+        MesaEntity entity = MesaEntityAssembler.getInstance().toEntity(domain);
         daoFactory.getMesaDAO().update(codigo, entity);
     }
 
     @Override
     public void registrarMesa(final MesaDomain domain) throws FondaControlException {
-        validarDomain(domain);
-        validarIntegridadIdentificador(domain.getIdentificador());
-        validarNoExistaMesaConMismoIdentificador(domain.getIdentificador());
-
-        final var nuevoCodigo = generarNuevoCodigoMesa();
-        final var nuevaMesa = MesaDomain.crear(nuevoCodigo, domain.getIdentificador(), domain.getEstado());
-
-        final var entity = MesaEntityAssembler.getInstance().toEntity(nuevaMesa);
+        if (UtilObjeto.getInstancia().esNulo(domain)) {
+            throw new IllegalArgumentException("La mesa no puede ser nula.");
+        }
+        
+        String id = domain.getIdentificador();
+        if (UtilTexto.getInstancia().esNula(id)) {
+            throw BusinessLogicFondaControlException.reportar("El identificador de la mesa es obligatorio.");
+        }
+        if (id.length() > 10) {
+            throw BusinessLogicFondaControlException.reportar("El identificador de la mesa no puede exceder los 10 caracteres.");
+        }
+        
+        EstadoMesaDomain estado = domain.getEstado();
+        if (UtilObjeto.getInstancia().esNulo(estado)) {
+            throw BusinessLogicFondaControlException.reportar("El estado de la mesa es obligatorio.");
+        }
+        
+        MesaEntity filtro = new MesaEntity();
+        filtro.setNombre(id);
+        List<MesaEntity> existentes = daoFactory.getMesaDAO().listByFilter(filtro);
+        if (!existentes.isEmpty()) {
+            throw BusinessLogicFondaControlException.reportar(
+                "Ya existe una mesa con el mismo identificador.");
+        }
+        
+        UUID nuevoCodigo;
+        do {
+            nuevoCodigo = UtilUUID.generarNuevoUUID();
+        } while (!daoFactory.getMesaDAO().listByCodigo(nuevoCodigo).isEmpty());
+        
+        MesaDomain nueva = MesaDomain.crear(nuevoCodigo, id, estado);
+        MesaEntity entity = MesaEntityAssembler.getInstance().toEntity(nueva);
         daoFactory.getMesaDAO().create(entity);
     }
 
     @Override
     public List<MesaDomain> consultarMesa(final UUID codigo) throws FondaControlException {
-        final var dao = daoFactory.getMesaDAO();
-
         if (UtilObjeto.getInstancia().esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
-            return MesaEntityAssembler.getInstance().toDomainList(dao.listAll());
+            return MesaEntityAssembler.getInstance()
+                .toDomainList(daoFactory.getMesaDAO().listAll());
         }
-
-        return MesaEntityAssembler.getInstance().toDomainList(dao.listByCodigo(codigo));
-    }
-
-    private void validarDomain(final MesaDomain domain) {
-        if (UtilObjeto.getInstancia().esNulo(domain)) {
-            throw new IllegalArgumentException("La mesa no puede ser nula.");
-        }
-    }
-
-    private void validarCodigo(final UUID codigo) {
-        if (UtilObjeto.getInstancia().esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
-            throw new IllegalArgumentException("El código de la mesa no puede ser nulo ni por defecto.");
-        }
-    }
-
-    private void validarIntegridadIdentificador(final String identificador) throws BusinessLogicFondaControlException {
-        if (UtilTexto.getInstancia().esNula(identificador)) {
-            throw BusinessLogicFondaControlException.reportar("El identificador de la mesa es obligatorio.");
-        }
-        if (identificador.length() > 50) {
-            throw BusinessLogicFondaControlException.reportar("El identificador de la mesa no puede tener más de 50 caracteres.");
-        }
-    }
-
-    private void validarNoExistaMesaConMismoIdentificador(final String identificador) throws BusinessLogicFondaControlException, DataFondaControlException {
-        final var filtro = new MesaEntity();
-        filtro.setNombre(identificador);
-
-        final var resultado = daoFactory.getMesaDAO().listByFilter(filtro);
-        if (!resultado.isEmpty()) {
-            throw BusinessLogicFondaControlException.reportar("Ya existe una mesa con el mismo identificador. No es posible registrarla nuevamente.");
-        }
-    }
-
-    private UUID generarNuevoCodigoMesa() throws DataFondaControlException {
-        UUID nuevoCodigo;
-        boolean yaExiste;
-
-        do {
-            nuevoCodigo = UtilUUID.generarNuevoUUID();
-            final var resultado = daoFactory.getMesaDAO().listByCodigo(nuevoCodigo);
-            yaExiste = !resultado.isEmpty();
-        } while (yaExiste);
-
-        return nuevoCodigo;
+        return MesaEntityAssembler.getInstance()
+            .toDomainList(daoFactory.getMesaDAO().listByCodigo(codigo));
     }
 }

@@ -10,9 +10,9 @@ public interface EstadoMesaFacade {
 
     void evaluarEstadoMesa(UUID codigo, EstadoMesaDTO estadoMesa) throws FondaControlException;
 
-    void configurarEstadoMesa(UUID codigo, EstadoMesaDTO estadoMesa) throws FondaControlException;
-
     void registrarEstadoMesa(EstadoMesaDTO estadoMesa) throws FondaControlException;
 
     List<EstadoMesaDTO> consultarEstadoMesa(UUID codigo) throws FondaControlException;
+
+	void modificarEstadoMesa(EstadoMesaDTO dto) throws FondaControlException;
 }

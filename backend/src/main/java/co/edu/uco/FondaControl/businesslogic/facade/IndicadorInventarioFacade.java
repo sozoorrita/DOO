@@ -12,4 +12,6 @@ public interface IndicadorInventarioFacade {
     void configurarIndicadorInventario(UUID codigo,IndicadorInventarioDTO indicadorInventario) throws FondaControlException;
     void registrarIndicadorInventario(IndicadorInventarioDTO indicadorInventario) throws FondaControlException;
     List<IndicadorInventarioDTO> consultarIndicadorInventario(IndicadorInventarioDTO Filtro) throws FondaControlException;
+	void eliminarIndicadorInventario(UUID codigo) throws FondaControlException;
+	void modificarIndicadorInventario(UUID codigo, IndicadorInventarioDTO dto) throws FondaControlException;
 }

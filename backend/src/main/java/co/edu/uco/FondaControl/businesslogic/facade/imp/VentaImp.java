@@ -14,7 +14,9 @@ import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import co.edu.uco.FondaControl.data.dao.factory.Factory;
 import co.edu.uco.FondaControl.dto.VentaDTO;
+import org.springframework.stereotype.Service;
 
+@Service
 public final class VentaImp implements VentaFacade {
 
     private final DAOFactory daoFactory;

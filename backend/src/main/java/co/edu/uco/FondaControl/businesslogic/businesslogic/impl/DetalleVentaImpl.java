@@ -35,7 +35,7 @@ public final class DetalleVentaImpl implements DetalleVentaBusinessLogic {
         final var codigo = UtilUUID.generarNuevoUUID();
         detalleVenta.setCodigoDetalleVenta(codigo);
 
-        var entity = DetalleVentaEntityAssembler.getInstancia().toEntity(detalleVenta);
+        var entity = DetalleVentaEntityAssembler.getInstance().toEntity(detalleVenta);
         daoFactory.getDetalleVentaDAO().create(entity);
     }
 
@@ -47,7 +47,7 @@ public final class DetalleVentaImpl implements DetalleVentaBusinessLogic {
         if (UtilObjeto.getInstancia().esNulo(detalleVenta)) {
             throw new IllegalArgumentException("El detalle de venta a modificar no puede ser nulo.");
         }
-        var entity = DetalleVentaEntityAssembler.getInstancia().toEntity(detalleVenta);
+        var entity = DetalleVentaEntityAssembler.getInstance().toEntity(detalleVenta);
         daoFactory.getDetalleVentaDAO().update(codigo, entity);
     }
 
@@ -64,8 +64,8 @@ public final class DetalleVentaImpl implements DetalleVentaBusinessLogic {
         if (UtilObjeto.getInstancia().esNulo(filtro)) {
             throw new IllegalArgumentException("El filtro para consultar detalles de venta no puede ser nulo.");
         }
-        var entityFilter = DetalleVentaEntityAssembler.getInstancia().toEntity(filtro);
+        var entityFilter = DetalleVentaEntityAssembler.getInstance().toEntity(filtro);
         var entities = daoFactory.getDetalleVentaDAO().listByFilter(entityFilter);
-        return DetalleVentaEntityAssembler.getInstancia().toDomainList(entities);
+        return DetalleVentaEntityAssembler.getInstance().toDomainList(entities);
     }
 }

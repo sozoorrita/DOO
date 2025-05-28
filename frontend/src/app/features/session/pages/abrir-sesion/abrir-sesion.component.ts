@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-abrir-sesion',
+  standalone: false,
   templateUrl: './abrir-sesion.component.html',
   styleUrls: ['./abrir-sesion.component.css']
 })

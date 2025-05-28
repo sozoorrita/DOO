@@ -16,7 +16,9 @@ import co.edu.uco.FondaControl.dto.IndicadorInventarioDTO;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
+@Service
 public final class IndicadorInventarioImp implements IndicadorInventarioFacade {
 
     private final DAOFactory daoFactory;

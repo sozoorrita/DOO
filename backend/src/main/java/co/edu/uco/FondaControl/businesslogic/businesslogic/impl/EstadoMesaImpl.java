@@ -1,16 +1,16 @@
 package co.edu.uco.FondaControl.businesslogic.businesslogic.impl;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.EstadoMesaBusinessLogic;
-
+import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.EstadoMesa.dto.EstadoMesaDTOAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.EstadoMesa.entity.EstadoMesaEntityAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.EstadoMesaDomain;
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
-import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
+import co.edu.uco.FondaControl.dto.EstadoMesaDTO;
 import co.edu.uco.FondaControl.entity.EstadoMesaEntity;
 
 import java.util.List;
@@ -46,20 +46,6 @@ public final class EstadoMesaImpl implements EstadoMesaBusinessLogic {
             );
         }
 
-    }
-
-
-    @Override
-    public void configurarEstadoMesa(final UUID codigo, final EstadoMesaDomain domain) throws FondaControlException {
-        if (UtilObjeto.getInstancia().esNulo(codigo)) {
-            throw new IllegalArgumentException("El código del estado de mesa no puede ser nulo para configurar.");
-        }
-        if (UtilObjeto.getInstancia().esNulo(domain)) {
-            throw new IllegalArgumentException("El estado de mesa a configurar no puede ser nulo.");
-        }
-
-        final var entity = EstadoMesaEntityAssembler.getInstance().toEntity(domain);
-        factory.getEstadoMesaDAO().update(codigo, entity);
     }
 
     @Override
@@ -98,7 +84,7 @@ public final class EstadoMesaImpl implements EstadoMesaBusinessLogic {
         }
     }
 
-    private void validarNoExistaEstadoMesaConMismoNombre(final String nombre) throws BusinessLogicFondaControlException, DataFondaControlException {
+    private void validarNoExistaEstadoMesaConMismoNombre(final String nombre) throws FondaControlException {
         final var filtro = EstadoMesaEntity.builder()
                 .nombre(nombre)
                 .crear();
@@ -110,7 +96,7 @@ public final class EstadoMesaImpl implements EstadoMesaBusinessLogic {
     }
 
 
-    private UUID generarNuevoCodigoEstadoMesa() throws DataFondaControlException {
+    private UUID generarNuevoCodigoEstadoMesa() throws FondaControlException {
         UUID nuevoCodigo;
         boolean existeCodigo;
 
@@ -121,5 +107,27 @@ public final class EstadoMesaImpl implements EstadoMesaBusinessLogic {
         } while (existeCodigo);
 
         return nuevoCodigo;
+    }
+
+    @Override
+    public void modificarEstadoMesa(final EstadoMesaDTO dto) throws FondaControlException {
+        
+        final var domain = EstadoMesaDTOAssembler.getInstance().toDomain(dto);        
+        evaluarEstadoMesa(dto.getCodigo(), domain);
+        
+        final var filtro = EstadoMesaEntity.builder()
+                .nombre(domain.getNombre())
+                .crear();
+        final var existentes = factory.getEstadoMesaDAO().listByFilter(filtro).stream()
+                .filter(e -> !e.getCodigo().equals(dto.getCodigo()))
+                .toList();
+        if (!existentes.isEmpty()) {
+            throw BusinessLogicFondaControlException.reportar(
+                "Ya existe otro estado de mesa con el nombre '" + domain.getNombre() + "'."
+            );
+        }
+
+        final var entityToUpdate = EstadoMesaEntityAssembler.getInstance().toEntity(domain);
+        factory.getEstadoMesaDAO().update(domain.getCodigo(), entityToUpdate);
     }
 }

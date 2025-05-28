@@ -14,7 +14,9 @@ import co.edu.uco.FondaControl.dto.RolDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
+@Service
 public class RolImp implements RolFacade {
 
     private final RolBusinessLogic businessLogic;

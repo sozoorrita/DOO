@@ -7,7 +7,7 @@ import co.edu.uco.FondaControl.businesslogic.businesslogic.CategoriaBusinessLogi
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Categoria.entity.CategoriaEntityAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.CategoriaDomain;
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
-import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
+import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
@@ -24,7 +24,7 @@ public final class CategoriaImpl implements CategoriaBusinessLogic {
     }
 
     @Override
-    public void registrarCategoria(final CategoriaDomain categoria) throws BusinessLogicFondaControlException, DataFondaControlException {
+    public void registrarCategoria(final CategoriaDomain categoria) throws FondaControlException {
         if (UtilObjeto.esNulo(categoria)) {
             throw BusinessLogicFondaControlException.reportar("No es posible registrar una categoría nula.");
         }
@@ -39,7 +39,7 @@ public final class CategoriaImpl implements CategoriaBusinessLogic {
     }
 
     @Override
-    public void modificarCategoria(final UUID codigo, final CategoriaDomain categoria) throws BusinessLogicFondaControlException, DataFondaControlException {
+    public void modificarCategoria(final UUID codigo, final CategoriaDomain categoria) throws FondaControlException {
         if (UtilUUID.esValorDefecto(codigo)) {
             throw BusinessLogicFondaControlException.reportar("El código de la categoría a modificar es inválido.");
         }
@@ -56,7 +56,7 @@ public final class CategoriaImpl implements CategoriaBusinessLogic {
     }
 
     @Override
-    public void eliminarCategoria(final UUID codigo) throws BusinessLogicFondaControlException, DataFondaControlException {
+    public void eliminarCategoria(final UUID codigo) throws FondaControlException {
         if (UtilUUID.esValorDefecto(codigo)) {
             throw BusinessLogicFondaControlException.reportar("El código de la categoría a eliminar es inválido.");
         }
@@ -65,7 +65,7 @@ public final class CategoriaImpl implements CategoriaBusinessLogic {
     }
 
     @Override
-    public List<CategoriaDomain> consultarCategoria(final CategoriaDomain filtro) throws DataFondaControlException {
+    public List<CategoriaDomain> consultarCategoria(final CategoriaDomain filtro) throws FondaControlException {
         final CategoriaEntity entityFiltro = CategoriaEntityAssembler.getInstancia().toEntity(filtro);
         final List<CategoriaEntity> resultados = daoFactory.getCategoriaDAO().listByFilter(entityFiltro);
         return CategoriaEntityAssembler.getInstancia().toDomainList(resultados);

@@ -17,7 +17,7 @@ public final class EstadoMesaDTOAssembler implements DTOAssembler<EstadoMesaDTO,
         super();
     }
 
-    public static EstadoMesaDTOAssembler getInstancia() {
+    public static EstadoMesaDTOAssembler getInstance() {
         return INSTANCIA;
     }
 
@@ -59,4 +59,5 @@ public final class EstadoMesaDTOAssembler implements DTOAssembler<EstadoMesaDTO,
         }
         return resultado;
     }
+
 }

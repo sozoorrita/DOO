@@ -14,7 +14,9 @@ import co.edu.uco.FondaControl.dto.TipoVentaDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
+@Service
 public class TipoVentaImp implements TipoVentaFacade {
 
     private final TipoVentaBusinessLogic businessLogic;

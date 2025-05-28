@@ -7,16 +7,17 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilMoneda;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
+import co.edu.uco.FondaControl.entity.VentaEntity;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.UUID;
 
 public final class InformeCajaImpl implements InformeCajaBusinessLogic {
 
     private final DAOFactory factory;
 
-    // UIDs de forma de pago
-    private static final UUID FORMA_PAGO_EFECTIVO = UUID.fromString("11111111-1111-1111-1111-111111111111");
+    private static final UUID FORMA_PAGO_EFECTIVO     = UUID.fromString("11111111-1111-1111-1111-111111111111");
     private static final UUID FORMA_PAGO_TRANSFERENCIA = UUID.fromString("22222222-2222-2222-2222-222222222222");
 
     public InformeCajaImpl(final DAOFactory factory) {
@@ -24,58 +25,55 @@ public final class InformeCajaImpl implements InformeCajaBusinessLogic {
     }
 
     @Override
-    public void consolidarventasInformeCaja(final InformeCajaDomain informeCajaDomain) throws FondaControlException {
-        validarIntegridadInforme(informeCajaDomain);
+    public void consolidarventasInformeCaja(final InformeCajaDomain informe) throws FondaControlException {
+        if (UtilObjeto.getInstancia().esNulo(informe)) {
+            throw BusinessLogicFondaControlException.reportar(
+                "El informe de caja no puede ser nulo.",
+                "Se recibió InformeCajaDomain null en consolidarventasInformeCaja(...)"
+            );
+        }
+        if (UtilObjeto.getInstancia().esNulo(informe.getCodigo())) {
+            throw BusinessLogicFondaControlException.reportar(
+                "El código del informe de caja es obligatorio.",
+                "InformeCajaDomain.getCodigo() devolvió null."
+            );
+        }
+        if (UtilObjeto.getInstancia().esNulo(informe.getCodigoSesionTrabajo())) {
+            throw BusinessLogicFondaControlException.reportar(
+                "Debe especificarse la sesión de trabajo.",
+                "InformeCajaDomain.getCodigoSesionTrabajo() devolvió null."
+            );
+        }
 
         try {
-            final var ventas = factory.getVentaDAO().listByCodigo(informeCajaDomain.getCodigoSesionTrabajo());
+            List<VentaEntity> ventas = factory.getVentaDAO()
+                .listByCodigo(informe.getCodigoSesionTrabajo());
 
-            BigDecimal totalVenta = BigDecimal.ZERO;
-            BigDecimal totalEfectivo = BigDecimal.ZERO;
-            BigDecimal totalTransferencia = BigDecimal.ZERO;
+            BigDecimal acumuladoTotal       = BigDecimal.ZERO;
+            BigDecimal acumuladoEfectivo    = BigDecimal.ZERO;
+            BigDecimal acumuladoTransferencia = BigDecimal.ZERO;
 
-            for (final var venta : ventas) {
-                final var monto = BigDecimal.valueOf(Math.max(0, venta.getTotalVenta()));
-                totalVenta = totalVenta.add(monto);
+            for (VentaEntity venta : ventas) {
+                BigDecimal monto = BigDecimal.valueOf(venta.getTotalVenta());
+                monto = UtilMoneda.asegurarNoNegativo(monto);
 
+                acumuladoTotal = acumuladoTotal.add(monto);
                 if (FORMA_PAGO_EFECTIVO.equals(venta.getCodigoFormaPago())) {
-                    totalEfectivo = totalEfectivo.add(monto);
+                    acumuladoEfectivo = acumuladoEfectivo.add(monto);
                 } else if (FORMA_PAGO_TRANSFERENCIA.equals(venta.getCodigoFormaPago())) {
-                    totalTransferencia = totalTransferencia.add(monto);
+                    acumuladoTransferencia = acumuladoTransferencia.add(monto);
                 }
             }
 
-            informeCajaDomain.setTotalVenta(totalVenta);
-            informeCajaDomain.setPagoEfectivo(totalEfectivo);
-            informeCajaDomain.setPagoTransferencia(totalTransferencia);
+            informe.setTotalVenta(acumuladoTotal);
+            informe.setPagoEfectivo(acumuladoEfectivo);
+            informe.setPagoTransferencia(acumuladoTransferencia);
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             throw BusinessLogicFondaControlException.reportar(
-                    "No se pudieron consolidar las ventas del informe de caja.",
-                    "Error técnico al procesar las ventas: " + e.getMessage(), e
-            );
-        }
-    }
-
-    private void validarIntegridadInforme(final InformeCajaDomain informe) throws BusinessLogicFondaControlException {
-        if (UtilObjeto.getInstancia().esNulo(informe)) {
-            throw BusinessLogicFondaControlException.reportar(
-                    "El informe de caja no puede ser nulo.",
-                    "Se intentó consolidar un informe nulo en 'consolidarventasInformeCaja(...)'."
-            );
-        }
-
-        if (UtilObjeto.getInstancia().esNulo(informe.getCodigo())) {
-            throw BusinessLogicFondaControlException.reportar(
-                    "El código del informe de caja no puede ser nulo.",
-                    "InformeCajaDomain.getCodigo() devolvió null."
-            );
-        }
-
-        if (UtilObjeto.getInstancia().esNulo(informe.getCodigoSesionTrabajo())) {
-            throw BusinessLogicFondaControlException.reportar(
-                    "Debe estar asociado a una sesión de trabajo.",
-                    "InformeCajaDomain.getCodigoSesionTrabajo() devolvió null."
+                "No se pudieron consolidar las ventas del informe de caja.",
+                "Error técnico al procesar ventas: " + e.getMessage(),
+                e
             );
         }
     }

@@ -1,219 +1,174 @@
 package co.edu.uco.FondaControl.data.dao.factory.postgresql;
 
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
+import javax.sql.DataSource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
-import co.edu.uco.FondaControl.data.dao.entity.Usuario.UsuarioDAO;
-import co.edu.uco.FondaControl.data.dao.entity.Usuario.imp.postgresql.UsuarioPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.categoria.CategoriaDAO;
-import co.edu.uco.FondaControl.data.dao.entity.categoria.impl.CategoriaPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.detalleventa.DetalleVentaDAO;
-import co.edu.uco.FondaControl.data.dao.entity.detalleventa.impl.DetalleVentaPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.estadomesa.EstadoMesaDAO;
-import co.edu.uco.FondaControl.data.dao.entity.estadomesa.impl.EstadoMesaPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.formapago.FormaPagoDAO;
-import co.edu.uco.FondaControl.data.dao.entity.formapago.impl.FormaPagoPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.IndicadorInventarioDAO;
-import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.impl.postgresql.IndicadorInventarioPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.informecaja.InformeCajaDAO;
-import co.edu.uco.FondaControl.data.dao.entity.informecaja.impl.postgresql.InformeCajaPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.inventario.InventarioDAO;
-import co.edu.uco.FondaControl.data.dao.entity.inventario.imp.postgresql.InventarioPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.mesa.MesaDAO;
-import co.edu.uco.FondaControl.data.dao.entity.mesa.impl.postgresql.MesaPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.producto.ProductoDAO;
-import co.edu.uco.FondaControl.data.dao.entity.producto.impl.ProductoPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.rol.RolDAO;
-import co.edu.uco.FondaControl.data.dao.entity.rol.impl.RolPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.SesionTrabajoDAO;
-import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.imp.postgresql.SesionTrabajoPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.subcategoria.SubcategoriaDAO;
-import co.edu.uco.FondaControl.data.dao.entity.subcategoria.impl.SubcategoriaPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.tipoventa.TipoVentaDAO;
-import co.edu.uco.FondaControl.data.dao.entity.tipoventa.impl.TipoVentaPostgreSQLDAO;
-import co.edu.uco.FondaControl.data.dao.entity.venta.VentaDAO;
-import co.edu.uco.FondaControl.data.dao.entity.venta.impl.VentaPostgreSQLDAO;
+import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 
-public final class PostgreSQLDAOFactory extends DAOFactory {
-	private Connection conexion;
-	private boolean transaccionIniciada;
-	private boolean conexionAbierta;
+import co.edu.uco.FondaControl.data.dao.entity.categoria.impl.CategoriaPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.detalleventa.impl.DetalleVentaPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.estadomesa.impl.EstadoMesaPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.formapago.impl.FormaPagoPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.indicadorinventario.impl.postgresql.IndicadorInventarioPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.informecaja.impl.postgresql.InformeCajaPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.inventario.imp.postgresql.InventarioPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.mesa.impl.postgresql.MesaPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.producto.impl.ProductoPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.rol.impl.RolPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.sesiontrabajo.imp.postgresql.SesionTrabajoPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.subcategoria.impl.SubcategoriaPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.tipoventa.impl.TipoVentaPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.Usuario.imp.postgresql.UsuarioPostgreSQLDAO;
+import co.edu.uco.FondaControl.data.dao.entity.venta.impl.VentaPostgreSQLDAO;
 
-	public PostgreSQLDAOFactory() throws DataFondaControlException {
-		abrirConexion();
-		this.transaccionIniciada = false;
-		this.conexionAbierta = true;
-	}
+@Component
+public class PostgreSQLDAOFactory extends DAOFactory {
 
-	@Override
-	protected void abrirConexion() throws DataFondaControlException {
-		var servidor = "ep-green-snow-a4vppda9-pooler.us-east-1.aws.neon.tech";
-		var baseDatos = "fondacontrol";
-		var usuario = "fondacontrol_owner";
-		var contrasena = "npg_FOPNH4dG6UhZ";
-		var url = String.format("jdbc:postgresql://%s/%s?sslmode=require", servidor, baseDatos);
+    private final DataSource dataSource;
+    private Connection connection;
 
-		try {
-			conexion = DriverManager.getConnection(url, usuario, contrasena);
-			conexionAbierta = true;
-		} catch (SQLException e) {
-			throw DataFondaControlException.reportar("Error al abrir la conexión a la base de datos",
-					"abrirConexion(): " + e.getMessage(), e);
-		}
-	}
+    @Autowired
+    public PostgreSQLDAOFactory(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
-	@Override
-	public void iniciarTransaccion() throws DataFondaControlException {
-		try {
-			validarConexion();
-			conexion.setAutoCommit(false);
-			transaccionIniciada = true;
-		} catch (SQLException e) {
-			throw DataFondaControlException.reportar("Error al iniciar transacción",
-					"iniciarTransaccion(): " + e.getMessage(), e);
-		}
-	}
+    protected void abrirConexion() throws DataFondaControlException {
+        try {
+            this.connection = dataSource.getConnection();
+        } catch (SQLException ex) {
+            throw DataFondaControlException.reportar(
+                "No se pudo abrir conexión con la base de datos.",
+                "Error SQL al obtener conexión desde DataSource", ex);
+        }
+    }
 
-	@Override
-	public void confirmarTransaccion() throws DataFondaControlException {
-		try {
-			validarConexion();
-			validarTransaccion();
-			conexion.commit();
-		} catch (SQLException e) {
-			throw DataFondaControlException.reportar("Error al confirmar transacción",
-					"confirmarTransaccion(): " + e.getMessage(), e);
-		}
-	}
+    @Override
+    public void iniciarTransaccion() throws FondaControlException {
+        try {
+            abrirConexion();
+            connection.setAutoCommit(false);
+        } catch (SQLException ex) {
+            throw DataFondaControlException.reportar(
+                "No se pudo iniciar transacción.",
+                "Error SQL durante setAutoCommit(false)", ex);
+        }
+    }
 
-	@Override
-	public void cancelarTransaccion() throws DataFondaControlException {
-		try {
-			validarConexion();
-			validarTransaccion();
-			conexion.rollback();
-		} catch (SQLException e) {
-			throw DataFondaControlException.reportar("Error al cancelar transacción",
-					"cancelarTransaccion(): " + e.getMessage(), e);
-		}
-	}
+    @Override
+    public void confirmarTransaccion() throws FondaControlException {
+        try {
+            connection.commit();
+            cerrarConexion();
+        } catch (SQLException ex) {
+            throw DataFondaControlException.reportar(
+                "No se pudo confirmar transacción.",
+                "Error SQL durante commit()", ex);
+        }
+    }
 
-	@Override
-	public void cerrarConexion() throws DataFondaControlException {
-		try {
-			validarConexion();
-			conexion.close();
-			conexionAbierta = false;
-		} catch (SQLException e) {
-			throw DataFondaControlException.reportar("Error al cerrar la conexión",
-					"cerrarConexion(): " + e.getMessage(), e);
-		}
-	}
+    @Override
+    public void cancelarTransaccion() throws FondaControlException {
+        try {
+            connection.rollback();
+            cerrarConexion();
+        } catch (SQLException ex) {
+            throw DataFondaControlException.reportar(
+                "No se pudo cancelar transacción.",
+                "Error SQL durante rollback()", ex);
+        }
+    }
 
-	private void validarConexion() throws DataFondaControlException {
-		if (!conexionAbierta) {
-			throw DataFondaControlException.reportar("Conexión cerrada",
-					"La conexión debe estar abierta para esta operación");
-		}
-	}
+    @Override
+    public void cerrarConexion() throws FondaControlException {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        } catch (SQLException ex) {
+            throw DataFondaControlException.reportar(
+                "Error al cerrar conexión.",
+                "Error SQL durante close()", ex);
+        }
+    }
 
-	private void validarTransaccion() throws DataFondaControlException {
-		if (!transaccionIniciada) {
-			throw DataFondaControlException.reportar("Transacción no iniciada",
-					"Se debe iniciar una transacción antes de esta operación");
-		}
-	}
+    @Override
+    public CategoriaPostgreSQLDAO getCategoriaDAO() {
+        return new CategoriaPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public UsuarioDAO getUsuarioDAO() throws DataFondaControlException {
-		validarConexion();
-		return new UsuarioPostgreSQLDAO(conexion);
-	}
+    @Override
+    public DetalleVentaPostgreSQLDAO getDetalleVentaDAO() {
+        return new DetalleVentaPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public IndicadorInventarioDAO getIndicadorInventarioDAO() throws DataFondaControlException {
-		validarConexion();
-		return new IndicadorInventarioPostgreSQLDAO(conexion);
-	}
+    @Override
+    public EstadoMesaPostgreSQLDAO getEstadoMesaDAO() {
+        return new EstadoMesaPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public SesionTrabajoDAO getSesionTrabajoDAO() throws DataFondaControlException {
-		validarConexion();
-		return new SesionTrabajoPostgreSQLDAO(conexion);
-	}
+    @Override
+    public FormaPagoPostgreSQLDAO getFormaPagoDAO() {
+        return new FormaPagoPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public MesaDAO getMesaDAO() throws DataFondaControlException {
-		validarConexion();
-		return new MesaPostgreSQLDAO(conexion);
-	}
+    @Override
+    public IndicadorInventarioPostgreSQLDAO getIndicadorInventarioDAO() {
+        return new IndicadorInventarioPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public EstadoMesaDAO getEstadoMesaDAO() throws DataFondaControlException {
-		validarConexion();
-		return new EstadoMesaPostgreSQLDAO(conexion);
-	}
+    @Override
+    public InformeCajaPostgreSQLDAO getInformeCajaDAO() {
+        return new InformeCajaPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public InformeCajaDAO getInformeCajaDAO() throws DataFondaControlException {
-		validarConexion();
-		return new InformeCajaPostgreSQLDAO(conexion);
-	}
+    @Override
+    public InventarioPostgreSQLDAO getInventarioDAO() {
+        return new InventarioPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public InventarioDAO getInventarioDAO() throws DataFondaControlException {
-		validarConexion();
-		return new InventarioPostgreSQLDAO(conexion);
-	}
+    @Override
+    public MesaPostgreSQLDAO getMesaDAO() {
+        return new MesaPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public CategoriaDAO getCategoriaDAO() throws DataFondaControlException {
-		validarConexion();
-		return new CategoriaPostgreSQLDAO(conexion);
-	}
+    @Override
+    public ProductoPostgreSQLDAO getProductoDAO() {
+        return new ProductoPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public SubcategoriaDAO getSubcategoriaDAO() throws DataFondaControlException {
-		validarConexion();
-		return new SubcategoriaPostgreSQLDAO(conexion);
-	}
+    @Override
+    public RolPostgreSQLDAO getRolDAO() {
+        return new RolPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public TipoVentaDAO getTipoVentaDAO() throws DataFondaControlException {
-		validarConexion();
-		return new TipoVentaPostgreSQLDAO(conexion);
-	}
+    @Override
+    public SesionTrabajoPostgreSQLDAO getSesionTrabajoDAO() {
+        return new SesionTrabajoPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public FormaPagoDAO getFormaPagoDAO() throws DataFondaControlException {
-		validarConexion();
-		return new FormaPagoPostgreSQLDAO(conexion);
-	}
+    @Override
+    public SubcategoriaPostgreSQLDAO getSubcategoriaDAO() {
+        return new SubcategoriaPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public RolDAO getRolDAO() throws DataFondaControlException {
-		validarConexion();
-		return new RolPostgreSQLDAO(conexion);
-	}
+    @Override
+    public TipoVentaPostgreSQLDAO getTipoVentaDAO() {
+        return new TipoVentaPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public ProductoDAO getProductoDAO() throws DataFondaControlException {
-		validarConexion();
-		return new ProductoPostgreSQLDAO(conexion);
-	}
+    @Override
+    public UsuarioPostgreSQLDAO getUsuarioDAO() {
+        return new UsuarioPostgreSQLDAO(connection);
+    }
 
-	@Override
-	public DetalleVentaDAO getDetalleVentaDAO() throws DataFondaControlException {
-		validarConexion();
-		return new DetalleVentaPostgreSQLDAO(conexion);
-	}
-
-	@Override
-	public VentaDAO getVentaDAO() throws DataFondaControlException {
-		validarConexion();
-		return new VentaPostgreSQLDAO(conexion);
-	}
+    @Override
+    public VentaPostgreSQLDAO getVentaDAO() {
+        return new VentaPostgreSQLDAO(connection);
+    }
 }

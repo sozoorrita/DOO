@@ -1,4 +1,4 @@
-package co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Mesa.Entity;
+package co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Mesa.entity;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.EntityAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.EstadoMesaDomain;

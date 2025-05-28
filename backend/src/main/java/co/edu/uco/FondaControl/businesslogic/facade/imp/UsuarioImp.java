@@ -8,7 +8,9 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.dto.UsuarioDTO;
+import org.springframework.stereotype.Service;
 
+@Service
 public final class UsuarioImp implements UsuarioFacade {
 
     private final UsuarioBusinessLogic businessLogic;

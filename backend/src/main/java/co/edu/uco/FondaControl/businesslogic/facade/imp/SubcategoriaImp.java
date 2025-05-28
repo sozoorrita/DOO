@@ -13,7 +13,9 @@ import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import co.edu.uco.FondaControl.data.dao.factory.Factory;
 import co.edu.uco.FondaControl.dto.SubcategoriaDTO;
+import org.springframework.stereotype.Service;
 
+@Service
 public final class SubcategoriaImp implements SubcategoriaFacade {
 
     private final DAOFactory daoFactory;

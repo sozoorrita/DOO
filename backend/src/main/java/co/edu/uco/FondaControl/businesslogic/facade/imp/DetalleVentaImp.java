@@ -1,104 +1,48 @@
 package co.edu.uco.FondaControl.businesslogic.facade.imp;
 
-import java.util.List;
-import java.util.UUID;
-
 import co.edu.uco.FondaControl.businesslogic.businesslogic.DetalleVentaBusinessLogic;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.impl.DetalleVentaImpl;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.DetalleVenta.dto.DetalleVentaDTOAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.DetalleVentaDomain;
-import co.edu.uco.FondaControl.businesslogic.facade.DetalleVentaFacade;
-import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
-import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
-import co.edu.uco.FondaControl.data.dao.factory.Factory;
+import co.edu.uco.FondaControl.businesslogic.facade.DetalleVentaFacade;
 import co.edu.uco.FondaControl.dto.DetalleVentaDTO;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
-public final class DetalleVentaImp implements DetalleVentaFacade {
+import java.util.List;
 
-    private final DAOFactory daoFactory;
-    private final DetalleVentaBusinessLogic businessLogic;
+@Service
+public class DetalleVentaImp implements DetalleVentaFacade {
+    private final DetalleVentaBusinessLogic logic;
 
-    public DetalleVentaImp() {
-        this.daoFactory = DAOFactory.getDAOFactory(Factory.POSTGRESQL);
-        this.businessLogic = new co.edu.uco.FondaControl.businesslogic.businesslogic.impl.DetalleVentaImpl(daoFactory);
+    @Autowired
+    public DetalleVentaImp(DAOFactory dao) {
+        this.logic = new DetalleVentaImpl(dao);
     }
 
     @Override
-    public void registrarDetalleVenta(final DetalleVentaDTO detalleVenta) throws FondaControlException {
-        if (UtilObjeto.esNulo(detalleVenta)) {
-            throw BusinessLogicFondaControlException.reportar("El detalle de venta no puede ser nulo.", "detalleVenta es nulo");
-        }
-        try {
-            daoFactory.iniciarTransaccion();
-            final DetalleVentaDomain domain = DetalleVentaDTOAssembler.getInstancia().toDomain(detalleVenta);
-            businessLogic.registrarDetalleVenta(domain);
-            daoFactory.confirmarTransaccion();
-        } catch (FondaControlException e) {
-            daoFactory.cancelarTransaccion();
-            throw e;
-        } catch (Exception e) {
-            daoFactory.cancelarTransaccion();
-            throw BusinessLogicFondaControlException.reportar("Error registrando detalle de venta.", e.getMessage(), e);
-        } finally {
-            daoFactory.cerrarConexion();
-        }
+    public void registrarDetalleVenta(DetalleVentaDTO dto) throws FondaControlException {
+        DetalleVentaDomain domain = DetalleVentaDTOAssembler.getInstancia().toDomain(dto);
+        logic.registrarDetalleVenta(domain);
     }
 
     @Override
-    public void modificarDetalleVenta(final DetalleVentaDTO detalleVenta) throws FondaControlException {
-        if (UtilObjeto.esNulo(detalleVenta)) {
-            throw BusinessLogicFondaControlException.reportar("El detalle de venta no puede ser nulo.", "detalleVenta es nulo");
-        }
-        final UUID codigo = detalleVenta.getCodigoDetalleVenta();
-        try {
-            daoFactory.iniciarTransaccion();
-            final DetalleVentaDomain domain = DetalleVentaDTOAssembler.getInstancia().toDomain(detalleVenta);
-            businessLogic.modificarDetalleVenta(codigo, domain);
-            daoFactory.confirmarTransaccion();
-        } catch (FondaControlException e) {
-            daoFactory.cancelarTransaccion();
-            throw e;
-        } catch (Exception e) {
-            daoFactory.cancelarTransaccion();
-            throw BusinessLogicFondaControlException.reportar("Error modificando detalle de venta.", e.getMessage(), e);
-        } finally {
-            daoFactory.cerrarConexion();
-        }
+    public void modificarDetalleVenta(DetalleVentaDTO dto) throws FondaControlException {
+        DetalleVentaDomain domain = DetalleVentaDTOAssembler.getInstancia().toDomain(dto);
+        logic.modificarDetalleVenta(domain.getCodigoDetalleVenta(), domain);
     }
 
     @Override
-    public void eliminarDetalleVenta(final DetalleVentaDTO detalleVenta) throws FondaControlException {
-        if (UtilObjeto.esNulo(detalleVenta)) {
-            throw BusinessLogicFondaControlException.reportar("El detalle de venta no puede ser nulo.", "detalleVenta es nulo");
-        }
-        final UUID codigo = detalleVenta.getCodigoDetalleVenta();
-        try {
-            daoFactory.iniciarTransaccion();
-            businessLogic.eliminarDetalleVenta(codigo);
-            daoFactory.confirmarTransaccion();
-        } catch (FondaControlException e) {
-            daoFactory.cancelarTransaccion();
-            throw e;
-        } catch (Exception e) {
-            daoFactory.cancelarTransaccion();
-            throw BusinessLogicFondaControlException.reportar("Error eliminando detalle de venta.", e.getMessage(), e);
-        } finally {
-            daoFactory.cerrarConexion();
-        }
+    public void eliminarDetalleVenta(DetalleVentaDTO dto) throws FondaControlException {
+        logic.eliminarDetalleVenta(DetalleVentaDTOAssembler.getInstancia().toDomain(dto).getCodigoDetalleVenta());
     }
 
     @Override
-    public List<DetalleVentaDTO> consultarDetalleVenta(final DetalleVentaDTO filtro) throws FondaControlException {
-        if (UtilObjeto.esNulo(filtro)) {
-            throw BusinessLogicFondaControlException.reportar("El filtro no puede ser nulo.", "filtro es nulo");
-        }
-        try {
-            final List<DetalleVentaDomain> listado = businessLogic.consultarDetalleVenta(
-                    DetalleVentaDTOAssembler.getInstancia().toDomain(filtro));
-            return DetalleVentaDTOAssembler.getInstancia().toDtoList(listado);
-        } finally {
-            daoFactory.cerrarConexion();
-        }
+    public List<DetalleVentaDTO> consultarDetalleVenta(DetalleVentaDTO dto) throws FondaControlException {
+        var filter = DetalleVentaDTOAssembler.getInstancia().toDomain(dto);
+        var domains = logic.consultarDetalleVenta(filter);
+        return DetalleVentaDTOAssembler.getInstancia().toDtoList(domains);
     }
 }

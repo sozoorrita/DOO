@@ -14,7 +14,9 @@ import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import co.edu.uco.FondaControl.data.dao.factory.Factory;
 import co.edu.uco.FondaControl.dto.ProductoDTO;
+import org.springframework.stereotype.Service;
 
+@Service
 public final class ProductoImp implements ProductoFacade {
 
     private final DAOFactory daoFactory;

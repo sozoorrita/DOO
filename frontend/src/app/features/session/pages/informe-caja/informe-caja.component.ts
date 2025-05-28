@@ -3,6 +3,7 @@ import { SessionFacade } from '../../../../core/facades/session.facade';
 
 @Component({
   selector: 'app-informe-caja',
+  standalone: false,
   templateUrl: './informe-caja.component.html',
   styleUrls: ['./informe-caja.component.css']
 })

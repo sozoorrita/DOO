@@ -15,13 +15,15 @@ import co.edu.uco.FondaControl.dto.MesaDTO;
 
 import java.util.List;
 import java.util.UUID;
+import org.springframework.stereotype.Service;
 
-public final class MesaImpFacade implements MesaFacade {
+@Service
+public final class MesaImp implements MesaFacade {
 
     private final DAOFactory daoFactory;
     private final MesaBusinessLogic businessLogic;
 
-    public MesaImpFacade() throws DataFondaControlException {
+    public MesaImp() throws DataFondaControlException {
         this.daoFactory = DAOFactory.getDAOFactory(Factory.POSTGRESQL);
         this.businessLogic = new MesaImpl(daoFactory);
     }

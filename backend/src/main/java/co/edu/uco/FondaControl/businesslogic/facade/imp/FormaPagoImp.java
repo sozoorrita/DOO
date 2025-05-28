@@ -1,5 +1,6 @@
 package co.edu.uco.FondaControl.businesslogic.facade.imp;
 
+import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import co.edu.uco.FondaControl.data.dao.factory.Factory;
 import co.edu.uco.FondaControl.dto.FormaPagoDTO;
 
+@Service
 public class FormaPagoImp implements FormaPagoFacade {
 
 	private final FormaPagoBusinessLogic businessLogic;
