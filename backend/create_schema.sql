@@ -2,132 +2,132 @@
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 
 -- 1) Rol
-CREATE TABLE rol (
+CREATE TABLE Rol (
   codigo UUID PRIMARY KEY NOT NULL,
   nombre VARCHAR(50) NOT NULL
 );
 
 -- 2) Categoría
-CREATE TABLE categoria (
+CREATE TABLE Categoria (
   codigo UUID PRIMARY KEY NOT NULL,
   nombre VARCHAR(50) NOT NULL
 );
 
 -- 3) Subcategoría (→ categoría)
-CREATE TABLE subcategoria (
+CREATE TABLE Subcategoria (
   codigo UUID PRIMARY KEY NOT NULL,
   nombre VARCHAR(50) NOT NULL,
   codigoCategoria UUID NOT NULL
-    REFERENCES categoria(codigo)
+    REFERENCES Categoria(codigo)
 );
 
 -- 4) Estado de mesa
-CREATE TABLE estado_mesa (
+CREATE TABLE EstadoMesa (
   codigo UUID PRIMARY KEY NOT NULL,
   nombre VARCHAR(50) NOT NULL
 );
 
 -- 5) Mesa (→ estado_mesa)
-CREATE TABLE mesa (
+CREATE TABLE Mesa (
   codigo UUID PRIMARY KEY NOT NULL,
   nombre VARCHAR(50) NOT NULL,
   codigoEstadoMesa UUID NOT NULL
-    REFERENCES estado_mesa(codigo)
+    REFERENCES EstadoMesa(codigo)
 );
 
 -- 6) Tipo de venta
-CREATE TABLE tipo_venta (
+CREATE TABLE TipoVenta (
   codigo UUID PRIMARY KEY NOT NULL,
   nombre VARCHAR(50) NOT NULL
 );
 
 -- 7) Forma de pago
-CREATE TABLE forma_pago (
+CREATE TABLE FormaPago (
   codigo UUID PRIMARY KEY NOT NULL,
   tipoPago VARCHAR(50) NOT NULL
 );
 
 -- 8) Usuario (→ rol)
-CREATE TABLE usuario (
+CREATE TABLE Usuario (
   id UUID PRIMARY KEY NOT NULL,
   nombre VARCHAR(50) NOT NULL,
   contrasena VARCHAR(50) NOT NULL,
   codigoRol UUID NOT NULL
-    REFERENCES rol(codigo)
+    REFERENCES Rol(codigo)
 );
 
 -- 9) Sesión de trabajo (→ usuario)
-CREATE TABLE sesion_trabajo (
+CREATE TABLE SesionTrabajo (
   codigo UUID PRIMARY KEY NOT NULL,
   idUsuario UUID NOT NULL
-    REFERENCES usuario(id),
-  baseCaja      DOUBLE NOT NULL,   
+    REFERENCES Usuario(id),
+  baseCaja      NUMERIC(12,2) NOT NULL,   
   fechaApertura TIMESTAMP NOT NULL,
-  fechaCierre   TIMESTAMP NOT NULL,
+  fechaCierre   TIMESTAMP NOT NULL
 );
 
 -- 10) Informe de caja (→ sesión de trabajo)
-CREATE TABLE informe_caja (
+CREATE TABLE InformeCaja (
   codigo UUID PRIMARY KEY NOT NULL,
   codigoSesionTrabajo UUID NOT NULL
-    REFERENCES sesion_trabajo(codigo),
-  fecha              TIMESTAMP   NOT NULL,
-  totalVenta        DOUBLE NOT NULL,
-  pagoEfectivo      DOUBLE NOT NULL,
-  pagoTransferencia DOUBLE NOT NULL
+    REFERENCES SesionTrabajo(codigo),
+  fecha             TIMESTAMP   NOT NULL,
+  totalVenta        NUMERIC(12,2) NOT NULL,
+  pagoEfectivo      NUMERIC(12,2) NOT NULL,
+  pagoTransferencia NUMERIC(12,2) NOT NULL
 );
 
 -- 11) Indicador de inventario
-CREATE TABLE indicador_inventario (
+CREATE TABLE IndicadorInventario (
   codigo UUID PRIMARY KEY NOT NULL,
-  nombre VARCHAR(50) NOT NULL,
+  nombre VARCHAR(50) NOT NULL
 );
 
 -- 12) Producto (→ categoría, subcategoría, indicador_inventario)
-CREATE TABLE producto (
+CREATE TABLE Producto (
   codigo UUID PRIMARY KEY NOT NULL,
   nombre VARCHAR(50) NOT NULL,
-  precioLugar DOUBLE NOT NULL,
-  precioLLevar DOUBLE NOT NULL,
+  precioLugar NUMERIC(12,2) NOT NULL,
+  precioLLevar NUMERIC(12,2) NOT NULL,
   codigoSubcategoria UUID NOT NULL
-    REFERENCES subcategoria(codigo),
-  limiteCantidad INT NOT NULL,
+    REFERENCES Subcategoria(codigo),
+  limiteCantidad INT NOT NULL
 );
 
 -- 13) Inventario (→ producto)
-CREATE TABLE inventario (
+CREATE TABLE Inventario (
   codigo UUID PRIMARY KEY NOT NULL,
   codigoProducto UUID NOT NULL
-    REFERENCES producto(codigo),
+    REFERENCES Producto(codigo),
   nombreProducto VARCHAR(50) NOT NULL,
   cantidad INT,
   codigoIndicador UUID NOT NULL
-    REFERENCES indicador_inventario(codigo),
+    REFERENCES IndicadorInventario(codigo)
 );
 
 -- 14) Venta (→ sesión_trabajo, forma_pago, tipo_venta, mesa)
-CREATE TABLE venta (
+CREATE TABLE Venta (
   codigo UUID PRIMARY KEY NOT NULL,
   fecha TIMESTAMP NOT NULL,
   codigoSesionTrabajo UUID NOT NULL
-    REFERENCES sesion_trabajo(codigo),
+    REFERENCES SesionTrabajo(codigo),
   codigoFormaPago UUID NOT NULL
-    REFERENCES forma_pago(codigo),
+    REFERENCES FormaPago(codigo),
   codigoTipoVenta UUID NOT NULL
-    REFERENCES tipo_venta(codigo),
+    REFERENCES TipoVenta(codigo),
   codigoMesa UUID NOT NULL
-    REFERENCES mesa(codigo),
-  totalVenta DOUBLE NOT NULL
+    REFERENCES Mesa(codigo),
+  totalVenta NUMERIC(12,2) NOT NULL
 );
 
 -- 15) Detalle de venta (→ venta, producto)
-CREATE TABLE detalle_venta (
+CREATE TABLE DetalleVenta (
   codigo UUID PRIMARY KEY NOT NULL,
   codigoVenta UUID NOT NULL
-    REFERENCES venta(codigo),
+    REFERENCES Venta(codigo),
   codigoProducto UUID NOT NULL
-    REFERENCES producto(codigo),
+    REFERENCES Producto(codigo),
   cantidad INT NOT NULL,
   nombreProducto VARCHAR(50),
-  precioUnitario DOUBLE NOT NULL
+  precioUnitario NUMERIC(12,2) NOT NULL
 );
