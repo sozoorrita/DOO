@@ -1,0 +1,29 @@
+/* src/app/features/indicador-inventario/pages/indicador-inventario-form/indicador-inventario-form.component.css */
+.indicador-form {
+  padding: 1rem;
+  max-width: 400px;
+}
+
+label {
+  display: block;
+  margin: 0.5rem 0 0.25rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.4rem;
+  box-sizing: border-box;
+}
+
+.buttons {
+  margin-top: 1rem;
+}
+
+button {
+  margin-right: 0.5rem;
+}
+
+.error {
+  color: red;
+  margin-top: 0.5rem;
+}

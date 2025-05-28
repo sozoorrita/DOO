@@ -1,0 +1,32 @@
+<!-- src/app/features/forma-pago/pages/forma-pago-list/forma-pago-list.component.html -->
+<div class="forma-pago-list">
+  <h2>Formas de Pago</h2>
+  <button (click)="onNuevo()">Nueva Forma</button>
+
+  <div *ngIf="cargando">Cargando...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <table *ngIf="!cargando && formas.length">
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Nombre</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let f of formas">
+        <td>{{ f.codigo }}</td>
+        <td>{{ f.nombre }}</td>
+        <td>
+          <button (click)="onEditar(f.codigo)">Editar</button>
+          <button (click)="onEliminar(f.codigo)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!cargando && formas.length === 0">
+    No hay formas de pago registradas.
+  </div>
+</div>

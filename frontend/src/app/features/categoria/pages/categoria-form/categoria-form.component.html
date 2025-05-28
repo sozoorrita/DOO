@@ -1,0 +1,24 @@
+<!-- src/app/features/categoria/pages/categoria-form/categoria-form.component.html -->
+
+<div class="categoria-form">
+  <h2>{{ codigo ? 'Editar' : 'Nueva' }} Categoría</h2>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    <div>
+      <label for="nombre">Nombre:</label>
+      <input id="nombre" formControlName="nombre" />
+      <div *ngIf="form.get('nombre')?.invalid && form.get('nombre')?.touched" class="error">
+        El nombre es requerido y debe tener máximo 50 caracteres.
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button type="submit" [disabled]="form.invalid || cargando">
+        {{ codigo ? 'Actualizar' : 'Crear' }}
+      </button>
+      <button type="button" (click)="cancel()">Cancelar</button>
+    </div>
+
+    <div *ngIf="error" class="error">{{ error }}</div>
+  </form>
+</div>

@@ -1,0 +1,29 @@
+/* src/app/features/forma-pago/pages/forma-pago-form/forma-pago-form.component.css */
+.forma-pago-form {
+  padding: 1rem;
+  max-width: 400px;
+}
+
+label {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+input {
+  width: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.buttons {
+  margin-top: 1rem;
+}
+
+button {
+  margin-right: 0.5rem;
+}
+
+.error {
+  color: red;
+  margin-top: 0.5rem;
+}

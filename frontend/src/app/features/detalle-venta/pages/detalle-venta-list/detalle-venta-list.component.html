@@ -1,0 +1,39 @@
+<!-- src/app/features/detalle-venta/pages/detalle-venta-list/detalle-venta-list.component.html -->
+
+<div class="detalle-venta-list">
+  <h2>Detalle de Ventas</h2>
+  <button (click)="onNuevo()">Nuevo detalle</button>
+
+  <div *ngIf="cargando">Cargando...</div>
+  <div *ngIf="error" class="error">{{ error }}</div>
+
+  <table *ngIf="!cargando && detalles.length">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Venta</th>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio Aplicado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of detalles">
+        <td>{{ d.codigo }}</td>
+        <td>{{ d.codigoVenta }}</td>
+        <td>{{ d.codigoProducto }}</td>
+        <td>{{ d.cantidad }}</td>
+        <td>{{ d.precioAplicado }}</td>
+        <td>
+          <button (click)="onEditar(d.codigo)">Editar</button>
+          <button (click)="onEliminar(d.codigo)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div *ngIf="!cargando && detalles.length === 0">
+    No hay registros.
+  </div>
+</div>
