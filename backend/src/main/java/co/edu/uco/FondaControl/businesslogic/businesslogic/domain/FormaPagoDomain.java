@@ -10,7 +10,7 @@ public final class FormaPagoDomain {
     private final UUID codigo;
     private final String nombre;
 
-    private FormaPagoDomain(final UUID codigo, final String nombre) {
+    public FormaPagoDomain(final UUID codigo, final String nombre) {
         this.codigo = UtilUUID.obtenerValorDefecto(codigo);
         this.nombre = validarNombre(nombre);
     }

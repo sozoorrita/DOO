@@ -15,4 +15,7 @@ public interface EstadoMesaFacade {
     List<EstadoMesaDTO> consultarEstadoMesa(UUID codigo) throws FondaControlException;
 
 	void modificarEstadoMesa(EstadoMesaDTO dto) throws FondaControlException;
+	
+	void eliminarEstadoMesa(EstadoMesaDTO dto) throws FondaControlException;
+	
 }

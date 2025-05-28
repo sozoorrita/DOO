@@ -10,7 +10,7 @@ public final class RolDomain {
     private final UUID codigo;
     private final String nombre;
 
-    private RolDomain(final UUID codigo, final String nombre) {
+    public RolDomain(final UUID codigo, final String nombre) {
         this.codigo = UtilUUID.obtenerValorDefecto(codigo);
         this.nombre = validarNombre(nombre);
     }

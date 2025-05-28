@@ -130,4 +130,10 @@ public final class EstadoMesaImpl implements EstadoMesaBusinessLogic {
         final var entityToUpdate = EstadoMesaEntityAssembler.getInstance().toEntity(domain);
         factory.getEstadoMesaDAO().update(domain.getCodigo(), entityToUpdate);
     }
+
+	@Override
+	public void eliminarEstadoMesa(UUID codigo) throws FondaControlException {
+		// TODO Auto-generated method stub
+		
+	}
 }

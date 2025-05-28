@@ -52,7 +52,7 @@ public final class TipoVentaDTO {
         private UUID codigo = UtilUUID.obtenerValorDefecto();
         private String nombre = UtilTexto.getInstancia().obtenerValorDefecto();
 
-        private Builder() {}
+        public Builder() {}
 
         public Builder codigo(final UUID codigo) {
             this.codigo = codigo;

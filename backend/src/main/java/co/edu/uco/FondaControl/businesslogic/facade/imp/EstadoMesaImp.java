@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class EstadoMesaImp implements EstadoMesaFacade {
@@ -23,26 +24,31 @@ public class EstadoMesaImp implements EstadoMesaFacade {
     }
 
     @Override
+    public void evaluarEstadoMesa(UUID codigo, EstadoMesaDTO estadoMesa) throws FondaControlException {
+        EstadoMesaDomain domain = EstadoMesaDTOAssembler.getInstance().toDomain(estadoMesa);
+        logic.evaluarEstadoMesa(codigo, domain);
+    }
+
+    @Override
     public void registrarEstadoMesa(EstadoMesaDTO dto) throws FondaControlException {
-        EstadoMesaDomain domain = EstadoMesaDTOAssembler.getInstancia().toDomain(dto);
+        EstadoMesaDomain domain = EstadoMesaDTOAssembler.getInstance().toDomain(dto);
         logic.registrarEstadoMesa(domain);
     }
 
     @Override
+    public List<EstadoMesaDTO> consultarEstadoMesa(UUID codigo) throws FondaControlException {
+        List<EstadoMesaDomain> domains = logic.consultarEstadoMesa(codigo);
+        return EstadoMesaDTOAssembler.getInstance().toDtoList(domains);
+    }
+
+    @Override
     public void modificarEstadoMesa(EstadoMesaDTO dto) throws FondaControlException {
-        EstadoMesaDomain domain = EstadoMesaDTOAssembler.getInstancia().toDomain(dto);
-        logic.modificarEstadoMesa(domain.getCodigo(), domain);
+        logic.modificarEstadoMesa(dto);
     }
 
     @Override
     public void eliminarEstadoMesa(EstadoMesaDTO dto) throws FondaControlException {
-        logic.eliminarEstadoMesa(EstadoMesaDTOAssembler.getInstancia().toDomain(dto).getCodigo());
-    }
-
-    @Override
-    public List<EstadoMesaDTO> consultarEstadoMesa(EstadoMesaDTO dto) throws FondaControlException {
-        var filter = EstadoMesaDTOAssembler.getInstancia().toDomain(dto);
-        var domains = logic.consultarEstadoMesa(filter);
-        return EstadoMesaDTOAssembler.getInstancia().toDtoList(domains);
+        UUID codigo = EstadoMesaDTOAssembler.getInstance().toDomain(dto).getCodigo();
+        logic.eliminarEstadoMesa(codigo);
     }
 }

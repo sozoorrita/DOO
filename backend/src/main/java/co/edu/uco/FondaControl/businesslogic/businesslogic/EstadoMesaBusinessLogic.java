@@ -16,4 +16,6 @@ public interface EstadoMesaBusinessLogic {
     void registrarEstadoMesa(EstadoMesaDomain estadoMesa) throws FondaControlException;
 
     List<EstadoMesaDomain> consultarEstadoMesa(UUID codigo) throws FondaControlException;
+    
+    void eliminarEstadoMesa(UUID codigo) throws FondaControlException;
 }

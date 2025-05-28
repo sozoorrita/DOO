@@ -31,7 +31,7 @@ public final class MesaDTOAssembler implements DTOAssembler<MesaDTO, MesaDomain>
         }
 
         final EstadoMesaDTO estadoDTO = new EstadoMesaDTO(dto.getCodigoEstadoMesa(), "");
-        final EstadoMesaDomain estadoDomain = EstadoMesaDTOAssembler.getInstancia().toDomain(estadoDTO);
+        final EstadoMesaDomain estadoDomain = EstadoMesaDTOAssembler.getInstance().toDomain(estadoDTO);
 
         return MesaDomain.crear(dto.getCodigo(), dto.getNombre(), estadoDomain);
     }

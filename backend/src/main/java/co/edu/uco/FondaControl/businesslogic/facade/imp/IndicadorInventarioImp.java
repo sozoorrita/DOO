@@ -1,88 +1,105 @@
 package co.edu.uco.FondaControl.businesslogic.facade.imp;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
 import co.edu.uco.FondaControl.businesslogic.businesslogic.IndicadorInventarioBusinessLogic;
-import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.IndicadorInventario.dto.IndicadorInventarioDTOAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.IndicadorInventarioDomain;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.impl.IndicadorInventarioImpl;
-import co.edu.uco.FondaControl.businesslogic.facade.IndicadorInventarioFacade;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.IndicadorInventario.dto.IndicadorInventarioDTOAssembler;
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
-import co.edu.uco.FondaControl.data.dao.factory.Factory;
+import co.edu.uco.FondaControl.businesslogic.facade.IndicadorInventarioFacade;
 import co.edu.uco.FondaControl.dto.IndicadorInventarioDTO;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import org.springframework.stereotype.Service;
 
 @Service
 public final class IndicadorInventarioImp implements IndicadorInventarioFacade {
 
     private final DAOFactory daoFactory;
-    private final IndicadorInventarioBusinessLogic indicadicadorInventariobusinessLogic;
+    private final IndicadorInventarioBusinessLogic businessLogic;
 
-    public IndicadorInventarioImp() throws DataFondaControlException {
-        daoFactory = DAOFactory.getDAOFactory(Factory.POSTGRESQL);
-        indicadicadorInventariobusinessLogic = new IndicadorInventarioImpl(daoFactory);
+    @Autowired
+    public IndicadorInventarioImp(DAOFactory daoFactory) {
+        this.daoFactory = daoFactory;
+        this.businessLogic = new IndicadorInventarioImpl(daoFactory);
     }
 
     @Override
-    public void evaluarIndicadorInventario(final UUID codigo, final IndicadorInventarioDTO dto) throws FondaControlException {
+    public void evaluarIndicadorInventario(UUID codigo, IndicadorInventarioDTO dto) throws FondaControlException {
         validarEntrada(codigo, dto);
-        final var domain = IndicadorInventarioDTOAssembler.getInstance().toDomain(dto);
-        indicadicadorInventariobusinessLogic.evaluarIndicadorInventario(codigo, domain);
+        IndicadorInventarioDomain domain = IndicadorInventarioDTOAssembler.getInstance().toDomain(dto);
+        businessLogic.evaluarIndicadorInventario(codigo, domain);
     }
 
     @Override
-    public void configurarIndicadorInventario(final UUID codigo, final IndicadorInventarioDTO dto) throws FondaControlException {
+    public void configurarIndicadorInventario(UUID codigo, IndicadorInventarioDTO dto) throws FondaControlException {
         validarEntrada(codigo, dto);
-        final var domain = IndicadorInventarioDTOAssembler.getInstance().toDomain(dto);
-        indicadicadorInventariobusinessLogic.configurarIndicadorInventario(codigo, domain);
+        IndicadorInventarioDomain domain = IndicadorInventarioDTOAssembler.getInstance().toDomain(dto);
+        businessLogic.configurarIndicadorInventario(codigo, domain);
     }
 
     @Override
-    public void registrarIndicadorInventario(final IndicadorInventarioDTO indicadorInventario) throws FondaControlException {
+    public void registrarIndicadorInventario(IndicadorInventarioDTO dto) throws FondaControlException {
+        if (UtilObjeto.esNulo(dto)) {
+            throw new IllegalArgumentException("El indicador de inventario no puede ser nulo.");
+        }
         try {
             daoFactory.iniciarTransaccion();
-
-            final var domain = IndicadorInventarioDTOAssembler.getInstance().toDomain(indicadorInventario);
-            indicadicadorInventariobusinessLogic.registrarIndicadorInventario(domain);
-
+            IndicadorInventarioDomain domain = IndicadorInventarioDTOAssembler.getInstance().toDomain(dto);
+            businessLogic.registrarIndicadorInventario(domain);
             daoFactory.confirmarTransaccion();
-        } catch (FondaControlException exception) {
+        } catch (FondaControlException ex) {
             daoFactory.cancelarTransaccion();
-            throw exception;
-        } catch (Exception exception) {
+            throw ex;
+        } catch (Exception ex) {
             daoFactory.cancelarTransaccion();
-
-            final var mensajeUsuario = "Se ha presentado un error al registrar el indicador de inventario.";
-            final var mensajeTecnico = "Error técnico al registrar el indicador de inventario: " + exception.getMessage();
-
-            throw BusinessLogicFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
+            throw BusinessLogicFondaControlException.reportar(
+                "Error al registrar el indicador de inventario.",
+                "Error técnico: " + ex.getMessage(),
+                ex
+            );
         } finally {
             daoFactory.cerrarConexion();
         }
     }
 
     @Override
-    public List<IndicadorInventarioDTO> consultarIndicadorInventario(final IndicadorInventarioDTO filtro) throws FondaControlException {
+    public List<IndicadorInventarioDTO> consultarIndicadorInventario(IndicadorInventarioDTO filtro) throws FondaControlException {
         if (UtilObjeto.esNulo(filtro) || UtilObjeto.esNulo(filtro.getCodigo())) {
-            throw new IllegalArgumentException("El filtro no puede ser nulo y debe contener un código.");
+            throw new IllegalArgumentException("El filtro no puede ser nulo y debe contener código.");
         }
-
-        final var resultado = indicadicadorInventariobusinessLogic.consultarIndicadorInventario(filtro.getCodigo());
-
-        return resultado.stream()
-                .map(IndicadorInventarioDTOAssembler.getInstance()::toDto)
-                .collect(Collectors.toList());
+        
+        IndicadorInventarioDomain domainFilter = IndicadorInventarioDTOAssembler.getInstance().toDomain(filtro);
+        List<IndicadorInventarioDomain> domains = businessLogic.consultarIndicadorInventario(domainFilter);
+        return domains.stream()
+                      .map(IndicadorInventarioDTOAssembler.getInstance()::toDto)
+                      .collect(Collectors.toList());
     }
 
-    private void validarEntrada(final UUID codigo, final IndicadorInventarioDTO dto) {
+    @Override
+    public void modificarIndicadorInventario(UUID codigo, IndicadorInventarioDTO dto) throws FondaControlException {
+        validarEntrada(codigo, dto);
+        IndicadorInventarioDomain domain = IndicadorInventarioDTOAssembler.getInstance().toDomain(dto);
+        businessLogic.configurarIndicadorInventario(codigo, domain);
+    }
+
+    @Override
+    public void eliminarIndicadorInventario(UUID codigo) throws FondaControlException {
+        if (UtilObjeto.esNulo(codigo)) {
+            throw new IllegalArgumentException("El código no puede ser nulo.");
+        }
+        businessLogic.configurarIndicadorInventario(codigo, null);
+    }
+
+    private void validarEntrada(UUID codigo, IndicadorInventarioDTO dto) {
         if (UtilObjeto.esNulo(codigo) || UtilObjeto.esNulo(dto)) {
-            throw new IllegalArgumentException("El código y el indicador no pueden ser nulos.");
+            throw new IllegalArgumentException("Código y DTO no pueden ser nulos.");
         }
     }
 }

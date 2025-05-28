@@ -197,7 +197,6 @@ public class UsuarioPostgreSQLDAO implements UsuarioDAO {
         return resultados;
     }
 
-    // (Opcional)
     public List<UsuarioEntity> listAll() throws DataFondaControlException {
         final var sql = new StringBuilder("SELECT id, nombre, contrasena, codigorol FROM usuario");
         final var resultados = new ArrayList<UsuarioEntity>();

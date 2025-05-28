@@ -10,7 +10,7 @@ public final class TipoVentaDomain {
     private final UUID codigo;
     private final String nombre;
 
-    private TipoVentaDomain(final UUID codigo, final String nombre) {
+    public TipoVentaDomain(final UUID codigo, final String nombre) {
         this.codigo = UtilUUID.obtenerValorDefecto(codigo);
         this.nombre = validarNombre(nombre);
     }
