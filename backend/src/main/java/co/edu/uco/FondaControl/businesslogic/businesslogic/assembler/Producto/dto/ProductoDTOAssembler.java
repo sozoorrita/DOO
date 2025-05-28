@@ -53,7 +53,7 @@ public final class ProductoDTOAssembler implements DTOAssembler<ProductoDTO, Pro
                 : dto.getCodigoSubcategoria();
 
         return new ProductoDomain(
-                dto.getCodigoProducto(),
+                dto.getCodigo(),
                 dto.getNombre(),
                 dto.getPrecioLugar(),
                 dto.getPrecioLlevar(),

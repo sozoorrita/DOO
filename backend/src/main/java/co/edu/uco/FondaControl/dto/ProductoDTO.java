@@ -8,7 +8,7 @@ import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
 public class ProductoDTO {
 
-	public UUID codigoProducto;
+	public UUID codigo;
 	public String nombre;
 	public double precioLugar;
 	public double precioLlevar;
@@ -44,12 +44,12 @@ public class ProductoDTO {
 		return this;
 	}
 
-	public UUID getCodigoProducto() {
-		return codigoProducto;
+	public UUID getCodigo() {
+		return codigo;
 	}
 
 	public void setCodigoProducto(UUID codigoProducto) {
-		this.codigoProducto = codigoProducto;
+		this.codigo = codigoProducto;
 	}
 
 	public String getNombre() {

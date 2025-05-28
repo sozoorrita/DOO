@@ -1,8 +1,8 @@
 export interface Session {
-  id: string;
-  usuarioId: string;
-  fechaInicio: string;   // ISO date string
+  codigo: string;
+  Idusuario: string;
+  nombreUsuario: string;   // ISO date string
   baseCaja: number;
-  fechaCierre?: string;  // ISO date string al cerrar
-  totalCierre?: number;
+  fechaApertura: string;  // ISO date string al cerrar
+  fechaCierre: number;
 }

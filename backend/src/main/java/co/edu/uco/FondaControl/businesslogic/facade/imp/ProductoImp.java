@@ -64,7 +64,7 @@ public final class ProductoImp implements ProductoFacade {
                 "Producto inválido"
             );
         }
-        UUID codigo = producto.getCodigoProducto();
+        UUID codigo = producto.getCodigo();
         try {
             daoFactory.iniciarTransaccion();
             ProductoDomain domain = ProductoDTOAssembler.getInstance().toDomain(producto);
@@ -87,13 +87,13 @@ public final class ProductoImp implements ProductoFacade {
 
     @Override
     public void eliminarProducto(final ProductoDTO producto) throws FondaControlException {
-        if (UtilObjeto.esNulo(producto) || UtilObjeto.esNulo(producto.getCodigoProducto())) {
+        if (UtilObjeto.esNulo(producto) || UtilObjeto.esNulo(producto.getCodigo())) {
             throw BusinessLogicFondaControlException.reportar(
                 "El producto a eliminar no puede ser nulo y debe contener un código.",
                 "Producto inválido"
             );
         }
-        UUID codigo = producto.getCodigoProducto();
+        UUID codigo = producto.getCodigo();
         try {
             daoFactory.iniciarTransaccion();
             businessLogic.eliminarProducto(codigo);

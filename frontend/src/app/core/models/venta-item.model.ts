@@ -1,5 +1,9 @@
 export interface VentaItem {
-  productoId: string;
-  cantidad: number;
-  precio: number;
-}
+  codigo: String;
+  fecha: String;
+  totalVenta: number;
+  codigoFormaPago: String;
+  codigoTipoVenta: String;
+  codigoSesionTrabajo: String;
+  codigoMesa: String;
+} 
