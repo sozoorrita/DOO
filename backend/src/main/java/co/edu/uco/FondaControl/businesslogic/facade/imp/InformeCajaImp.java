@@ -1,6 +1,5 @@
 package co.edu.uco.FondaControl.businesslogic.facade.imp;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.InformeCajaBusinessLogic;

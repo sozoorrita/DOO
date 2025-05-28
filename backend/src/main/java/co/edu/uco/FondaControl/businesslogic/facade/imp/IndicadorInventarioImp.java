@@ -1,6 +1,5 @@
 package co.edu.uco.FondaControl.businesslogic.facade.imp;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
@@ -11,7 +10,6 @@ import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.IndicadorInven
 import co.edu.uco.FondaControl.businesslogic.businesslogic.impl.IndicadorInventarioImpl;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.IndicadorInventario.dto.IndicadorInventarioDTOAssembler;
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
-import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
@@ -24,7 +22,6 @@ public final class IndicadorInventarioImp implements IndicadorInventarioFacade {
     private final DAOFactory daoFactory;
     private final IndicadorInventarioBusinessLogic businessLogic;
 
-    @Autowired
     public IndicadorInventarioImp(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
         this.businessLogic = new IndicadorInventarioImpl(daoFactory);

@@ -12,6 +12,9 @@ import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public final class UsuarioImpl implements UsuarioBusinessLogic {
 
     private final DAOFactory factory;

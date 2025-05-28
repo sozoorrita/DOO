@@ -8,7 +8,6 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import co.edu.uco.FondaControl.businesslogic.facade.DetalleVentaFacade;
 import co.edu.uco.FondaControl.dto.DetalleVentaDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,7 +16,6 @@ import java.util.List;
 public class DetalleVentaImp implements DetalleVentaFacade {
     private final DetalleVentaBusinessLogic logic;
 
-    @Autowired
     public DetalleVentaImp(DAOFactory dao) {
         this.logic = new DetalleVentaImpl(dao);
     }

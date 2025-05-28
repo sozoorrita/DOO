@@ -13,6 +13,9 @@ import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+
+@Service
 public final class SesionTrabajoImpl implements SesionTrabajoBusinessLogic {
 
     private final DAOFactory factory;

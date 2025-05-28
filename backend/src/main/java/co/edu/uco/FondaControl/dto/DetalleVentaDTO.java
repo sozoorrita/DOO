@@ -11,7 +11,7 @@ public final class DetalleVentaDTO {
     private double precioAplicado;
     private int cantidad;
 
-    private DetalleVentaDTO() {
+    public DetalleVentaDTO() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
         setPrecioAplicado(0.0);

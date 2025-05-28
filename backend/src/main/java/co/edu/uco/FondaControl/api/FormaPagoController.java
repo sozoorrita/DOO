@@ -1,36 +1,70 @@
 package co.edu.uco.FondaControl.api;
 
+import java.util.List;
 import java.util.UUID;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import co.edu.uco.FondaControl.businesslogic.facade.FormaPagoFacade;
+import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
+import co.edu.uco.FondaControl.dto.FormaPagoDTO;
 
 @RestController
 @RequestMapping("/api/v4/formas-pago")
 public class FormaPagoController {
 
-	@GetMapping
-	public String consultar() {
-		return "Consultar todas las formas de pago";
-	}
+    private final FormaPagoFacade formaPagoFacade;
 
-	@PostMapping
-	public String registrar() {
-		return "Registrar una nueva forma de pago";
-	}
+    public FormaPagoController(FormaPagoFacade formaPagoFacade) {
+        this.formaPagoFacade = formaPagoFacade;
+    }
 
-	@PutMapping("/{codigo}")
-	public String modificar(@PathVariable UUID codigo) {
-		return "Modificar la forma de pago con código " + codigo;
-	}
+   
+    @GetMapping("/dummy")
+    public FormaPagoDTO getDummy() {
+        return new FormaPagoDTO();
+    }
 
-	@DeleteMapping("/{codigo}")
-	public String eliminar(@PathVariable UUID codigo) {
-		return "Eliminar la forma de pago con código " + codigo;
-	}
+    
+    @GetMapping
+    public ResponseEntity<List<FormaPagoDTO>> consultar(
+            @RequestBody(required = false) FormaPagoDTO filtro) throws FondaControlException {
+        if (filtro == null) {
+            filtro = getDummy();
+        }
+        List<FormaPagoDTO> lista = formaPagoFacade.consultarFormaPago(filtro);
+        return ResponseEntity.ok(lista);
+    }
+
+   
+    @PostMapping
+    public ResponseEntity<String> registrar(@RequestBody FormaPagoDTO formaPago)
+            throws FondaControlException {
+        formaPagoFacade.registrarFormaPago(formaPago);
+        String mensaje = "La forma de pago \"" + formaPago.getNombre() + "\" ha sido creada exitosamente.";
+        return new ResponseEntity<>(mensaje, HttpStatus.CREATED);
+    }
+
+    
+    @PutMapping("/{id}")
+    public ResponseEntity<String> modificar(@PathVariable("id") UUID id,
+                                            @RequestBody FormaPagoDTO formaPago)
+            throws FondaControlException {
+        formaPago.setCodigo(id);
+        formaPagoFacade.modificarFormaPago(formaPago);
+        String mensaje = "La forma de pago \"" + formaPago.getNombre() + "\" ha sido modificada exitosamente.";
+        return ResponseEntity.ok(mensaje);
+    }
+
+    
+    public ResponseEntity<String> eliminar(@PathVariable("id") UUID id)
+            throws FondaControlException {
+        FormaPagoDTO dto = new FormaPagoDTO();
+        dto.setCodigo(id);
+        formaPagoFacade.eliminarFormaPago(dto);
+        String mensaje = "La forma de pago con código " + id + " ha sido eliminada exitosamente.";
+        return ResponseEntity.ok(mensaje);
+    }
 }

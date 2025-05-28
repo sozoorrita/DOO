@@ -10,7 +10,7 @@ public final class SubcategoriaDTO {
     private String nombre;
     private UUID codigoCategoria;
 
-    private SubcategoriaDTO() {
+    public SubcategoriaDTO() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
         setCodigoCategoria(UtilUUID.obtenerValorDefecto());

@@ -1,33 +1,52 @@
 package co.edu.uco.FondaControl.api;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import co.edu.uco.FondaControl.businesslogic.facade.UsuarioFacade;
+import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
+import co.edu.uco.FondaControl.dto.UsuarioDTO;
 
 @RestController
 @RequestMapping("/api/v14/usuarios")
 public class UsuarioController {
 
-    @GetMapping
-    public String consultar() {
-        return "Consulta todos los usuarios";
+    private final UsuarioFacade usuarioFacade;
+
+    
+    public UsuarioController(UsuarioFacade usuarioFacade) {
+        this.usuarioFacade = usuarioFacade;
+    }
+
+   @GetMapping
+    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
+    public void consultar() {
+        throw new UnsupportedOperationException("Consulta de usuarios no está soportada.");
     }
 
     @PostMapping
-    public String registrar() {
-        return "Registrar un nuevo usuario";
+    @ResponseStatus(HttpStatus.CREATED)
+    public void registrar(@RequestBody UsuarioDTO usuario) throws FondaControlException {
+        usuarioFacade.registrarNuevoUsuario(usuario);
     }
 
     @PutMapping
-    public String modificar() {
-        return "Modificar un usuario";
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void modificar(@RequestBody UsuarioDTO usuario) throws FondaControlException {
+        usuarioFacade.modificarUsuario(usuario);
     }
 
     @DeleteMapping
-    public String eliminar() {
-        return "Eliminar un usuario";
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@RequestBody UsuarioDTO usuario) throws FondaControlException {
+        usuarioFacade.eliminarUsuario(usuario);
     }
 
     @PostMapping("/iniciar-sesion")
-    public String iniciarSesion() {
-        return "Iniciar sesión de usuario";
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void iniciarSesion(@RequestBody UsuarioDTO usuario,
+                              @RequestParam String tipoUsuario)
+            throws FondaControlException {
+        usuarioFacade.iniciarSesion(usuario, tipoUsuario);
     }
 }

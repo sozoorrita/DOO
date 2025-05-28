@@ -14,7 +14,7 @@ public final class VentaDTO {
     private UUID codigoSesionTrabajo;
     private UUID codigoMesa;
 
-    private VentaDTO() {
+    public VentaDTO() {
         this.codigo = UtilUUID.obtenerValorDefecto();
         this.fecha = LocalDateTime.now();
         this.totalVenta = 0.0;

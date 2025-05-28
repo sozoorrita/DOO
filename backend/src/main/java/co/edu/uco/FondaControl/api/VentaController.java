@@ -1,36 +1,62 @@
 package co.edu.uco.FondaControl.api;
 
+import java.util.List;
 import java.util.UUID;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import co.edu.uco.FondaControl.businesslogic.facade.VentaFacade;
+import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
+import co.edu.uco.FondaControl.dto.VentaDTO;
 
 @RestController
 @RequestMapping("/api/v15/ventas")
 public class VentaController {
 
-	@GetMapping
-	public String consultar() {
-		return "Consultar todas las ventas";
-	}
+    private final VentaFacade ventaFacade;
 
-	@PostMapping
-	public String registrar() {
-		return "Registrar una nueva venta";
-	}
+    public VentaController(VentaFacade ventaFacade) {
+        this.ventaFacade = ventaFacade;
+    }
 
-	@PutMapping("/{codigo}")
-	public String modificar(@PathVariable UUID codigo) {
-		return "Modificar la venta con código " + codigo;
-	}
+    @GetMapping("/dummy")
+    public VentaDTO dummy() {
+        return new VentaDTO();
+    }
 
-	@DeleteMapping("/{codigo}")
-	public String eliminar(@PathVariable UUID codigo) {
-		return "Eliminar la venta con código " + codigo;
-	}
+    @GetMapping
+    public ResponseEntity<List<VentaDTO>> consultar(@RequestBody(required = false) VentaDTO filtro)
+            throws FondaControlException {
+        if (filtro == null) {
+            filtro = dummy();
+        }
+        List<VentaDTO> lista = ventaFacade.consultarVenta(filtro);
+        return ResponseEntity.ok(lista);
+    }
+
+    @PostMapping
+    public ResponseEntity<String> registrar(@RequestBody VentaDTO venta) throws FondaControlException {
+        ventaFacade.registrarVenta(venta);
+        String msg = "La venta ha sido registrada exitosamente.";
+        return ResponseEntity.status(HttpStatus.CREATED).body(msg);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> modificar(@PathVariable("id") UUID id,
+                                            @RequestBody VentaDTO venta) throws FondaControlException {
+        venta.setCodigo(id);
+        ventaFacade.modificarVenta(venta);
+        String msg = "La venta con código " + id + " ha sido modificada exitosamente.";
+        return ResponseEntity.ok(msg);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void eliminar(@PathVariable("id") UUID id) throws FondaControlException {
+        VentaDTO dto = new VentaDTO();
+        dto.setCodigo(id);
+        ventaFacade.eliminarVenta(dto);
+    }
 }

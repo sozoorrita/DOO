@@ -9,7 +9,7 @@ public final class CategoriaDTO {
     private UUID codigo;
     private String nombre;
 
-    private CategoriaDTO() {
+    public CategoriaDTO() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
     }

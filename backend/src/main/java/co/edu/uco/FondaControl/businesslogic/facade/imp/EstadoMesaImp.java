@@ -8,7 +8,6 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import co.edu.uco.FondaControl.businesslogic.facade.EstadoMesaFacade;
 import co.edu.uco.FondaControl.dto.EstadoMesaDTO;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,7 +17,6 @@ import java.util.UUID;
 public class EstadoMesaImp implements EstadoMesaFacade {
     private final EstadoMesaBusinessLogic logic;
 
-    @Autowired
     public EstadoMesaImp(DAOFactory dao) {
         this.logic = new EstadoMesaImpl(dao);
     }

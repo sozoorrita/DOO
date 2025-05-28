@@ -9,7 +9,7 @@ public final class FormaPagoDTO {
     private UUID codigo;
     private String nombre;
 
-    private FormaPagoDTO() {
+    public FormaPagoDTO() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
     }
