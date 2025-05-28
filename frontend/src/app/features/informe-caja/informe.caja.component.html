@@ -1,0 +1,39 @@
+<h2>Generar Informe de Caja</h2>
+
+<form (ngSubmit)="generar()" class="formulario">
+  <div class="campo">
+    <label>Fecha Inicio</label>
+    <input
+      type="date"
+      [(ngModel)]="filtro.fechaInicio"
+      name="fechaInicio"
+      required
+    />
+  </div>
+  <div class="campo">
+    <label>Fecha Fin</label>
+    <input
+      type="date"
+      [(ngModel)]="filtro.fechaFin"
+      name="fechaFin"
+      required
+    />
+  </div>
+  <button type="submit" [disabled]="cargando">
+    {{ cargando ? 'Generando…' : 'Generar Informe' }}
+  </button>
+</form>
+
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<div *ngIf="resultado" class="resultado">
+  <h3>Resultados</h3>
+  <div class="item">
+    <span>Total Ventas:</span>
+    <strong>{{ resultado.totalVentas }}</strong>
+  </div>
+  <div class="item">
+    <span>Total Ingresos:</span>
+    <strong>{{ resultado.totalIngresos | currency }}</strong>
+  </div>
+</div>

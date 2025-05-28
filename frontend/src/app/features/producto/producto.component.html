@@ -1,0 +1,73 @@
+<h2>Gestión de Productos</h2>
+
+<form (ngSubmit)="guardar()" *ngIf="!cargando" class="formulario">
+  <div class="campo">
+    <label>Nombre</label>
+    <input
+      type="text"
+      [(ngModel)]="nuevo.nombre"
+      name="nombre"
+      placeholder="Nombre del producto"
+      required
+    />
+  </div>
+  <div class="campo">
+    <label>Descripción</label>
+    <input
+      type="text"
+      [(ngModel)]="nuevo.descripcion"
+      name="descripcion"
+      placeholder="Descripción"
+    />
+  </div>
+  <div class="campo">
+    <label>Precio</label>
+    <input
+      type="number"
+      [(ngModel)]="nuevo.precio"
+      name="precio"
+      placeholder="Precio"
+      required
+      min="0"
+      step="0.01"
+    />
+  </div>
+  <div class="campo">
+    <label>Código Categoría (UUID)</label>
+    <input
+      type="text"
+      [(ngModel)]="nuevo.codigoCategoria"
+      name="codigoCategoria"
+      placeholder="UUID Categoría"
+      required
+    />
+  </div>
+  <div class="campo">
+    <label>Código Subcategoría (UUID)</label>
+    <input
+      type="text"
+      [(ngModel)]="nuevo.codigoSubcategoria"
+      name="codigoSubcategoria"
+      placeholder="UUID Subcategoría"
+      required
+    />
+  </div>
+  <button type="submit">
+    {{ nuevo.codigo ? 'Actualizar' : 'Crear' }}
+  </button>
+</form>
+
+<div *ngIf="cargando" class="info">Cargando...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<ul class="lista-productos">
+  <li *ngFor="let p of lista">
+    <span>{{ p.nombre }}</span>
+    <span>{{ p.descripcion }}</span>
+    <span>Precio: {{ p.precio | currency }}</span>
+    <span>Cat: {{ p.codigoCategoria }}</span>
+    <span>Subcat: {{ p.codigoSubcategoria }}</span>
+    <button (click)="eliminar(p.codigo)">Eliminar</button>
+    <button (click)="nuevo = { ...p }">Editar</button>
+  </li>
+</ul>

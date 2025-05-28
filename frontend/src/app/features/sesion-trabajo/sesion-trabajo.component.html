@@ -1,0 +1,48 @@
+<h2>Gestión de Sesiones de Trabajo</h2>
+
+<form (ngSubmit)="guardar()" *ngIf="!cargando" class="formulario">
+  <div class="campo">
+    <label>Fecha de Inicio</label>
+    <input
+      type="date"
+      [(ngModel)]="nuevo.fechaInicio"
+      name="fechaInicio"
+      required
+    />
+  </div>
+  <div class="campo">
+    <label>Fecha de Fin</label>
+    <input
+      type="date"
+      [(ngModel)]="nuevo.fechaFin"
+      name="fechaFin"
+      required
+    />
+  </div>
+  <div class="campo">
+    <label>Código Usuario (UUID)</label>
+    <input
+      type="text"
+      [(ngModel)]="nuevo.codigoUsuario"
+      name="codigoUsuario"
+      placeholder="UUID del usuario"
+      required
+    />
+  </div>
+  <button type="submit">
+    {{ nuevo.codigo ? 'Actualizar' : 'Crear' }}
+  </button>
+</form>
+
+<div *ngIf="cargando" class="info">Cargando...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<ul class="lista-sesiones">
+  <li *ngFor="let s of lista">
+    <span>Inicio: {{ s.fechaInicio | date:'mediumDate' }}</span>
+    <span>Fin: {{ s.fechaFin | date:'mediumDate' }}</span>
+    <span>Usuario: {{ s.codigoUsuario }}</span>
+    <button (click)="eliminar(s.codigo)">Eliminar</button>
+    <button (click)="nuevo = { ...s }">Editar</button>
+  </li>
+</ul>

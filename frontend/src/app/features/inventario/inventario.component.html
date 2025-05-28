@@ -1,0 +1,51 @@
+<h2>Gestión de Inventario</h2>
+
+<form (ngSubmit)="guardar()" *ngIf="!cargando" class="formulario">
+  <div class="campo">
+    <label>Código Producto (UUID)</label>
+    <input
+      type="text"
+      [(ngModel)]="nuevo.codigoProducto"
+      name="codigoProducto"
+      placeholder="UUID Producto"
+      required
+    />
+  </div>
+  <div class="campo">
+    <label>Nombre Producto</label>
+    <input
+      type="text"
+      [(ngModel)]="nuevo.nombreProducto"
+      name="nombreProducto"
+      placeholder="Nombre del producto"
+      required
+    />
+  </div>
+  <div class="campo">
+    <label>Cantidad</label>
+    <input
+      type="number"
+      [(ngModel)]="nuevo.cantidad"
+      name="cantidad"
+      placeholder="Cantidad"
+      required
+      min="0"
+      step="1"
+    />
+  </div>
+  <button type="submit">
+    {{ nuevo.codigo ? 'Actualizar' : 'Crear' }}
+  </button>
+</form>
+
+<div *ngIf="cargando" class="info">Cargando...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<ul class="lista-inventario">
+  <li *ngFor="let i of lista">
+    <span>Producto: {{ i.nombreProducto }} ({{ i.codigoProducto }})</span>
+    <span>Cantidad: {{ i.cantidad }}</span>
+    <button (click)="eliminar(i.codigo)">Eliminar</button>
+    <button (click)="nuevo = { ...i }">Editar</button>
+  </li>
+</ul>

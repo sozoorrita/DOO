@@ -1,0 +1,28 @@
+<h2>Gestión de Roles</h2>
+
+<form (ngSubmit)="guardar()" *ngIf="!cargando" class="formulario">
+  <div class="campo">
+    <label>Nombre del Rol</label>
+    <input
+      type="text"
+      [(ngModel)]="nuevo.nombre"
+      name="nombre"
+      placeholder="Nombre del rol"
+      required
+    />
+  </div>
+  <button type="submit">
+    {{ nuevo.codigo ? 'Actualizar' : 'Crear' }}
+  </button>
+</form>
+
+<div *ngIf="cargando" class="info">Cargando...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<ul class="lista-roles">
+  <li *ngFor="let r of lista">
+    <span>{{ r.nombre }}</span>
+    <button (click)="eliminar(r.codigo)">Eliminar</button>
+    <button (click)="nuevo = { ...r }">Editar</button>
+  </li>
+</ul>

@@ -1,0 +1,39 @@
+<h2>Gestión de Subcategorías</h2>
+
+<form (ngSubmit)="guardar()" *ngIf="!cargando" class="formulario">
+  <div class="campo">
+    <label>Nombre</label>
+    <input
+      type="text"
+      [(ngModel)]="nuevo.nombre"
+      name="nombre"
+      placeholder="Nombre"
+      required
+    />
+  </div>
+  <div class="campo">
+    <label>Categoría (UUID)</label>
+    <input
+      type="text"
+      [(ngModel)]="nuevo.codigoCategoria"
+      name="codigoCategoria"
+      placeholder="UUID de Categoría"
+      required
+    />
+  </div>
+  <button type="submit">
+    {{ nuevo.codigo ? 'Actualizar' : 'Crear' }}
+  </button>
+</form>
+
+<div *ngIf="cargando" class="info">Cargando...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<ul class="lista-subcategorias">
+  <li *ngFor="let s of lista">
+    <span>{{ s.nombre }}</span>
+    <span>Categoría: {{ s.codigoCategoria }}</span>
+    <button (click)="eliminar(s.codigo)">Eliminar</button>
+    <button (click)="nuevo = { ...s }">Editar</button>
+  </li>
+</ul>

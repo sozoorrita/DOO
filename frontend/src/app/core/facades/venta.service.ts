@@ -1,3 +1,4 @@
+// src/app/core/facades/venta.service.ts
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
@@ -10,19 +11,19 @@ export class VentaService {
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Venta[]> {
-    return this.http.get<Venta[]>(this.url);
-  }
-
   create(item: Venta): Observable<Venta> {
     return this.http.post<Venta>(this.url, item);
   }
 
-  update(codigo: string, item: Venta): Observable<void> {
-    return this.http.put<void>(`${this.url}/${codigo}`, item);
+  update(codigo: string, item: Venta): Observable<Venta> {
+    return this.http.put<Venta>(`${this.url}/${codigo}`, item);
   }
 
   delete(codigo: string): Observable<void> {
     return this.http.delete<void>(`${this.url}/${codigo}`);
+  }
+
+  getAll(): Observable<Venta[]> {
+    return this.http.get<Venta[]>(this.url);
   }
 }

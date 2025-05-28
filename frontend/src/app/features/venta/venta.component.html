@@ -1,0 +1,55 @@
+<h2>Gestión de Ventas</h2>
+
+<form (ngSubmit)="guardar()" *ngIf="!cargando">
+  <div class="campo">
+    <label>Fecha</label>
+    <input type="date" [(ngModel)]="nuevo.fecha" name="fecha" required />
+  </div>
+  <div class="campo">
+    <label>Código Sesión</label>
+    <input
+      type="text"
+      [(ngModel)]="nuevo.codigoSesion"
+      name="codigoSesion"
+      placeholder="UUID Sesión"
+      required
+    />
+  </div>
+  <div class="campo">
+    <label>Código Mesa</label>
+    <input
+      type="text"
+      [(ngModel)]="nuevo.codigoMesa"
+      name="codigoMesa"
+      placeholder="UUID Mesa"
+      required
+    />
+  </div>
+  <div class="campo">
+    <label>Total</label>
+    <input
+      type="number"
+      [(ngModel)]="nuevo.total"
+      name="total"
+      placeholder="Total"
+      required
+      min="0"
+      step="0.01"
+    />
+  </div>
+  <button type="submit">{{ nuevo.codigo ? 'Actualizar' : 'Crear' }}</button>
+</form>
+
+<div *ngIf="cargando" class="info">Cargando...</div>
+<div *ngIf="error" class="error">{{ error }}</div>
+
+<ul class="lista-ventas">
+  <li *ngFor="let v of lista">
+    <span>{{ v.fecha | date:'mediumDate' }}</span>
+    <span>Sesión: {{ v.codigoSesion }}</span>
+    <span>Mesa: {{ v.codigoMesa }}</span>
+    <span>Total: {{ v.total | currency }}</span>
+    <button (click)="eliminar(v.codigo)">Eliminar</button>
+    <button (click)="nuevo = { ...v }">Editar</button>
+  </li>
+</ul>
