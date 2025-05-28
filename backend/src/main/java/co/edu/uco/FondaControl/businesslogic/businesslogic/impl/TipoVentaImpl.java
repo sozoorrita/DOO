@@ -24,46 +24,30 @@ public final class TipoVentaImpl implements TipoVentaBusinessLogic {
     }
 
     @Override
-    public void evaluarTipoVenta(final UUID codigo, final TipoVentaDomain domain) throws FondaControlException {
-        if (UtilObjeto.getInstancia().esNulo(codigo)) {
-            throw new IllegalArgumentException("El código del tipo de venta no puede ser nulo para evaluar.");
-        }
-        if (UtilObjeto.getInstancia().esNulo(domain)) {
-            throw new IllegalArgumentException("El tipo de venta a evaluar no puede ser nulo.");
-        }
+    public void registrarTipoVenta(final TipoVentaDomain tipoVentaDomain) throws FondaControlException {
+        validarNombreTipoVenta(tipoVentaDomain.getNombre());
+        validarNoExistaTipoVentaConMismoNombre(tipoVentaDomain.getNombre());
 
-        validarIntegridadNombreTipoVenta(domain.getNombre());
-    }
-
-    @Override
-    public void configurarTipoVenta(final UUID codigo, final TipoVentaDomain domain) throws FondaControlException {
-        if (UtilObjeto.getInstancia().esNulo(codigo)) {
-            throw new IllegalArgumentException("El código del tipo de venta no puede ser nulo para configurar.");
-        }
-        if (UtilObjeto.getInstancia().esNulo(domain)) {
-            throw new IllegalArgumentException("El tipo de venta a configurar no puede ser nulo.");
-        }
-
-        validarIntegridadNombreTipoVenta(domain.getNombre());
-
-        final var entity = TipoVentaEntityAssembler.getInstance().toEntity(domain);
-        factory.getTipoVentaDAO().update(codigo, entity);
-    }
-
-    @Override
-    public void registrarTipoVenta(final TipoVentaDomain domain) throws FondaControlException {
-        validarIntegridadNombreTipoVenta(domain.getNombre());
-
-        validarNoExistaTipoVentaConMismoNombre(domain.getNombre());
-
-        final var codigo = generarNuevoCodigoTipoVenta();
-        final var domainACrear = TipoVentaDomain.crear(
-                codigo,
-                UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(domain.getNombre())
-        );
-
-        final var entity = TipoVentaEntityAssembler.getInstance().toEntity(domainACrear);
+        final UUID codigo = UtilUUID.generarNuevoUUID();
+        final TipoVentaEntity entity = TipoVentaEntityAssembler.getInstance().toEntity(TipoVentaDomain.crear(codigo, tipoVentaDomain.getNombre()));
         factory.getTipoVentaDAO().create(entity);
+    }
+
+    @Override
+    public void modificarTipoVenta(final TipoVentaDomain tipoVentaDomain) throws FondaControlException {
+        validarNombreTipoVenta(tipoVentaDomain.getNombre());
+
+        final TipoVentaEntity entity = TipoVentaEntityAssembler.getInstance().toEntity(tipoVentaDomain);
+        factory.getTipoVentaDAO().update(tipoVentaDomain.getCodigo(), entity);
+    }
+
+    @Override
+    public void eliminarTipoVenta(final TipoVentaDomain tipoVentaDomain) throws FondaControlException {
+        if (UtilUUID.esValorDefecto(tipoVentaDomain.getCodigo())) {
+            throw BusinessLogicFondaControlException.reportar("El código del tipo de venta es inválido para eliminar.");
+        }
+
+        factory.getTipoVentaDAO().delete(tipoVentaDomain.getCodigo());
     }
 
     @Override
@@ -76,54 +60,24 @@ public final class TipoVentaImpl implements TipoVentaBusinessLogic {
                 .toDomainList(factory.getTipoVentaDAO().listByCodigo(codigo));
     }
 
-    private void validarIntegridadNombreTipoVenta(final String nombre) throws BusinessLogicFondaControlException {
+    private void validarNombreTipoVenta(final String nombre) throws BusinessLogicFondaControlException {
         if (UtilTexto.getInstancia().esNula(nombre)) {
             throw BusinessLogicFondaControlException.reportar("El nombre del tipo de venta es obligatorio.");
         }
-        if (UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre).length() > 50) {
-            throw BusinessLogicFondaControlException.reportar(
-                    "El nombre del tipo de venta supera los 50 caracteres permitidos.");
+        if (nombre.length() > 50) {
+            throw BusinessLogicFondaControlException.reportar("El nombre del tipo de venta supera los 50 caracteres permitidos.");
         }
         if (!UtilTexto.getInstancia().contieneSoloLetrasYEspacios(nombre)) {
-            throw BusinessLogicFondaControlException.reportar(
-                    "El nombre del tipo de venta solo puede contener letras y espacios.");
+            throw BusinessLogicFondaControlException.reportar("El nombre del tipo de venta solo puede contener letras y espacios.");
         }
     }
 
-    private void validarNoExistaTipoVentaConMismoNombre(final String nombre) throws BusinessLogicFondaControlException, DataFondaControlException {
-        final var filtro = TipoVentaEntity.builder()
-                .nombre(nombre)
-                .crear();
+    private void validarNoExistaTipoVentaConMismoNombre(final String nombre) throws FondaControlException {
+        final var filtro = TipoVentaEntity.builder().nombre(nombre).crear();
 
         final var resultado = factory.getTipoVentaDAO().listByFilter(filtro);
         if (!resultado.isEmpty()) {
-            throw BusinessLogicFondaControlException.reportar(
-                    "Ya existe un tipo de venta con el mismo nombre.");
+            throw BusinessLogicFondaControlException.reportar("Ya existe un tipo de venta con el mismo nombre.");
         }
     }
-
-    private UUID generarNuevoCodigoTipoVenta() throws DataFondaControlException {
-        UUID nuevoCodigo;
-        boolean existeCodigo;
-
-        do {
-            nuevoCodigo = UtilUUID.generarNuevoUUID();
-            final var resultado = factory.getTipoVentaDAO().listByCodigo(nuevoCodigo);
-            existeCodigo = !resultado.isEmpty();
-        } while (existeCodigo);
-
-        return nuevoCodigo;
-    }
-
-	@Override
-	public void modificarTipoVenta(TipoVentaDomain tipoVentaDomain) throws FondaControlException {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void eliminarTipoVenta(TipoVentaDomain tipoVentaDomain) throws FondaControlException {
-		// TODO Auto-generated method stub
-		
-	}
 }

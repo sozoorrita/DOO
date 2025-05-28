@@ -4,14 +4,13 @@ import java.util.List;
 import java.util.UUID;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.SubcategoriaBusinessLogic;
-import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.SubcategoriaDomain;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Subcategoria.entity.SubcategoriaEntityAssembler;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.SubcategoriaDomain;
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
-import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
+import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
-import co.edu.uco.FondaControl.data.dao.entity.subcategoria.SubcategoriaDAO;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import co.edu.uco.FondaControl.entity.SubcategoriaEntity;
 
@@ -24,50 +23,27 @@ public final class SubcategoriaImpl implements SubcategoriaBusinessLogic {
     }
 
     @Override
-    public void registrarSubcategoria(final SubcategoriaDomain domain) throws BusinessLogicFondaControlException, DataFondaControlException {
-        if (UtilObjeto.esNulo(domain)) {
-            throw BusinessLogicFondaControlException.reportar("No se puede registrar una subcategoría nula.");
-        }
+    public void registrarSubcategoria(final SubcategoriaDomain subcategoria) throws FondaControlException {
+        validarSubcategoria(subcategoria);
 
-        if (UtilTexto.getInstancia().esNula(domain.getNombre()) ||
-                !UtilTexto.getInstancia().contieneSoloLetrasYEspacios(domain.getNombre())) {
-            throw BusinessLogicFondaControlException.reportar("El nombre de la subcategoría es inválido.");
-        }
-
-        if (UtilUUID.esValorDefecto(domain.getCodigoCategoria())) {
-            throw BusinessLogicFondaControlException.reportar("Debe especificar una categoría válida para la subcategoría.");
-        }
-
-        final SubcategoriaEntity entity = SubcategoriaEntityAssembler.getInstancia().toEntity(domain);
+        final var entity = SubcategoriaEntityAssembler.getInstancia().toEntity(subcategoria);
         daoFactory.getSubcategoriaDAO().create(entity);
     }
 
     @Override
-    public void modificarSubcategoria(final UUID codigo, final SubcategoriaDomain domain) throws BusinessLogicFondaControlException, DataFondaControlException {
+    public void modificarSubcategoria(final UUID codigo, final SubcategoriaDomain subcategoria) throws FondaControlException {
         if (UtilUUID.esValorDefecto(codigo)) {
-            throw BusinessLogicFondaControlException.reportar("El código de la subcategoría a modificar es inválido.");
+            throw BusinessLogicFondaControlException.reportar("El código de la subcategoría no puede ser el valor por defecto.");
         }
+        validarSubcategoria(subcategoria);
 
-        if (UtilObjeto.esNulo(domain)) {
-            throw BusinessLogicFondaControlException.reportar("La subcategoría a modificar no puede ser nula.");
-        }
-
-        if (UtilTexto.getInstancia().esNula(domain.getNombre()) ||
-                !UtilTexto.getInstancia().contieneSoloLetrasYEspacios(domain.getNombre())) {
-            throw BusinessLogicFondaControlException.reportar("El nombre de la subcategoría es inválido.");
-        }
-
-        if (UtilUUID.esValorDefecto(domain.getCodigoCategoria())) {
-            throw BusinessLogicFondaControlException.reportar("Se debe especificar una categoría válida.");
-        }
-
-        domain.setCodigo(codigo);
-        final SubcategoriaEntity entity = SubcategoriaEntityAssembler.getInstancia().toEntity(domain);
+        subcategoria.setCodigo(codigo);
+        final var entity = SubcategoriaEntityAssembler.getInstancia().toEntity(subcategoria);
         daoFactory.getSubcategoriaDAO().update(codigo, entity);
     }
 
     @Override
-    public void eliminarSubcategoria(final UUID codigo) throws BusinessLogicFondaControlException, DataFondaControlException {
+    public void eliminarSubcategoria(final UUID codigo) throws FondaControlException {
         if (UtilUUID.esValorDefecto(codigo)) {
             throw BusinessLogicFondaControlException.reportar("El código de la subcategoría a eliminar es inválido.");
         }
@@ -76,9 +52,23 @@ public final class SubcategoriaImpl implements SubcategoriaBusinessLogic {
     }
 
     @Override
-    public List<SubcategoriaDomain> consultarSubcategoria(final SubcategoriaDomain filtro) throws DataFondaControlException {
-        final SubcategoriaEntity entityFiltro = SubcategoriaEntityAssembler.getInstancia().toEntity(filtro);
+    public List<SubcategoriaDomain> consultarSubcategoria(final SubcategoriaDomain filtro) throws FondaControlException {
+        final var entityFiltro = SubcategoriaEntityAssembler.getInstancia().toEntity(filtro);
         final List<SubcategoriaEntity> resultados = daoFactory.getSubcategoriaDAO().listByFilter(entityFiltro);
+
         return SubcategoriaEntityAssembler.getInstancia().toDomainList(resultados);
+    }
+
+    private void validarSubcategoria(final SubcategoriaDomain subcategoria) throws BusinessLogicFondaControlException {
+        if (UtilObjeto.esNulo(subcategoria)) {
+            throw BusinessLogicFondaControlException.reportar("La subcategoría no puede ser nula.");
+        }
+        if (UtilTexto.getInstancia().esNula(subcategoria.getNombre()) ||
+                !UtilTexto.getInstancia().contieneSoloLetrasYEspacios(subcategoria.getNombre())) {
+            throw BusinessLogicFondaControlException.reportar("El nombre de la subcategoría es inválido.");
+        }
+        if (UtilUUID.esValorDefecto(subcategoria.getCodigoCategoria())) {
+            throw BusinessLogicFondaControlException.reportar("Debe especificar una categoría válida para la subcategoría.");
+        }
     }
 }

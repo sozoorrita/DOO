@@ -4,7 +4,6 @@ import co.edu.uco.FondaControl.businesslogic.businesslogic.RolBusinessLogic;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Rol.entity.RolEntityAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.RolDomain;
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
-import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
@@ -24,46 +23,29 @@ public final class RolImpl implements RolBusinessLogic {
     }
 
     @Override
-    public void evaluarRol(final UUID codigo, final RolDomain domain) throws FondaControlException {
-        if (UtilObjeto.getInstancia().esNulo(codigo)) {
-            throw new IllegalArgumentException("El código del rol no puede ser nulo para evaluar.");
-        }
-        if (UtilObjeto.getInstancia().esNulo(domain)) {
-            throw new IllegalArgumentException("El rol a evaluar no puede ser nulo.");
-        }
+    public void registrarRol(final RolDomain rolDomain) throws FondaControlException {
+        validarIntegridadNombreRol(rolDomain.getNombre());
+        validarNoExistaRolConMismoNombre(rolDomain.getNombre());
 
-        validarIntegridadNombreRol(domain.getNombre());
-    }
-
-    @Override
-    public void configurarRol(final UUID codigo, final RolDomain domain) throws FondaControlException {
-        if (UtilObjeto.getInstancia().esNulo(codigo)) {
-            throw new IllegalArgumentException("El código del rol no puede ser nulo para configurar.");
-        }
-        if (UtilObjeto.getInstancia().esNulo(domain)) {
-            throw new IllegalArgumentException("El rol a configurar no puede ser nulo.");
-        }
-
-        validarIntegridadNombreRol(domain.getNombre());
-
-        final var entity = RolEntityAssembler.getInstance().toEntity(domain);
-        factory.getRolDAO().update(codigo, entity);
-    }
-
-    @Override
-    public void registrarRol(final RolDomain domain) throws FondaControlException {
-        validarIntegridadNombreRol(domain.getNombre());
-
-        validarNoExistaRolConMismoNombre(domain.getNombre());
-
-        final var codigo = generarNuevoCodigoRol();
-        final var domainACrear = RolDomain.crear(
-                codigo,
-                UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(domain.getNombre())
-        );
-
-        final var entity = RolEntityAssembler.getInstance().toEntity(domainACrear);
+        final UUID codigo = UtilUUID.generarNuevoUUID();
+        final RolEntity entity = RolEntityAssembler.getInstance().toEntity(RolDomain.crear(codigo, rolDomain.getNombre()));
         factory.getRolDAO().create(entity);
+    }
+
+    @Override
+    public void modificarRol(final RolDomain rolDomain) throws FondaControlException {
+        validarIntegridadNombreRol(rolDomain.getNombre());
+
+        final RolEntity entity = RolEntityAssembler.getInstance().toEntity(rolDomain);
+        factory.getRolDAO().update(rolDomain.getCodigo(), entity);
+    }
+
+    @Override
+    public void eliminarRol(final RolDomain rolDomain) throws FondaControlException {
+        if (UtilObjeto.getInstancia().esNulo(rolDomain.getCodigo())) {
+            throw new IllegalArgumentException("El código del rol no puede ser nulo para eliminar.");
+        }
+        factory.getRolDAO().delete(rolDomain.getCodigo());
     }
 
     @Override
@@ -81,37 +63,19 @@ public final class RolImpl implements RolBusinessLogic {
             throw BusinessLogicFondaControlException.reportar("El nombre del rol es obligatorio.");
         }
         if (UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre).length() > 50) {
-            throw BusinessLogicFondaControlException.reportar(
-                    "El nombre del rol supera los 50 caracteres permitidos.");
+            throw BusinessLogicFondaControlException.reportar("El nombre del rol supera los 50 caracteres permitidos.");
         }
         if (!UtilTexto.getInstancia().contieneSoloLetrasYEspacios(nombre)) {
-            throw BusinessLogicFondaControlException.reportar(
-                    "El nombre del rol solo puede contener letras y espacios.");
+            throw BusinessLogicFondaControlException.reportar("El nombre del rol solo puede contener letras y espacios.");
         }
     }
 
-    private void validarNoExistaRolConMismoNombre(final String nombre) throws BusinessLogicFondaControlException, DataFondaControlException {
-        final var filtro = RolEntity.builder()
-                .nombre(nombre)
-                .crear();
+    private void validarNoExistaRolConMismoNombre(final String nombre) throws FondaControlException {
+        final var filtro = RolEntity.builder().nombre(nombre).crear();
 
         final var resultado = factory.getRolDAO().listByFilter(filtro);
         if (!resultado.isEmpty()) {
-            throw BusinessLogicFondaControlException.reportar(
-                    "Ya existe un rol con el mismo nombre.");
+            throw BusinessLogicFondaControlException.reportar("Ya existe un rol con el mismo nombre.");
         }
-    }
-
-    private UUID generarNuevoCodigoRol() throws DataFondaControlException {
-        UUID nuevoCodigo;
-        boolean existeCodigo;
-
-        do {
-            nuevoCodigo = UtilUUID.generarNuevoUUID();
-            final var resultado = factory.getRolDAO().listByCodigo(nuevoCodigo);
-            existeCodigo = !resultado.isEmpty();
-        } while (existeCodigo);
-
-        return nuevoCodigo;
     }
 }
