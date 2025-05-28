@@ -1,4 +1,4 @@
-package co.edu.uco.FondaControl.init;
+package co.edu.uco.FondaControl;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
