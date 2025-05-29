@@ -21,7 +21,6 @@ public class IndicadorInventarioController {
         this.facade = facade;
     }
 
-    
     @GetMapping
     public List<IndicadorInventarioDTO> consultar(@RequestParam(required = false) UUID codigo)
             throws FondaControlException {
@@ -32,20 +31,12 @@ public class IndicadorInventarioController {
         return facade.consultarIndicadorInventario(filtro);
     }
 
-    
-    @GetMapping("/dummy")
-    public IndicadorInventarioDTO dummy() {
-        return IndicadorInventarioDTO.obtenerValorDefecto();
-    }
-
-    
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void registrar(@RequestBody IndicadorInventarioDTO dto) throws FondaControlException {
         facade.registrarIndicadorInventario(dto);
     }
 
-    
     @PutMapping("/evaluar/{codigo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void evaluar(@PathVariable UUID codigo,
@@ -53,7 +44,6 @@ public class IndicadorInventarioController {
         facade.evaluarIndicadorInventario(codigo, dto);
     }
 
-    
     @PutMapping("/configurar/{codigo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void configurar(@PathVariable UUID codigo,
@@ -61,15 +51,13 @@ public class IndicadorInventarioController {
         facade.configurarIndicadorInventario(codigo, dto);
     }
 
-    
-    @PutMapping("/{codigo}")
+    // Consulta de existencia (void, según tu interfaz)
+    @GetMapping("/{codigo}/exists")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void modificar(@PathVariable UUID codigo,
-                          @RequestBody IndicadorInventarioDTO dto) throws FondaControlException {
-        facade.modificarIndicadorInventario(codigo, dto);
+    public void consultarPorCodigo(@PathVariable UUID codigo) throws FondaControlException {
+        facade.consultarIndicadorInventarioPorCodigo(codigo);
     }
 
-    
     @DeleteMapping("/{codigo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void eliminar(@PathVariable UUID codigo,
