@@ -13,7 +13,7 @@ public final class ProductoEntity {
     private SubcategoriaEntity subcategoria;
     private int limiteCantidad;
     
-    private ProductoEntity() {
+    public ProductoEntity() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
         setPrecioLugar(0.0);

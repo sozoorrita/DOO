@@ -2,7 +2,6 @@ package co.edu.uco.FondaControl.dto;
 
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilFecha;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilMoneda;
-import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
 import java.math.BigDecimal;
@@ -13,7 +12,6 @@ public final class SesionTrabajoDTO {
 
     private UUID codigo;
     private UUID idUsuario;
-    private String nombreUsuario;
     private BigDecimal baseCaja;
     private LocalDateTime fechaApertura;
     private LocalDateTime fechaCierre;
@@ -21,17 +19,15 @@ public final class SesionTrabajoDTO {
     public SesionTrabajoDTO() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setIdUsuario(UtilUUID.obtenerValorDefecto());
-        setNombreUsuario(UtilTexto.getInstancia().obtenerValorDefecto());
         setBaseCaja(UtilMoneda.obtenerValorDefecto());
         setFechaApertura(UtilFecha.obtenerValorDefecto());
         setFechaCierre(null);
     }
 
-    public SesionTrabajoDTO(final UUID codigo, final UUID idUsuario, final String nombreUsuario,
+    public SesionTrabajoDTO(final UUID codigo, final UUID idUsuario,
                             final BigDecimal baseCaja, final LocalDateTime fechaApertura, final LocalDateTime fechaCierre) {
         setCodigo(codigo);
         setIdUsuario(idUsuario);
-        setNombreUsuario(nombreUsuario);
         setBaseCaja(baseCaja);
         setFechaApertura(fechaApertura);
         setFechaCierre(fechaCierre);
@@ -51,14 +47,6 @@ public final class SesionTrabajoDTO {
 
     public void setIdUsuario(final UUID idUsuario) {
         this.idUsuario = UtilUUID.obtenerValorDefecto(idUsuario);
-    }
-
-    public String getNombreUsuario() {
-        return nombreUsuario;
-    }
-
-    public void setNombreUsuario(final String nombreUsuario) {
-        this.nombreUsuario = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombreUsuario);
     }
 
     public BigDecimal getBaseCaja() {

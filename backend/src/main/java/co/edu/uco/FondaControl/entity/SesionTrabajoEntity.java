@@ -16,12 +16,13 @@ public final class SesionTrabajoEntity {
     private LocalDateTime fechaApertura;
     private LocalDateTime fechaCierre;
 
+
     public SesionTrabajoEntity() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setIdUsuario(UsuarioEntity.obtenerValorDefecto());
         setBaseCaja(UtilMoneda.obtenerValorDefecto());
         setFechaApertura(UtilFecha.obtenerValorDefecto());
-        setFechaCierre(null); // Fecha de cierre opcional
+        setFechaCierre(null);
     }
 
     public SesionTrabajoEntity(final UUID codigo, final UsuarioEntity idUsuario, final BigDecimal baseCaja,

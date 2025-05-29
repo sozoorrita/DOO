@@ -3,7 +3,7 @@ package co.edu.uco.FondaControl.data.dao.entity.detalleventa.impl;
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 import co.edu.uco.FondaControl.data.dao.entity.detalleventa.DetalleVentaDAO;
 import co.edu.uco.FondaControl.entity.DetalleVentaEntity;
-import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
+import co.edu.uco.FondaControl.entity.ProductoEntity;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -17,9 +17,9 @@ public class DetalleVentaPostgreSQLDAO implements DetalleVentaDAO {
     private final Connection conexion;
 
     private static final String SQL_INSERT =
-        "INSERT INTO detalleventa(codigo, nombreproducto, precioaplicado, cantidad) VALUES (?, ?, ?, ?)";
+        "INSERT INTO detalleventa(codigo, producto, codigo_venta, precioaplicado, cantidad) VALUES (?, ?, ?, ?, ?)";
     private static final String SQL_UPDATE =
-        "UPDATE detalleventa SET nombreproducto = ?, precioaplicado = ?, cantidad = ? WHERE codigo = ?";
+        "UPDATE detalleventa SET producto = ?, codigo_venta = ?, precioaplicado = ?, cantidad = ? WHERE codigo = ?";
     private static final String SQL_DELETE =
         "DELETE FROM detalleventa WHERE codigo = ?";
     private static final String SQL_FIND_BY_ID =
@@ -35,9 +35,10 @@ public class DetalleVentaPostgreSQLDAO implements DetalleVentaDAO {
     public void create(final DetalleVentaEntity entity) throws DataFondaControlException {
         try (PreparedStatement ps = conexion.prepareStatement(SQL_INSERT)) {
             ps.setObject(1, entity.getCodigo());
-            ps.setString(2, entity.getNombreProducto());
-            ps.setDouble(3, entity.getPrecioAplicado());
-            ps.setInt(4, entity.getCantidad());
+            ps.setObject(2, entity.getProducto() != null ? entity.getProducto().getCodigo() : null);
+            ps.setObject(3, entity.getCodigoVenta());
+            ps.setDouble(4, entity.getPrecioAplicado());
+            ps.setInt(5, entity.getCantidad());
             ps.executeUpdate();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
@@ -50,10 +51,11 @@ public class DetalleVentaPostgreSQLDAO implements DetalleVentaDAO {
     @Override
     public void update(final UUID id, final DetalleVentaEntity entity) throws DataFondaControlException {
         try (PreparedStatement ps = conexion.prepareStatement(SQL_UPDATE)) {
-            ps.setString(1, entity.getNombreProducto());
-            ps.setDouble(2, entity.getPrecioAplicado());
-            ps.setInt(3, entity.getCantidad());
-            ps.setObject(4, id);
+            ps.setObject(1, entity.getProducto() != null ? entity.getProducto().getCodigo() : null);
+            ps.setObject(2, entity.getCodigoVenta());
+            ps.setDouble(3, entity.getPrecioAplicado());
+            ps.setInt(4, entity.getCantidad());
+            ps.setObject(5, id);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
@@ -80,10 +82,22 @@ public class DetalleVentaPostgreSQLDAO implements DetalleVentaDAO {
     public List<DetalleVentaEntity> listByFilter(final DetalleVentaEntity filter) throws DataFondaControlException {
         StringBuilder sql = new StringBuilder(SQL_LIST_ALL);
         List<Object> params = new ArrayList<>();
-        if (!UtilTexto.getInstancia().esNula(filter.getNombreProducto())) {
-            sql.append(" WHERE LOWER(nombreproducto) LIKE LOWER(?)");
-            params.add("%" + filter.getNombreProducto() + "%");
+        boolean hasWhere = false;
+
+        if (filter.getProducto() != null && filter.getProducto().getCodigo() != null) {
+            sql.append(hasWhere ? " AND" : " WHERE");
+            sql.append(" producto = ?");
+            params.add(filter.getProducto().getCodigo());
+            hasWhere = true;
         }
+
+        if (filter.getCodigoVenta() != null) {
+            sql.append(hasWhere ? " AND" : " WHERE");
+            sql.append(" codigo_venta = ?");
+            params.add(filter.getCodigoVenta());
+            hasWhere = true;
+        }
+
         List<DetalleVentaEntity> results = new ArrayList<>();
         try (PreparedStatement ps = conexion.prepareStatement(sql.toString())) {
             for (int i = 0; i < params.size(); i++) {
@@ -141,9 +155,14 @@ public class DetalleVentaPostgreSQLDAO implements DetalleVentaDAO {
     }
 
     private DetalleVentaEntity mapRow(final ResultSet rs) throws SQLException {
+        UUID productoId = rs.getObject("producto", UUID.class);
+        ProductoEntity producto = new ProductoEntity();
+        producto.setCodigo(productoId);
+
         return DetalleVentaEntity.builder()
             .codigo(rs.getObject("codigo", UUID.class))
-            .nombreProducto(rs.getString("nombreproducto"))
+            .producto(producto)
+            .codigoVenta(rs.getObject("codigo_venta", UUID.class))
             .precioAplicado(rs.getDouble("precioaplicado"))
             .cantidad(rs.getInt("cantidad"))
             .crear();

@@ -78,7 +78,7 @@ public class DetalleVentaController {
         aEliminar.setCodigo(id);
         detalleVentaFacade.eliminarDetalleVenta(aEliminar);
 
-        String producto = (dto != null) ? dto.getNombreProducto() : "";
+        String producto = (dto != null) ? dto.getProducto() : "";
         String mensaje = "El detalle de venta" +
                 (producto.isEmpty() ? "" : " [producto: " + producto + "]") +
                 " ha sido eliminado exitosamente.";

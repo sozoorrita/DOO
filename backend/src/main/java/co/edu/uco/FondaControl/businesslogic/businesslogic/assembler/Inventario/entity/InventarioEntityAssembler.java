@@ -1,13 +1,14 @@
 package co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Inventario.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.EntityAssembler;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Producto.entity.ProductoEntityAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.InventarioDomain;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.IndicadorInventarioDomain;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.entity.InventarioEntity;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public final class InventarioEntityAssembler implements EntityAssembler<InventarioEntity, InventarioDomain> {
 
@@ -26,28 +27,22 @@ public final class InventarioEntityAssembler implements EntityAssembler<Inventar
         return UtilObjeto.getInstancia().esNulo(domain)
                 ? InventarioEntity.obtenerValorDefecto()
                 : new InventarioEntity(
-                domain.getCodigo(),
-                domain.getNombreProducto(),
-                domain.getCantidad(),
-                domain.getCodigoIndicador()
-        );
+                    domain.getCodigo(),
+                    ProductoEntityAssembler.getInstance().toEntity(domain.getProducto()),
+                    domain.getCantidad(),
+                    domain.getCodigoIndicador()
+                );
     }
 
     @Override
     public InventarioDomain toDomain(final InventarioEntity entity) {
         final var inventarioEntity = InventarioEntity.obtenerValorDefecto(entity);
 
-
-        final IndicadorInventarioDomain indicador = new IndicadorInventarioDomain(
-                inventarioEntity.getCodigoIndicador(),
-                ""
-        );
-
         return new InventarioDomain(
                 inventarioEntity.getCodigo(),
-                inventarioEntity.getNombreProducto(),
+                ProductoEntityAssembler.getInstance().toDomain(inventarioEntity.getProducto()),
                 inventarioEntity.getCantidad(),
-                indicador
+                new IndicadorInventarioDomain(inventarioEntity.getCodigoIndicador(), "")
         );
     }
 

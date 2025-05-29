@@ -1,28 +1,39 @@
 package co.edu.uco.FondaControl.dto;
 
 import java.util.UUID;
+
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
-import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
 public final class DetalleVentaDTO {
     private UUID codigo;
-    private String nombreProducto;
     private double precioAplicado;
     private int cantidad;
+    private ProductoDTO producto; // <--- Ahora es ProductoDTO
+    private UUID codigoVenta;
 
     public DetalleVentaDTO() {
         setCodigo(UtilUUID.obtenerValorDefecto());
-        setNombreProducto(UtilTexto.getInstancia().obtenerValorDefecto());
         setPrecioAplicado(0.0);
         setCantidad(0);
+        setProducto(null);
+        setCodigoVenta(UtilUUID.obtenerValorDefecto());
+    }
+
+    public DetalleVentaDTO(UUID codigo, ProductoDTO producto, UUID codigoVenta, double precioAplicado, int cantidad) {
+        setCodigo(codigo);
+        setProducto(producto);
+        setCodigoVenta(codigoVenta);
+        setPrecioAplicado(precioAplicado);
+        setCantidad(cantidad);
     }
 
     private DetalleVentaDTO(final Builder builder) {
         setCodigo(builder.codigo);
-        setNombreProducto(builder.nombreProducto);
         setPrecioAplicado(builder.precioAplicado);
         setCantidad(builder.cantidad);
+        setProducto(builder.producto);
+        setCodigoVenta(builder.codigoVenta);
     }
 
     public static DetalleVentaDTO obtenerValorDefecto() {
@@ -41,15 +52,6 @@ public final class DetalleVentaDTO {
         this.codigo = UtilUUID.obtenerValorDefecto(codigo);
     }
 
-    public String getNombreProducto() {
-        return nombreProducto;
-    }
-
-    public void setNombreProducto(final String nombreProducto) {
-        String valor = UtilTexto.getInstancia().obtenerValorDefecto(nombreProducto);
-        this.nombreProducto = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(valor);
-    }
-
     public double getPrecioAplicado() {
         return precioAplicado;
     }
@@ -66,25 +68,37 @@ public final class DetalleVentaDTO {
         this.cantidad = cantidad;
     }
 
+    public ProductoDTO getProducto() {
+        return producto;
+    }
+
+    public void setProducto(ProductoDTO producto) {
+        this.producto = producto;
+    }
+
+    public UUID getCodigoVenta() {
+        return codigoVenta;
+    }
+
+    public void setCodigoVenta(UUID codigoVenta) {
+        this.codigoVenta = codigoVenta;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
 
     public static final class Builder {
         private UUID codigo = UtilUUID.obtenerValorDefecto();
-        private String nombreProducto = UtilTexto.getInstancia().obtenerValorDefecto();
         private double precioAplicado = 0.0;
         private int cantidad = 0;
+        private ProductoDTO producto = null;
+        private UUID codigoVenta = UtilUUID.obtenerValorDefecto();
 
         private Builder() {}
 
         public Builder codigo(final UUID codigo) {
             this.codigo = codigo;
-            return this;
-        }
-
-        public Builder nombreProducto(final String nombreProducto) {
-            this.nombreProducto = nombreProducto;
             return this;
         }
 
@@ -98,18 +112,18 @@ public final class DetalleVentaDTO {
             return this;
         }
 
+        public Builder producto(final ProductoDTO producto) {
+            this.producto = producto;
+            return this;
+        }
+
+        public Builder codigoVenta(final UUID codigoVenta) {
+            this.codigoVenta = codigoVenta;
+            return this;
+        }
+
         public DetalleVentaDTO crear() {
             return new DetalleVentaDTO(this);
         }
-
-		public Builder codigoDetalleVenta(UUID codigoDetalleVenta) {
-			// TODO Auto-generated method stub
-			return null;
-		}
     }
-
-	public UUID getCodigoDetalleVenta() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 }

@@ -4,23 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.DTOAssembler;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Producto.dto.ProductoDTOAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.InventarioDomain;
-import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.IndicadorInventario.dto.IndicadorInventarioDTOAssembler;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.dto.InventarioDTO;
-import co.edu.uco.FondaControl.dto.IndicadorInventarioDTO;
 
 public final class InventarioDTOAssembler implements DTOAssembler<InventarioDTO, InventarioDomain> {
 
     private static final InventarioDTOAssembler INSTANCIA = new InventarioDTOAssembler();
 
-    private InventarioDTOAssembler() {
-        super();
-    }
+    private InventarioDTOAssembler() { super(); }
 
-    public static InventarioDTOAssembler getInstancia() {
-        return INSTANCIA;
-    }
+    public static InventarioDTOAssembler getInstancia() { return INSTANCIA; }
 
     @Override
     public InventarioDomain toDomain(final InventarioDTO dto) {
@@ -28,13 +23,11 @@ public final class InventarioDTOAssembler implements DTOAssembler<InventarioDTO,
             return InventarioDomain.obtenerValorDefecto();
         }
 
-        final IndicadorInventarioDTO indicadorDTO = new IndicadorInventarioDTO(dto.getCodigoIndicador(), dto.getNombreIndicador());
-
         return new InventarioDomain(
                 dto.getCodigo(),
-                dto.getNombreProducto(),
+                ProductoDTOAssembler.getInstance().toDomain(dto.getProducto()),
                 dto.getCantidad(),
-                IndicadorInventarioDTOAssembler.getInstance().toDomain(indicadorDTO)
+                null // Si tienes un DTO para el indicador, llama aquí el assembler, si no, pon null o como corresponda.
         );
     }
 
@@ -46,10 +39,10 @@ public final class InventarioDTOAssembler implements DTOAssembler<InventarioDTO,
 
         return new InventarioDTO(
                 domain.getCodigo(),
-                domain.getNombreProducto(),
+                ProductoDTOAssembler.getInstance().toDto(domain.getProducto()),
                 domain.getCantidad(),
-                domain.getCodigoIndicador(),
-                domain.getNombreIndicador()
+                domain.getCodigoIndicador()
+                // Puedes agregar el objeto indicador si tienes ese assembler y lo necesitas en el DTO.
         );
     }
 
