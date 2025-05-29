@@ -12,5 +12,7 @@ public interface CategoriaFacade {
 
 	void eliminarCategoria(CategoriaDTO categoria) throws FondaControlException;
 
+	void consultarCategoriaPorCodigo(CategoriaDTO categoria) throws FondaControlException;
+
 	List<CategoriaDTO> consultarCategoria(CategoriaDTO filtro) throws FondaControlException;
 }

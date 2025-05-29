@@ -21,16 +21,11 @@ public class CategoriaController {
         this.categoriaFacade = categoriaFacade;
     }
 
-    @GetMapping("/dummy")
-    public CategoriaDTO getDummy() {
-        return new CategoriaDTO();
-    }
-
-   @GetMapping
+    @GetMapping
     public ResponseEntity<List<CategoriaDTO>> consultar(@RequestBody(required = false) CategoriaDTO filtro)
             throws FondaControlException {
         if (filtro == null) {
-            filtro = getDummy();
+            filtro = new CategoriaDTO();
         }
         List<CategoriaDTO> lista = categoriaFacade.consultarCategoria(filtro);
         return ResponseEntity.ok(lista);
@@ -40,7 +35,7 @@ public class CategoriaController {
     public ResponseEntity<String> registrar(@RequestBody CategoriaDTO categoria)
             throws FondaControlException {
         categoriaFacade.registrarCategoria(categoria);
-        String mensaje = "La categoria \"" + categoria.getNombre() + "\" ha sido creada exitosamente.";
+        String mensaje = "La categoría \"" + categoria.getNombre() + "\" ha sido creada exitosamente.";
         return new ResponseEntity<>(mensaje, HttpStatus.CREATED);
     }
 
@@ -59,8 +54,18 @@ public class CategoriaController {
             throws FondaControlException {
         CategoriaDTO filtro = new CategoriaDTO();
         filtro.setCodigo(id);
-        var encontrados = categoriaFacade.consultarCategoria(filtro);
-        String nombre = encontrados.isEmpty() ? "" : encontrados.getFirst().getNombre();
+        List<CategoriaDTO> encontrados = categoriaFacade.consultarCategoria(filtro);
+
+        if (encontrados == null || encontrados.isEmpty()) {
+            throw new FondaControlException(
+                    "No existe una categoría con el código proporcionado.",
+                    "No se encontró la categoría con id: " + id,
+                    null,
+                    co.edu.uco.FondaControl.crosscutting.excepciones.LayerException.BUSINESS_LOGIC
+            );
+        }
+
+        String nombre = encontrados.getFirst().getNombre();
 
         CategoriaDTO aEliminar = new CategoriaDTO();
         aEliminar.setCodigo(id);
@@ -68,5 +73,17 @@ public class CategoriaController {
 
         String mensaje = "La categoría \"" + nombre + "\" ha sido eliminada exitosamente.";
         return ResponseEntity.ok(mensaje);
+    }
+
+    // Nuevo endpoint: consultarCategoriaPorCodigo (según el facade, es void)
+    @GetMapping("/{id}/exists")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void consultarPorCodigo(@PathVariable("id") UUID id)
+            throws FondaControlException {
+        CategoriaDTO consulta = new CategoriaDTO();
+        consulta.setCodigo(id);
+        categoriaFacade.consultarCategoriaPorCodigo(consulta);
+        // Si no existe, lanza excepción y retorna 404 por manejo global o por @ExceptionHandler.
+        // Si existe, retorna 204 No Content.
     }
 }

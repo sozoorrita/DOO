@@ -39,6 +39,21 @@ public final class CategoriaImpl implements CategoriaBusinessLogic {
     }
 
     @Override
+    public void consultarCategoriaPorCodigo(UUID codigo) throws FondaControlException {
+        if (UtilUUID.esValorDefecto(codigo)) {
+            throw BusinessLogicFondaControlException.reportar("El código de la categoría a consultar es inválido.");
+        }
+
+        CategoriaEntity entity = daoFactory.getCategoriaDAO().findById(codigo);
+        if (UtilObjeto.esNulo(entity) || UtilUUID.esValorDefecto(entity.getCodigo())) {
+            throw BusinessLogicFondaControlException.reportar("No existe una categoría con el código proporcionado.");
+        }
+
+
+    }
+
+
+    @Override
     public void modificarCategoria(final UUID codigo, final CategoriaDomain categoria) throws FondaControlException {
         if (UtilUUID.esValorDefecto(codigo)) {
             throw BusinessLogicFondaControlException.reportar("El código de la categoría a modificar es inválido.");

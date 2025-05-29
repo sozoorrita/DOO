@@ -9,6 +9,8 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 public interface CategoriaBusinessLogic {
 	void registrarCategoria(CategoriaDomain categoria) throws FondaControlException;
 
+	void consultarCategoriaPorCodigo(UUID codigo) throws FondaControlException;
+
 	void modificarCategoria(UUID codigo, CategoriaDomain categoria) throws FondaControlException;
 
 	void eliminarCategoria(UUID codigo) throws FondaControlException;
