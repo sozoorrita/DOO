@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.EntityAssembler;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Subcategoria.entity.SubcategoriaEntityAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.ProductoDomain;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.SubcategoriaDomain;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.entity.ProductoEntity;
-import co.edu.uco.FondaControl.entity.SubcategoriaEntity;
 
 public final class ProductoEntityAssembler implements EntityAssembler<ProductoEntity, ProductoDomain> {
 
@@ -26,9 +27,7 @@ public final class ProductoEntityAssembler implements EntityAssembler<ProductoEn
         if (UtilObjeto.getInstancia().esNulo(domain)) {
             return ProductoEntity.obtenerValorDefecto();
         }
-        final SubcategoriaEntity subEntity = SubcategoriaEntity.builder()
-                .codigo(domain.getCodigoSubcategoria())
-                .crear();
+        final var subEntity = SubcategoriaEntityAssembler.getInstancia().toEntity(domain.getSubcategoria());
 
         return ProductoEntity.builder()
                 .codigo(domain.getCodigo())
@@ -43,12 +42,14 @@ public final class ProductoEntityAssembler implements EntityAssembler<ProductoEn
     @Override
     public ProductoDomain toDomain(final ProductoEntity entity) {
         final ProductoEntity safe = ProductoEntity.obtenerValorDefecto(entity);
+        final SubcategoriaDomain subDomain = SubcategoriaEntityAssembler.getInstancia().toDomain(safe.getSubcategoria());
+
         return new ProductoDomain(
                 safe.getCodigo(),
                 safe.getNombre(),
                 safe.getPrecioLugar(),
                 safe.getPrecioLlevar(),
-                safe.getSubcategoria().getCodigo(),
+                subDomain,
                 safe.getLimiteCantidad()
         );
     }

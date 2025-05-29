@@ -21,7 +21,7 @@
 
   <properties>
     <!-- Para compilar con Java 17 -->
-    <java.version>17</java.version>
+    <java.version>24</java.version>
   </properties>
 
   <dependencies>

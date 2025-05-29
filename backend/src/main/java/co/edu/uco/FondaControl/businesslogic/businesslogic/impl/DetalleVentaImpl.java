@@ -14,19 +14,23 @@ import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 
 public final class DetalleVentaImpl implements DetalleVentaBusinessLogic {
 
-    private final DAOFactory daoFactory;
+	private final DAOFactory daoFactory;
 
-    public DetalleVentaImpl(final DAOFactory daoFactory) {
-        this.daoFactory = daoFactory;
+	public DetalleVentaImpl(final DAOFactory daoFactory) {
+		this.daoFactory = daoFactory;
 	}
 
 	@Override
 	public void registrarDetalleVenta(final DetalleVentaDomain detalleVenta) throws FondaControlException {
 		if (UtilObjeto.getInstancia().esNulo(detalleVenta)
 				|| UtilObjeto.getInstancia().esNulo(detalleVenta.getProducto())
-				|| UtilTexto.getInstancia().esNula(detalleVenta.getProducto().getNombre())) {
+				|| UtilTexto.getInstancia().esNula(detalleVenta.getProducto().getNombre())
+				|| UtilObjeto.getInstancia().esNulo(detalleVenta.getProducto().getCodigo())
+				|| UtilUUID.esValorDefecto(detalleVenta.getProducto().getCodigo())
+				|| UtilObjeto.getInstancia().esNulo(detalleVenta.getCodigoVenta())
+				|| UtilUUID.esValorDefecto(detalleVenta.getCodigoVenta())) {
 			throw new IllegalArgumentException(
-					"El detalle de venta a registrar no puede ser nulo y debe contener un producto válido con nombre.");
+					"El detalle de venta debe contener un producto y código de venta válidos, ambos con UUID distinto de null y nombre de producto no vacío.");
 		}
 		if (detalleVenta.getPrecioAplicado() < 0) {
 			throw new IllegalArgumentException("El precio aplicado no puede ser negativo.");
@@ -34,7 +38,6 @@ public final class DetalleVentaImpl implements DetalleVentaBusinessLogic {
 		if (detalleVenta.getCantidad() <= 0) {
 			throw new IllegalArgumentException("La cantidad debe ser mayor que cero.");
 		}
-		// Generar un código único para el detalle de venta
 		final var codigo = UtilUUID.generarNuevoUUID();
 		detalleVenta.setCodigoDetalleVenta(codigo);
 

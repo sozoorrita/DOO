@@ -35,7 +35,7 @@ public final class ProductoImpl implements ProductoBusinessLogic {
         if (producto.getPrecioLugar() < 0 || producto.getPrecioLlevar() < 0) {
             throw BusinessLogicFondaControlException.reportar("Los precios del producto no pueden ser negativos.");
         }
-        if (UtilObjeto.getInstancia().esNulo(producto.getCodigoSubcategoria())) {
+        if (UtilObjeto.getInstancia().esNulo(producto.getSubcategoria())) {
             throw BusinessLogicFondaControlException.reportar("La subcategoría del producto es obligatoria.");
         }
         
@@ -49,7 +49,7 @@ public final class ProductoImpl implements ProductoBusinessLogic {
             nombre,
             producto.getPrecioLugar(),
             producto.getPrecioLlevar(),
-            producto.getCodigoSubcategoria(),
+            producto.getSubcategoria(),
             producto.getLimiteCantidad()
         );
         ProductoEntity entity = ProductoEntityAssembler.getInstance().toEntity(aCrear);
@@ -71,7 +71,7 @@ public final class ProductoImpl implements ProductoBusinessLogic {
         if (producto.getPrecioLugar() < 0 || producto.getPrecioLlevar() < 0) {
             throw BusinessLogicFondaControlException.reportar("Los precios del producto no pueden ser negativos.");
         }
-        if (UtilObjeto.getInstancia().esNulo(producto.getCodigoSubcategoria())) {
+        if (UtilObjeto.getInstancia().esNulo(producto.getSubcategoria())) {
             throw BusinessLogicFondaControlException.reportar("La subcategoría del producto es obligatoria.");
         }
         ProductoEntity entity = ProductoEntityAssembler.getInstance().toEntity(producto);

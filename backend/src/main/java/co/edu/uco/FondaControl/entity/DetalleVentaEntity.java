@@ -65,7 +65,7 @@ public final class DetalleVentaEntity {
 	}
 
 	public void setProducto(final ProductoEntity producto) {
-		this.producto = producto;
+	    this.producto = UtilObjeto.getInstancia().obtenerValorDefecto(producto, null);
 	}
 
 	public UUID getCodigoVenta() {

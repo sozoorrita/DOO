@@ -12,7 +12,7 @@ public final class MesaDomain {
     private final String identificador;
     private final EstadoMesaDomain estado;
 
-    private MesaDomain(final UUID codigo, final String identificador, final EstadoMesaDomain estado) {
+    public MesaDomain(final UUID codigo, final String identificador, final EstadoMesaDomain estado) {
         this.codigo = UtilUUID.obtenerValorDefecto(codigo);
         this.identificador = validarIdentificador(identificador);
         this.estado = UtilObjeto.getInstancia().obtenerValorDefecto(estado, EstadoMesaDomain.obtenerValorDefecto());

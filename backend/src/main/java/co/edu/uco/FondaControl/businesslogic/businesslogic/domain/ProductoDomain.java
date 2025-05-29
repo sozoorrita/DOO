@@ -1,90 +1,66 @@
 package co.edu.uco.FondaControl.businesslogic.businesslogic.domain;
 
-import java.util.UUID;
-
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 
 public final class ProductoDomain {
-	private UUID codigo;
-	private String nombre;
-	private double precioLugar;
-	private double precioLlevar;
-	private UUID codigoSubcategoria;
-	private int limiteCantidad;
+    private final java.util.UUID codigo;
+    private final String nombre;
+    private final double precioLugar;
+    private final double precioLlevar;
+    private final SubcategoriaDomain subcategoria;
+    private final int limiteCantidad;
 
-	ProductoDomain() {
-		setCodigo(UtilUUID.obtenerValorDefecto());
-		setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
-		setPrecioLugar(0.0);
-		setPrecioLlevar(0.0);
-		setCodigoSubcategoria(UtilUUID.obtenerValorDefecto());
-		setLimiteCantidad(0);
-	}
+    public ProductoDomain() {
+        this(
+            UtilUUID.obtenerValorDefecto(),
+            UtilTexto.getInstancia().obtenerValorDefecto(),
+            0.0,
+            0.0,
+            SubcategoriaDomain.obtenerValorDefecto(),
+            0
+        );
+    }
 
-	public ProductoDomain(final UUID codigo, final String nombre, final double precioLugar, final double precioLlevar,
-			final UUID codigoSubcategoria, final int limiteCantidad) {
-		setCodigo(codigo);
-		setNombre(nombre);
-		setPrecioLugar(precioLugar);
-		setPrecioLlevar(precioLlevar);
-		setCodigoSubcategoria(codigoSubcategoria);
-		setLimiteCantidad(limiteCantidad);
-	}
+    public ProductoDomain(final java.util.UUID codigo, final String nombre, final double precioLugar, final double precioLlevar,
+                         final SubcategoriaDomain subcategoria, final int limiteCantidad) {
+        this.codigo = UtilUUID.obtenerValorDefecto(codigo);
+        this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
+        this.precioLugar = precioLugar >= 0.0 ? precioLugar : 0.0;
+        this.precioLlevar = precioLlevar >= 0.0 ? precioLlevar : 0.0;
+        this.subcategoria = subcategoria != null ? subcategoria : SubcategoriaDomain.obtenerValorDefecto();
+        this.limiteCantidad = Math.max(0, limiteCantidad);
+    }
 
-	public static ProductoDomain obtenerValorDefecto() {
-		return new ProductoDomain();
-	}
+    public static ProductoDomain obtenerValorDefecto() {
+        return new ProductoDomain();
+    }
 
-	static ProductoDomain obtenerValorDefecto(final ProductoDomain entidad) {
-		return entidad != null ? entidad : obtenerValorDefecto();
-	}
+    public static ProductoDomain obtenerValorDefecto(final ProductoDomain entidad) {
+        return entidad != null ? entidad : obtenerValorDefecto();
+    }
 
-	public UUID getCodigo() {
-		return codigo;
-	}
+    public java.util.UUID getCodigo() {
+        return codigo;
+    }
 
-	private void setCodigo(final UUID codigo) {
-		this.codigo = UtilUUID.obtenerValorDefecto(codigo);
-	}
+    public String getNombre() {
+        return nombre;
+    }
 
-	public String getNombre() {
-		return nombre;
-	}
+    public double getPrecioLugar() {
+        return precioLugar;
+    }
 
-	private void setNombre(final String nombre) {
-		this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
-	}
+    public double getPrecioLlevar() {
+        return precioLlevar;
+    }
 
-	public double getPrecioLugar() {
-		return precioLugar;
-	}
+    public SubcategoriaDomain getSubcategoria() {
+        return subcategoria;
+    }
 
-	private void setPrecioLugar(final double precioLugar) {
-		this.precioLugar = precioLugar >= 0.0 ? precioLugar : 0.0;
-	}
-
-	public double getPrecioLlevar() {
-		return precioLlevar;
-	}
-
-	private void setPrecioLlevar(final double precioLlevar) {
-		this.precioLlevar = precioLlevar >= 0.0 ? precioLlevar : 0.0;
-	}
-
-	public UUID getCodigoSubcategoria() {
-		return codigoSubcategoria;
-	}
-
-	private void setCodigoSubcategoria(final UUID codigoSubcategoria) {
-		this.codigoSubcategoria = UtilUUID.obtenerValorDefecto(codigoSubcategoria);
-	}
-
-	public int getLimiteCantidad() {
-		return limiteCantidad;
-	}
-
-	private void setLimiteCantidad(final int limiteCantidad) {
-		this.limiteCantidad = limiteCantidad >= 0 ? limiteCantidad : 0;
-	}
+    public int getLimiteCantidad() {
+        return limiteCantidad;
+    }
 }

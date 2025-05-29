@@ -32,8 +32,18 @@ public final class VentaImpl implements VentaBusinessLogic {
         validarCodigoVenta(codigo);
         validarVenta(venta);
 
-        venta.setCodigoVenta(codigo);
-        var entity = VentaEntityAssembler.getInstance().toEntity(venta);
+        // Como domain es inmutable, creamos uno nuevo con el código corregido
+        var ventaActualizada = new VentaDomain(
+            codigo,
+            venta.getFecha(),
+            venta.getTotalVenta(),
+            venta.getFormaPago(),
+            venta.getTipoVenta(),
+            venta.getSesionTrabajo(),
+            venta.getMesa()
+        );
+
+        var entity = VentaEntityAssembler.getInstance().toEntity(ventaActualizada);
         daoFactory.getVentaDAO().update(codigo, entity);
     }
 
@@ -65,10 +75,10 @@ public final class VentaImpl implements VentaBusinessLogic {
             throw new IllegalArgumentException("El total de la venta no puede ser negativo.");
         }
 
-        if (UtilUUID.esValorDefecto(venta.getCodigoFormaPago()) ||
-                UtilUUID.esValorDefecto(venta.getCodigoTipoVenta()) ||
-                UtilUUID.esValorDefecto(venta.getCodigoSesionTrabajo()) ||
-                UtilUUID.esValorDefecto(venta.getCodigoMesa())) {
+        if (venta.getFormaPago() == null || UtilUUID.esValorDefecto(venta.getFormaPago().getCodigo()) ||
+            venta.getTipoVenta() == null || UtilUUID.esValorDefecto(venta.getTipoVenta().getCodigo()) ||
+            venta.getSesionTrabajo() == null || UtilUUID.esValorDefecto(venta.getSesionTrabajo().getCodigo()) ||
+            venta.getMesa() == null || UtilUUID.esValorDefecto(venta.getMesa().getCodigo())) {
             throw new IllegalArgumentException("La venta debe tener datos válidos en forma de pago, tipo de venta, sesión de trabajo y mesa.");
         }
     }

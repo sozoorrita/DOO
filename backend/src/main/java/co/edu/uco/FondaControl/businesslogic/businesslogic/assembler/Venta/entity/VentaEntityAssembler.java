@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.EntityAssembler;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.FormaPagoDomain;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.MesaDomain;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.SesionTrabajoDomain;
+import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.TipoVentaDomain;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.VentaDomain;
-import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.entity.VentaEntity;
 
 public final class VentaEntityAssembler implements EntityAssembler<VentaEntity, VentaDomain> {
@@ -22,17 +25,17 @@ public final class VentaEntityAssembler implements EntityAssembler<VentaEntity, 
 
     @Override
     public VentaEntity toEntity(final VentaDomain domain) {
-        if (UtilObjeto.getInstancia().esNulo(domain)) {
+        if (domain == null) {
             return VentaEntity.obtenerValorDefecto();
         }
         return VentaEntity.builder()
                 .codigo(domain.getCodigoVenta())
                 .fecha(domain.getFecha())
                 .totalVenta(domain.getTotalVenta())
-                .codigoFormaPago(domain.getCodigoFormaPago())
-                .codigoTipoVenta(domain.getCodigoTipoVenta())
-                .codigoSesionTrabajo(domain.getCodigoSesionTrabajo())
-                .codigoMesa(domain.getCodigoMesa())
+                .codigoFormaPago(domain.getFormaPago() != null ? domain.getFormaPago().getCodigo() : null)
+                .codigoTipoVenta(domain.getTipoVenta() != null ? domain.getTipoVenta().getCodigo() : null)
+                .codigoSesionTrabajo(domain.getSesionTrabajo() != null ? domain.getSesionTrabajo().getCodigo() : null)
+                .codigoMesa(domain.getMesa() != null ? domain.getMesa().getCodigo() : null)
                 .crear();
     }
 
@@ -43,10 +46,10 @@ public final class VentaEntityAssembler implements EntityAssembler<VentaEntity, 
                 safe.getCodigo(),
                 safe.getFecha(),
                 safe.getTotalVenta(),
-                safe.getCodigoFormaPago(),
-                safe.getCodigoTipoVenta(),
-                safe.getCodigoSesionTrabajo(),
-                safe.getCodigoMesa()
+                new FormaPagoDomain(safe.getCodigoFormaPago(), ""),
+                new TipoVentaDomain(safe.getCodigoTipoVenta(), ""),
+                new SesionTrabajoDomain(safe.getCodigoSesionTrabajo(), null, null, null, null),
+                new MesaDomain(safe.getCodigoMesa(), "", null)
         );
     }
 

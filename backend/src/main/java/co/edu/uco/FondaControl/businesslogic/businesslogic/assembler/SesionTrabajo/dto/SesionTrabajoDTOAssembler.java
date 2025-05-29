@@ -9,7 +9,6 @@ import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.UsuarioDomain;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilFecha;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilMoneda;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
-import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 import co.edu.uco.FondaControl.dto.SesionTrabajoDTO;
 
@@ -33,9 +32,9 @@ public final class SesionTrabajoDTOAssembler implements DTOAssembler<SesionTraba
 
         final var usuario = new UsuarioDomain(
                 dto.getIdUsuario(),
-                UtilTexto.getInstancia().obtenerValorDefecto(dto.getNombreUsuario()),
-                UtilUUID.obtenerValorDefecto(),
-                ""
+                "", // No se usa nombreUsuario en el DTO
+                UtilUUID.obtenerValorDefecto(), // Rol por defecto
+                "" // Contraseña vacía por defecto
         );
 
         return SesionTrabajoDomain.crear(
@@ -56,7 +55,6 @@ public final class SesionTrabajoDTOAssembler implements DTOAssembler<SesionTraba
         return new SesionTrabajoDTO(
                 domain.getCodigo(),
                 domain.getUsuario().getId(),
-                domain.getUsuario().getNombre(),
                 domain.getBaseCaja(),
                 domain.getFechaApertura(),
                 domain.getFechaCierre()
