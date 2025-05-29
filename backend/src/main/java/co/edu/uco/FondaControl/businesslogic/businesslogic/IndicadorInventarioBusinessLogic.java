@@ -16,5 +16,7 @@ public interface IndicadorInventarioBusinessLogic {
 
     List<IndicadorInventarioDomain> consultarIndicadorInventario(IndicadorInventarioDomain indicadorInventarioDomain) throws FondaControlException;
 
+    void eliminarIndicadorInventario(UUID codigo) throws FondaControlException;
+    void modificarIndicadorInventario(UUID codigo, IndicadorInventarioDomain indicadorInventarioDomain) throws FondaControlException;
 
 }

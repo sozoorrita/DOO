@@ -9,9 +9,14 @@ import java.util.UUID;
 public interface IndicadorInventarioFacade {
 
     void evaluarIndicadorInventario(UUID codigo, IndicadorInventarioDTO indicadorInventario) throws FondaControlException;
-    void configurarIndicadorInventario(UUID codigo,IndicadorInventarioDTO indicadorInventario) throws FondaControlException;
+
+    void configurarIndicadorInventario(UUID codigo, IndicadorInventarioDTO indicadorInventario) throws FondaControlException;
+
     void registrarIndicadorInventario(IndicadorInventarioDTO indicadorInventario) throws FondaControlException;
-    List<IndicadorInventarioDTO> consultarIndicadorInventario(IndicadorInventarioDTO Filtro) throws FondaControlException;
-	void eliminarIndicadorInventario(UUID codigo) throws FondaControlException;
-	void modificarIndicadorInventario(UUID codigo, IndicadorInventarioDTO dto) throws FondaControlException;
+
+    List<IndicadorInventarioDTO> consultarIndicadorInventario(IndicadorInventarioDTO filtro) throws FondaControlException;
+
+    void eliminarIndicadorInventario(UUID codigo, IndicadorInventarioDTO indicadorInventario) throws FondaControlException;
+
+    void modificarIndicadorInventario(UUID codigo, IndicadorInventarioDTO indicadorInventario) throws FondaControlException;
 }

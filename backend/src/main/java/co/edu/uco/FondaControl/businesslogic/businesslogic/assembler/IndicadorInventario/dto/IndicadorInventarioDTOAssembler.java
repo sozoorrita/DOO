@@ -24,9 +24,8 @@ public final class IndicadorInventarioDTOAssembler implements DTOAssembler<Indic
     @Override
     public IndicadorInventarioDTO toDto(final IndicadorInventarioDomain domain) {
         if (UtilObjeto.esNulo(domain)) {
-            return new IndicadorInventarioDTO(); // Usa constructor por defecto
+            return IndicadorInventarioDTO.obtenerValorDefecto();
         }
-
         return new IndicadorInventarioDTO(domain.getCodigo(), domain.getNombre());
     }
 
@@ -35,13 +34,15 @@ public final class IndicadorInventarioDTOAssembler implements DTOAssembler<Indic
         if (UtilObjeto.esNulo(dto)) {
             return IndicadorInventarioDomain.obtenerValorDefecto();
         }
-
-        return new IndicadorInventarioDomain(dto.getCodigo(), UtilTexto.getInstancia().obtenerValorDefecto(dto.getNombre()));
+        return new IndicadorInventarioDomain(dto.getCodigo(), dto.getNombre());
     }
 
     @Override
     public List<IndicadorInventarioDomain> toDomainList(final List<IndicadorInventarioDTO> dtoList) {
         final List<IndicadorInventarioDomain> resultado = new ArrayList<>();
+        if (UtilObjeto.esNulo(dtoList)) {
+            return resultado;
+        }
         for (final var dto : dtoList) {
             resultado.add(toDomain(dto));
         }
@@ -51,6 +52,9 @@ public final class IndicadorInventarioDTOAssembler implements DTOAssembler<Indic
     @Override
     public List<IndicadorInventarioDTO> toDtoList(final List<IndicadorInventarioDomain> domainList) {
         final List<IndicadorInventarioDTO> resultado = new ArrayList<>();
+        if (UtilObjeto.esNulo(domainList)) {
+            return resultado;
+        }
         for (final var domain : domainList) {
             resultado.add(toDto(domain));
         }

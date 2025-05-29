@@ -112,4 +112,60 @@ public final class IndicadorInventarioImpl implements IndicadorInventarioBusines
             .getInstance()
             .toDomainList(factory.getIndicadorInventarioDAO().listByCodigo(domain.getCodigo()));
     }
+
+    @Override
+    public void eliminarIndicadorInventario(final UUID codigo) throws FondaControlException {
+    // Validar el código recibido
+    if (UtilObjeto.getInstancia().esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
+        throw BusinessLogicFondaControlException.reportar(
+                "El código del indicador de inventario no puede ser nulo ni su valor por defecto.",
+                "Código recibido para eliminar indicador de inventario es nulo o por defecto."
+        );
+    }
+
+    var existentes = factory.getIndicadorInventarioDAO().listByCodigo(codigo);
+    if (existentes == null || existentes.isEmpty()) {
+        throw BusinessLogicFondaControlException.reportar(
+                "No existe un indicador de inventario con el código suministrado.",
+                "Intento de eliminar indicador de inventario inexistente con código: " + codigo
+        );
+    }
+
+    factory.getIndicadorInventarioDAO().delete(codigo);
+}
+
+    @Override
+    public void modificarIndicadorInventario(UUID codigo, IndicadorInventarioDomain indicadorInventarioDomain) throws FondaControlException {
+    // Validar parámetros de entrada
+    if (UtilObjeto.esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
+        throw BusinessLogicFondaControlException.reportar(
+                "El código del indicador de inventario no puede ser nulo ni su valor por defecto.",
+                "Código recibido para modificar indicador de inventario es nulo o por defecto."
+        );
+    }
+    if (UtilObjeto.esNulo(indicadorInventarioDomain)) {
+        throw BusinessLogicFondaControlException.reportar(
+                "El indicador de inventario a modificar no puede ser nulo.",
+                "Intento de modificar un indicador de inventario nulo."
+        );
+    }
+
+    // Evaluar lógica de negocio (nombre, permitido, etc.)
+    evaluarIndicadorInventario(codigo, indicadorInventarioDomain);
+
+    // Comprobar existencia
+    var existentes = factory.getIndicadorInventarioDAO().listByCodigo(codigo);
+    if (existentes == null || existentes.isEmpty()) {
+        throw BusinessLogicFondaControlException.reportar(
+                "No existe un indicador de inventario con el código suministrado para modificar.",
+                "Intento de modificar indicador de inventario inexistente con código: " + codigo
+        );
+    }
+
+    // Transformar a entity y actualizar
+    IndicadorInventarioEntity entity = IndicadorInventarioEntityAssembler
+            .getInstance()
+            .toEntity(new IndicadorInventarioDomain(codigo, indicadorInventarioDomain.getNombre()));
+    factory.getIndicadorInventarioDAO().update(codigo, entity);
+}
 }

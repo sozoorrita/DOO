@@ -40,7 +40,7 @@ public class CategoriaController {
     public ResponseEntity<String> registrar(@RequestBody CategoriaDTO categoria)
             throws FondaControlException {
         categoriaFacade.registrarCategoria(categoria);
-        String mensaje = "La categoría \"" + categoria.getNombre() + "\" ha sido creada exitosamente.";
+        String mensaje = "La categoria \"" + categoria.getNombre() + "\" ha sido creada exitosamente.";
         return new ResponseEntity<>(mensaje, HttpStatus.CREATED);
     }
 
@@ -60,7 +60,7 @@ public class CategoriaController {
         CategoriaDTO filtro = new CategoriaDTO();
         filtro.setCodigo(id);
         var encontrados = categoriaFacade.consultarCategoria(filtro);
-        String nombre = encontrados.isEmpty() ? "" : encontrados.get(0).getNombre();
+        String nombre = encontrados.isEmpty() ? "" : encontrados.getFirst().getNombre();
 
         CategoriaDTO aEliminar = new CategoriaDTO();
         aEliminar.setCodigo(id);

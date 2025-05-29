@@ -72,7 +72,8 @@ public class IndicadorInventarioController {
     
     @DeleteMapping("/{codigo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable UUID codigo) throws FondaControlException {
-        facade.eliminarIndicadorInventario(codigo);
+    public void eliminar(@PathVariable UUID codigo,
+                         @RequestBody IndicadorInventarioDTO dto) throws FondaControlException {
+        facade.eliminarIndicadorInventario(codigo, dto);
     }
 }

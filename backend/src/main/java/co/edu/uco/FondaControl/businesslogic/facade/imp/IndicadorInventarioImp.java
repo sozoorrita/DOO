@@ -68,10 +68,9 @@ public final class IndicadorInventarioImp implements IndicadorInventarioFacade {
 
     @Override
     public List<IndicadorInventarioDTO> consultarIndicadorInventario(IndicadorInventarioDTO filtro) throws FondaControlException {
-        if (UtilObjeto.esNulo(filtro) || UtilObjeto.esNulo(filtro.getCodigo())) {
-            throw new IllegalArgumentException("El filtro no puede ser nulo y debe contener código.");
+        if (UtilObjeto.esNulo(filtro)) {
+            throw new IllegalArgumentException("El filtro no puede ser nulo.");
         }
-        
         IndicadorInventarioDomain domainFilter = IndicadorInventarioDTOAssembler.getInstance().toDomain(filtro);
         List<IndicadorInventarioDomain> domains = businessLogic.consultarIndicadorInventario(domainFilter);
         return domains.stream()
@@ -87,7 +86,7 @@ public final class IndicadorInventarioImp implements IndicadorInventarioFacade {
     }
 
     @Override
-    public void eliminarIndicadorInventario(UUID codigo) throws FondaControlException {
+    public void eliminarIndicadorInventario(UUID codigo, IndicadorInventarioDTO indicadorInventario) throws FondaControlException {
         if (UtilObjeto.esNulo(codigo)) {
             throw new IllegalArgumentException("El código no puede ser nulo.");
         }
