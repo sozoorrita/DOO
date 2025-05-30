@@ -1,30 +1,89 @@
-<div class="usuario-container">
-  <h1>Usuarios</h1>
-  <button mat-flat-button class="btn-accent" (click)="startAdd()">Agregar Usuario</button>
-  <table class="user-table">
-    <thead><tr><th>Nombre</th><th>Rol</th><th>Acciones</th></tr></thead>
-    <tbody>
-      <tr *ngFor="let u of users">
-        <td>{{u.name}}</td>
-        <td>{{u.role}}</td>
-        <td>
-          <button mat-icon-button (click)="startEdit(u)"><mat-icon>edit</mat-icon></button>
-          <button mat-icon-button color="warn" (click)="delete(u)"><mat-icon>delete</mat-icon></button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+<div class="usuario-page">
+  <div class="usuario-card">
 
-  <div class="form">
-    <h2 *ngIf="editing">Editar Usuario</h2>
-    <h2 *ngIf="!editing">Nuevo Usuario</h2>
-    <mat-form-field appearance="fill"><mat-label>Nombre</mat-label>
-      <input matInput [(ngModel)]="form.name" />
-    </mat-form-field>
-    <mat-form-field appearance="fill"><mat-label>Rol</mat-label>
-      <input matInput [(ngModel)]="form.role" />
-    </mat-form-field>
-    <button mat-raised-button class="btn-accent" (click)="save()">Guardar</button>
+    <!-- 1) Menú Lateral -->
+    <aside class="usuario-nav">
+      <h2>Fonda Control</h2>
+      <nav>
+        <a routerLink="/sesiones">Sesiones</a>
+        <a routerLink="/informe-caja">Informe de Caja</a>
+        <a routerLink="/mesas">Mesas</a>
+        <a routerLink="/ventas">Venta Rápida</a>
+        <a routerLink="/usuarios">Usuarios</a>
+        <a routerLink="/inventario">Inventario</a>
+      </nav>
+    </aside>
+
+    <!-- 2) Contenido Principal -->
+    <main class="usuario-main">
+      <header class="usuario-main__header">
+        <h1>Usuarios</h1>
+        <button mat-flat-button class="btn-accent" (click)="startAdd()">
+          Agregar Usuario
+        </button>
+      </header>
+
+      <section class="usuario-table-wrapper">
+        <table class="user-table">
+          <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Rol</th>
+            <th>Acciones</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr *ngFor="let u of users">
+            <td>{{ u.name }}</td>
+            <td>{{ u.role }}</td>
+            <td class="acciones">
+              <button mat-stroked-button color="primary" (click)="startEdit(u)">
+                modificar
+              </button>
+              <button mat-stroked-button color="warn" (click)="delete(u)">
+                Eliminar
+              </button>
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <form class="usuario-form" (ngSubmit)="save()" #userForm="ngForm">
+        <h2 *ngIf="editing; else nuevo">Editar Usuario</h2>
+        <ng-template #nuevo><h2>Nuevo Usuario</h2></ng-template>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Nombre</mat-label>
+          <input
+            matInput
+            name="name"
+            required
+            [(ngModel)]="form.name"
+            placeholder="Ingresa el nombre"
+          />
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Rol</mat-label>
+          <input
+            matInput
+            name="role"
+            required
+            [(ngModel)]="form.role"
+            placeholder="Ingresa el rol"
+          />
+        </mat-form-field>
+
+        <button
+          mat-raised-button
+          class="btn-accent"
+          type="submit"
+          [disabled]="userForm.invalid"
+        >
+          Guardar
+        </button>
+      </form>
+    </main>
   </div>
 </div>
-
