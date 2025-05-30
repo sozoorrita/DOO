@@ -1,0 +1,46 @@
+<div class="session-page">
+  <div class="session-wrapper">
+    <!-- Tarjeta completa -->
+    <div class="session-card">
+      <!-- Topbar dentro del card -->
+      <header class="card-topbar">
+        <span class="logo">Fonda Control</span>
+        <button class="user-btn"><i class="icon-user"></i></button>
+      </header>
+
+      <div class="session-body">
+        <!-- Menú lateral dentro de la tarjeta -->
+        <nav class="subnav">
+          <button routerLink="/tables"><i class="icon-home"></i> Inicio</button>
+          <button routerLink="/reports"><i class="icon-chart"></i> Reportes</button>
+        </nav>
+
+        <!-- Contenido principal dentro de la tarjeta -->
+        <section class="main-content">
+          <h2>Gestión de Sesión de Trabajo</h2>
+          <div class="session-actions">
+            <button class="btn-primary" (click)="openSession()">Abrir Sesión</button>
+          </div>
+          <table class="session-table" *ngIf="sessionHistory.length">
+            <thead>
+              <tr>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Ventas Totales</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of sessionHistory">
+                <td>{{ s.startDate }}</td>
+                <td>{{ s.endDate }}</td>
+                <td>$ {{ s.total | number:'1.0-0' }}</td>
+                <td>{{ s.status }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>

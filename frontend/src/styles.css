@@ -1,8 +1,22 @@
-/* src/styles.css */
+:root {
+  /* Primary */
+  --color-primary: #5D4037;
+  --color-primary-dark: #4E342E;
+  /* Accent */
+  --color-accent: #FF9800;
+  /* Background */
+  --color-bg: #EFEBE9;
+  --color-card: #D7CCC8;
+  /* Text & neutrals */
+  --color-text: #222;
+  --color-light-grey: #ddd;
+  /* Warn */
+  --color-warn: #d32f2f;
+}
+
 body {
   margin: 0;
-  background: #f5f5f5;
-}
-button {
-  font-family: inherit;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: Roboto, sans-serif;
 }

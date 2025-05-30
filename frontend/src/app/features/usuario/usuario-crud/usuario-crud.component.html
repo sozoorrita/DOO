@@ -1,0 +1,30 @@
+<div class="usuario-container">
+  <h1>Usuarios</h1>
+  <button mat-flat-button class="btn-accent" (click)="startAdd()">Agregar Usuario</button>
+  <table class="user-table">
+    <thead><tr><th>Nombre</th><th>Rol</th><th>Acciones</th></tr></thead>
+    <tbody>
+      <tr *ngFor="let u of users">
+        <td>{{u.name}}</td>
+        <td>{{u.role}}</td>
+        <td>
+          <button mat-icon-button (click)="startEdit(u)"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button color="warn" (click)="delete(u)"><mat-icon>delete</mat-icon></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="form">
+    <h2 *ngIf="editing">Editar Usuario</h2>
+    <h2 *ngIf="!editing">Nuevo Usuario</h2>
+    <mat-form-field appearance="fill"><mat-label>Nombre</mat-label>
+      <input matInput [(ngModel)]="form.name" />
+    </mat-form-field>
+    <mat-form-field appearance="fill"><mat-label>Rol</mat-label>
+      <input matInput [(ngModel)]="form.role" />
+    </mat-form-field>
+    <button mat-raised-button class="btn-accent" (click)="save()">Guardar</button>
+  </div>
+</div>
+

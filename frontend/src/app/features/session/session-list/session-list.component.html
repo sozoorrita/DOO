@@ -1,0 +1,37 @@
+<div class="session-card">
+  <h2 class="session-title">Sesión de Trabajo</h2>
+
+  <div class="session-buttons">
+    <button class="btn-primary"
+            (click)="openSession()"
+            [disabled]="hasActiveSession">
+      Abrir Sesión
+    </button>
+    <button class="btn-accent"
+            (click)="closeSession()"
+            [disabled]="!hasActiveSession">
+      Cerrar Sesión de Trabajo
+    </button>
+  </div>
+
+  <h3 *ngIf="sessions.length" class="history-title">Historial de Sesiones</h3>
+
+  <table *ngIf="sessions.length" class="session-table">
+    <thead>
+      <tr>
+        <th>Fecha Inicio</th>
+        <th>Fecha Fin</th>
+        <th>Ventas Totales</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let s of sessions">
+        <td>{{ s.start | date:'dd/MM/yyyy' }}</td>
+        <td>{{ s.end ? (s.end | date:'dd/MM/yyyy') : '-' }}</td>
+        <td>{{ s.totalSales | currency:'COP':'symbol':'1.0-0' }}</td>
+        <td>{{ s.status }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

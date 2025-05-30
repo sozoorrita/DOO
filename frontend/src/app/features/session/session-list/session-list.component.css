@@ -1,0 +1,86 @@
+/* Card de sesión tamaño estático */
+.session-card {
+  width: 100%;
+  max-width: 700px;
+  height: 100%;                                    /* llena la altura de layout-card */
+  max-height: 500px;                               /* coincide con la altura fija */
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  border-radius: 8px;
+  padding: 2rem;
+  box-sizing: border-box;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;                                /* oculta scroll interno */
+}
+
+/* Título */
+.session-title {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+}
+
+/* Botones centrados y grandes */
+.session-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+.btn-primary {
+  padding: 0.75rem 2rem;                           /* más ancho */
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-primary:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Botón Cerrar Sesión de Trabajo naranja igual que login */
+.btn-accent {
+  padding: 0.75rem 2rem;                           /* más ancho */
+  background: var(--color-accent);
+  color: #222;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: filter 0.2s;
+}
+.btn-accent:hover:not(:disabled) {
+  filter: brightness(1.1);
+}
+
+/* Historial rellena el espacio restante con scroll */
+.history-title {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+.session-table {
+  width: 100%;
+  border-collapse: collapse;
+  flex: 1;
+  overflow-y: auto;
+}
+.session-table thead th {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  text-align: left;
+}
+.session-table tbody tr:nth-child(odd) {
+  background: rgba(255, 255, 255, 0.05);
+}
+.session-table tbody td {
+  padding: 0.75rem 1rem;
+  color: #fff;
+}

@@ -1,0 +1,46 @@
+<div class="mesa-content">
+  <h2 class="mesa-title">Mesas</h2>
+
+  <div class="mesa-actions">
+    <button mat-raised-button class="btn-accent" (click)="startAdd()">Nueva Mesa</button>
+  </div>
+
+  <table class="mesa-table">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let m of mesas">
+        <td>{{ m.name }}</td>
+        <td>
+          <span [class.libre]="!m.occupied" [class.ocupada]="m.occupied">
+            {{ m.occupied ? 'Ocupada' : 'Libre' }}
+          </span>
+        </td>
+        <td>
+          <button mat-icon-button color="primary" (click)="startEdit(m)"><mat-icon>edit</mat-icon></button>
+          <button mat-icon-button color="warn" (click)="delete(m)"><mat-icon>delete</mat-icon></button>
+          <button mat-button color="accent" [routerLink]="['/mesas', m.id]" [disabled]="!m.occupied">
+            Ver Ventas
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="mesa-form">
+    <h3 *ngIf="editing; else newLabel">Editar Mesa</h3>
+    <ng-template #newLabel><h3>Nueva Mesa</h3></ng-template>
+    <mat-form-field appearance="fill" class="full-width">
+      <mat-label>Nombre Mesa</mat-label>
+      <input matInput [(ngModel)]="formName" />
+    </mat-form-field>
+    <button mat-raised-button class="btn-accent" (click)="save()" [disabled]="!formName.trim()">
+      Guardar
+    </button>
+  </div>
+</div>

@@ -1,32 +1,42 @@
-import { NgModule }             from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-
-import { LoginComponent }        from './auth/login/login.component';
-import { RegisterComponent }     from './auth/register/register.component';
-import { OpenSessionComponent }  from './dashboard/open-session.component';
-import { TableMapComponent }     from './tables/table-map.component';
-import { QuickSaleComponent }    from './pos/quick-sale.component';
-import { TableSaleComponent }    from './pos/table-sale.component';
-import { InvoiceViewComponent }  from './invoice/invoice-view.component';
-import { InventoryListComponent }from './inventory/inventory-list.component';
-import { SessionReportComponent }from './reports/session-report.component';
+import { MainLayoutComponent } from './layout/main-layout/main-layout.component';
+import { AuthGuard }          from './guards/auth.guard';
+import { SessionGuard }       from './guards/session.guard';
+import { NoSessionGuard }     from './guards/no-session.guard';
 
 const routes: Routes = [
-  { path: '',           redirectTo: '/login', pathMatch: 'full' },
-  { path: 'login',      component: LoginComponent },
-  { path: 'register',   component: RegisterComponent },
-  { path: 'dashboard',  component: OpenSessionComponent },
-  { path: 'tables',     component: TableMapComponent },
-  { path: 'quick-sale', component: QuickSaleComponent },
-  { path: 'sale/:tableId', component: TableSaleComponent },
-  { path: 'invoice/:saleId', component: InvoiceViewComponent },
-  { path: 'inventory',  component: InventoryListComponent },
-  { path: 'reports/:sessionId', component: SessionReportComponent },
-  { path: '**',         redirectTo: '/login' }
+  // 1) Siempre ir primero a login
+  { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
+
+  // 2) Rutas de autenticación
+  {
+    path: 'auth',
+    loadChildren: () =>
+      import('./features/auth/auth.module').then(m => m.AuthModule)
+  },
+
+  // 3) Layout protegido tras login
+  {
+    path: '',
+    component: MainLayoutComponent,
+    canActivate: [AuthGuard],
+    children: [
+      { path: 'session',       loadChildren: () => import('./features/session/session.module').then(m => m.SessionModule) },
+      { path: 'mesas',         loadChildren: () => import('./features/mesa/mesa.module').then(m => m.MesaModule),          canActivate: [SessionGuard] },
+      { path: 'venta-rapida',  loadChildren: () => import('./features/venta-rapida/venta-rapida.module').then(m => m.VentaRapidaModule), canActivate: [SessionGuard] },
+      { path: 'usuarios',      loadChildren: () => import('./features/usuario/usuario.module').then(m => m.UsuarioModule),      canActivate: [SessionGuard] },
+      { path: 'inventario',    loadChildren: () => import('./features/inventario/inventario.module').then(m => m.InventarioModule), canActivate: [SessionGuard] },
+      { path: 'reportes',      loadChildren: () => import('./features/reportes/reportes.module').then(m => m.ReportesModule),   canActivate: [NoSessionGuard] }
+    ]
+  },
+
+  // 4) Cualquier otra → login
+  { path: '**', redirectTo: 'auth/login' }
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

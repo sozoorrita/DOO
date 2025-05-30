@@ -1,0 +1,27 @@
+<div class="detail-content" *ngIf="mesa">
+  <button mat-button (click)="goBack()">← Volver a Mesas</button>
+  <h2 class="detail-title">{{ mesa.name }}</h2>
+
+  <div class="product-filter">
+    <mat-form-field appearance="fill">
+      <mat-label>Categoría</mat-label>
+      <mat-select [(value)]="selectedCategory" (selectionChange)="applyFilter()">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let c of categories" [value]="c">{{ c }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="product-grid">
+    <button mat-raised-button class="product-btn btn-accent"
+            *ngFor="let p of filteredProducts"
+            [disabled]="p.stock === 0"
+            (click)="addProduct(p)">
+      {{ p.name }} ({{ p.stock }})
+    </button>
+  </div>
+
+  <button mat-raised-button class="btn-accent consolidate-btn" (click)="consolidate()">
+    Consolidar Venta
+  </button>
+</div>

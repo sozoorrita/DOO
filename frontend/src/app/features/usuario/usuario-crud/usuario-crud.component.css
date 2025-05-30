@@ -1,0 +1,15 @@
+.usuario-container { max-width: 800px; margin: 2rem auto; }
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+.user-table th, .user-table td {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--color-light-grey);
+}
+.form {
+  background: var(--color-card);
+  padding: 1rem; border-radius: 8px;
+}
+.form mat-form-field { width: 100%; margin-bottom: 1rem; }

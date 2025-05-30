@@ -1,0 +1,31 @@
+<div class="venta-content">
+  <h2 class="venta-title">Venta Rápida</h2>
+
+  <div class="product-filter">
+    <mat-form-field appearance="fill">
+      <mat-label>Categoría</mat-label>
+      <mat-select [(value)]="selectedCategory" (selectionChange)="applyFilter()">
+        <mat-option value="">Todas</mat-option>
+        <mat-option *ngFor="let c of categories" [value]="c">{{ c }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="product-grid">
+    <button mat-raised-button class="product-btn btn-accent"
+            *ngFor="let p of products"
+            [disabled]="p.stock === 0"
+            (click)="addProduct(p)">
+      {{ p.name }} ({{ p.stock }})
+    </button>
+  </div>
+
+  <div class="venta-actions">
+    <button mat-raised-button class="btn-accent" (click)="consolidate()">
+      Consolidar Venta
+    </button>
+    <button mat-stroked-button class="btn-accent" (click)="clear()">
+      Limpiar
+    </button>
+  </div>
+</div>

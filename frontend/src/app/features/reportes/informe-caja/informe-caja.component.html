@@ -1,0 +1,26 @@
+<div class="report-container">
+  <h1>Informe de Caja</h1>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Sesión Cerrada</mat-label>
+    <mat-select [(value)]="selectedSessionId">
+      <mat-option *ngFor="let s of sessions" [value]="s.id">
+        {{ s.start | date:'dd/MM/yyyy' }}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <button mat-raised-button class="btn-accent" (click)="consultReport()">Consultar</button>
+
+  <div *ngIf="report" class="report-card">
+    <h2>Resumen {{ report.start | date:'dd/MM/yyyy' }}</h2>
+    <p>Inicio: {{ report.start | date:'shortTime' }}</p>
+    <p>Fin: {{ report.end   | date:'shortTime' }}</p>
+    <p>Total: {{ report.total | currency:'COP':'symbol':'1.0-0' }}</p>
+
+    <table class="summary-table">
+      <tr><th>Método</th><th>Monto</th></tr>
+      <tr><td>Efectivo</td><td>{{ report.cash     | currency:'COP':'symbol':'1.0-0' }}</td></tr>
+      <tr><td>Transferencia</td><td>{{ report.transfer | currency:'COP':'symbol':'1.0-0' }}</td></tr>
+    </table>
+  </div>
+</div>

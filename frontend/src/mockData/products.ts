@@ -1,14 +1,17 @@
+// src/mockData/products.ts
 export interface Product {
   id: string;
   name: string;
-  category: string;
-  subcategory: string;
-  price: number;
+  category: 'Bebidas' | 'Mecato' | 'Cigarrillos';
+  subcategory: 'Alcohólica' | 'Gaseosa' | 'Pasabocas' | 'Dulces' | 'Medio paquete' | 'Paquete';
+  price: number;    // en pesos colombianos
   stock: number;
 }
 
 export const products: Product[] = [
-  { id: 'p1', name: 'Pan', category: 'Alimentos', subcategory: 'Carne', price: 2.5, stock: 20 },
-  { id: 'p2', name: 'Leche', category: 'Bebidas', subcategory: 'Lácteos', price: 1.2, stock: 5 },
-  { id: 'p3', name: 'Huevos', category: 'Alimentos', subcategory: 'Ovo', price: 0.3, stock: 0 },
+  { id:'b1',  name:'Cerveza Pilsen', category:'Bebidas', subcategory:'Alcohólica', price:2500, stock:50 },
+  { id:'g1',  name:'Vitafer',       category:'Bebidas', subcategory:'Gaseosa',    price:1500, stock:30 },
+  { id:'d1',  name:'Keta',     category:'Mecato',  subcategory:'Pasabocas',  price:1200, stock:20 },
+  { id:'c1',  name:'Caneludo',        category:'Cigarrillos', subcategory:'Paquete', price:12000,stock:40 },
+  // etc.
 ];

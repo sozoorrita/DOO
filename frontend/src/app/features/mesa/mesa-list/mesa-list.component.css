@@ -1,0 +1,51 @@
+.mesa-content {
+  width: 100%;
+  height: 100%;
+  padding: 1.5rem;
+  box-sizing: border-box;
+}
+
+.mesa-title {
+  text-align: center;
+  color: var(--color-primary-dark);
+  margin-bottom: 1rem;
+  font-size: 1.75rem;
+}
+
+.mesa-actions {
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.mesa-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+}
+
+.mesa-table th {
+  background: var(--color-primary);
+  color: var(--color-card);
+  padding: 0.75rem;
+  text-align: left;
+}
+
+.mesa-table td {
+  padding: 0.75rem;
+  color: var(--color-text);
+}
+
+.mesa-table tr:nth-child(even) {
+  background: var(--color-bg);
+}
+
+.libre { color: var(--color-accent); font-weight: bold; }
+.ocupada { color: var(--color-warn); font-weight: bold; }
+
+.mesa-form {
+  background: var(--color-card);
+  padding: 1rem;
+  border-radius: 8px;
+}
+
+.full-width { width: 100%; }

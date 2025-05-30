@@ -1,0 +1,26 @@
+<div class="layout-root">
+  <div class="layout-card">
+    <!-- Panel lateral -->
+    <div class="layout-panel">
+      <h2>Fonda Control</h2>
+      <nav>
+        <a routerLink="/session/list"      routerLinkActive="active">Sesiones</a>
+        <a routerLink="/reportes/informe-caja" routerLinkActive="active">Informe de Caja</a>
+        <ng-container *ngIf="hasActiveSession">
+          <a routerLink="/mesas"        routerLinkActive="active">Mesas</a>
+          <a routerLink="/venta-rapida" routerLinkActive="active">Venta Rápida</a>
+          <a routerLink="/usuarios"     routerLinkActive="active">Usuarios</a>
+          <a routerLink="/inventario"   routerLinkActive="active">Inventario</a>
+        </ng-container>
+      </nav>
+      <button class="btn-accent-outline logout-btn" (click)="logoutUser()">
+        Cerrar Sesión
+      </button>
+    </div>
+
+    <!-- Contenido -->
+    <div class="layout-content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

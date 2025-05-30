@@ -1,0 +1,126 @@
+/* Página: deja ver fondo alrededor */
+.session-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: url('/assets/bg-Session.png') center/cover no-repeat;
+  height: 100vh;
+  margin: 0;
+}
+
+/* Wrapper para limitar ancho */
+.session-wrapper {
+  width: 90%;
+  max-width: 900px;
+}
+
+/* Card global */
+.session-card {
+  background: #EFEBE9; /* crema suave */
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Topbar en el card */
+.card-topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #4E342E; /* marrón oscuro */
+  color: #FFF3E0;
+  padding: 0 1.5rem;
+  height: 60px;
+}
+.card-topbar .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.card-topbar .user-btn {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+/* Cuerpo de la tarjeta */
+.session-body {
+  display: flex;
+}
+
+/* Menú lateral dentro del card */
+.subnav {
+  width: 200px;
+  background: #5D4037; /* marrón medio */
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+}
+.subnav button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: #6D4C41; /* contraste */
+  color: #FFF3E0;
+  border: none;
+  padding: 0.75rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  cursor: pointer;
+}
+.subnav button:hover {
+  background: #795548;
+}
+
+/* Contenido principal dentro del card */
+.main-content {
+  flex: 1;
+  padding: 2rem;
+}
+.main-content h2 {
+  margin-top: 0;
+  text-align: center;
+  color: #4E342E;
+}
+.session-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+.btn-primary, .btn-secondary {
+  flex: 1;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.btn-primary {
+  background: #FF9800; /* naranjado de paleta */
+  color: #FFF;
+}
+.btn-secondary {
+  background: #D7CCC8; /* gris cálido */
+  color: #4E342E;
+}
+
+/* Tabla de histórico */
+.session-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.session-table th,
+.session-table td {
+  border: 1px solid #CCC;
+  padding: 0.75rem;
+  text-align: left;
+}
+.session-table th {
+  background: #D7CCC8;
+  color: #4E342E;
+}
