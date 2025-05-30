@@ -31,26 +31,26 @@ public final class ProductoImpl implements ProductoBusinessLogic {
         if (UtilTexto.getInstancia().esNula(nombre)) {
             throw BusinessLogicFondaControlException.reportar("El nombre del producto es obligatorio.");
         }
-        
+
         if (producto.getPrecioLugar() < 0 || producto.getPrecioLlevar() < 0) {
             throw BusinessLogicFondaControlException.reportar("Los precios del producto no pueden ser negativos.");
         }
         if (UtilObjeto.getInstancia().esNulo(producto.getSubcategoria())) {
             throw BusinessLogicFondaControlException.reportar("La subcategoría del producto es obligatoria.");
         }
-        
+
         UUID codigo;
         do {
             codigo = UtilUUID.generarNuevoUUID();
         } while (!daoFactory.getProductoDAO().listByCodigo(codigo).isEmpty());
-        
+
         ProductoDomain aCrear = new ProductoDomain(
-            codigo,
-            nombre,
-            producto.getPrecioLugar(),
-            producto.getPrecioLlevar(),
-            producto.getSubcategoria(),
-            producto.getLimiteCantidad()
+                codigo,
+                nombre,
+                producto.getPrecioLugar(),
+                producto.getPrecioLlevar(),
+                producto.getSubcategoria(),
+                producto.getLimiteCantidad()
         );
         ProductoEntity entity = ProductoEntityAssembler.getInstance().toEntity(aCrear);
         daoFactory.getProductoDAO().create(entity);
@@ -84,6 +84,32 @@ public final class ProductoImpl implements ProductoBusinessLogic {
             throw new IllegalArgumentException("El código del producto no puede ser nulo ni por defecto.");
         }
         daoFactory.getProductoDAO().delete(codigo);
+    }
+
+    @Override
+    public ProductoDomain consultarProductoPorCodigo(UUID codigo) throws FondaControlException {
+        if (UtilObjeto.getInstancia().esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
+            throw new IllegalArgumentException("El código del producto no puede ser nulo ni por defecto.");
+        }
+        try {
+            ProductoEntity entity = daoFactory.getProductoDAO().findById(codigo);
+            if (UtilObjeto.getInstancia().esNulo(entity)) {
+                throw BusinessLogicFondaControlException.reportar(
+                        "Producto no encontrado.",
+                        "No existe producto con código: " + codigo
+                );
+            }
+
+        } catch (FondaControlException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw BusinessLogicFondaControlException.reportar(
+                    "No se pudo consultar el producto por código.",
+                    "Error técnico en consultarProductoPorCodigo: " + ex.getMessage(),
+                    ex
+            );
+        }
+        return null;
     }
 
     @Override

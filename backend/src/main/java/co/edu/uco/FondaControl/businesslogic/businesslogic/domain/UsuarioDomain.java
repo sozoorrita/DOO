@@ -11,7 +11,7 @@ public final class UsuarioDomain {
 	private UUID codigoRol;
 	private String contrasena;
 
-	UsuarioDomain() {
+	public UsuarioDomain() {
 		setId(UtilUUID.obtenerValorDefecto());
 		setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
 		setCodigoRol(UtilUUID.obtenerValorDefecto());

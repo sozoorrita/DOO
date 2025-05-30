@@ -14,5 +14,7 @@ public interface MesaBusinessLogic {
 
     void registrarMesa(MesaDomain mesa) throws FondaControlException;
 
+    void eliminarmesa(UUID codigo) throws FondaControlException;
+
     List<MesaDomain> consultarMesa(UUID codigo) throws FondaControlException;
 }

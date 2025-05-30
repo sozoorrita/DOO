@@ -20,34 +20,48 @@ public class InventarioController {
         this.inventarioFacade = inventarioFacade;
     }
 
-    
-    @GetMapping("/{id}")
+    @GetMapping("/{id}/cantidad")
     public ResponseEntity<Void> consultarCantidad(@PathVariable("id") UUID id)
             throws FondaControlException {
         inventarioFacade.consultarCantidadInventario(id);
         return ResponseEntity.ok().build();
     }
 
-  
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void gestionarManualmente(@RequestBody InventarioDTO inventario)
+    @GetMapping("/{id}")
+    public ResponseEntity<InventarioDTO> consultarInventario(@PathVariable("id") UUID id)
             throws FondaControlException {
-        inventarioFacade.gestionarInventarioManualmente(inventario);
+        InventarioDTO dto = new InventarioDTO();
+        dto.setCodigo(id);
+        inventarioFacade.consultarInventario(id);
+        return ResponseEntity.ok(dto);
     }
 
-   
+    @PostMapping
+    public ResponseEntity<InventarioDTO> registrarInventario(
+            @RequestBody InventarioDTO inventario) throws FondaControlException {
+        inventarioFacade.registrarInventario(inventario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(inventario);
+    }
+
+    @PostMapping("/gestionar")
+    public ResponseEntity<InventarioDTO> gestionarInventarioManualmente(
+            @RequestBody InventarioDTO inventario) throws FondaControlException {
+        inventarioFacade.gestionarInventarioManualmente(inventario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(inventario);
+    }
+
     @PutMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void actualizarCantidad(@PathVariable("id") UUID id,
-                                   @RequestBody InventarioDTO inventario)
-            throws FondaControlException {
+    public ResponseEntity<Void> actualizarCantidad(
+            @PathVariable("id") UUID id,
+            @RequestBody InventarioDTO inventario) throws FondaControlException {
         inventarioFacade.actualizarCantidadEnInventario(id, inventario);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") UUID id) {
-        throw new UnsupportedOperationException("Eliminación de inventario no soportada.");
+    public ResponseEntity<Void> eliminarInventario(@PathVariable("id") UUID id)
+            throws FondaControlException {
+        inventarioFacade.eliminarInventario(id);
+        return ResponseEntity.noContent().build();
     }
 }

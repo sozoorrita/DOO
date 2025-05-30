@@ -1,7 +1,6 @@
 package co.edu.uco.FondaControl.businesslogic.facade.imp;
 
 import org.springframework.stereotype.Service;
-
 import java.util.UUID;
 
 import co.edu.uco.FondaControl.businesslogic.businesslogic.InventarioBusinessLogic;
@@ -57,9 +56,68 @@ public final class InventarioImp implements InventarioFacade {
         } catch (Exception ex) {
             daoFactory.cancelarTransaccion();
             throw BusinessLogicFondaControlException.reportar(
-                "Se ha producido un error al gestionar el inventario.",
-                "Error técnico al ejecutar la lógica de negocio para gestionar el inventario: " + ex.getMessage(),
-                ex
+                    "Se ha producido un error al gestionar el inventario.",
+                    "Error técnico al ejecutar la lógica de negocio para gestionar el inventario: " + ex.getMessage(),
+                    ex
+            );
+        } finally {
+            daoFactory.cerrarConexion();
+        }
+    }
+
+    @Override
+    public void registrarInventario(InventarioDTO inventario) throws FondaControlException {
+        if (UtilObjeto.esNulo(inventario)) {
+            throw new IllegalArgumentException("El inventario no puede ser nulo.");
+        }
+        try {
+            daoFactory.iniciarTransaccion();
+            InventarioDomain domain = InventarioDTOAssembler.getInstancia().toDomain(inventario);
+            businessLogic.registrarInventario(domain);
+            // Propagar código generado al DTO
+            inventario.setCodigo(domain.getCodigo());
+            daoFactory.confirmarTransaccion();
+        } catch (FondaControlException ex) {
+            daoFactory.cancelarTransaccion();
+            throw ex;
+        } catch (Exception ex) {
+            daoFactory.cancelarTransaccion();
+            throw BusinessLogicFondaControlException.reportar(
+                    "Se ha producido un error al registrar el inventario.",
+                    "Error técnico al ejecutar la lógica de negocio para registrar el inventario: " + ex.getMessage(),
+                    ex
+            );
+        } finally {
+            daoFactory.cerrarConexion();
+        }
+    }
+
+    @Override
+    public void consultarInventario(UUID codigo) throws FondaControlException {
+        if (UtilObjeto.esNulo(codigo)) {
+            throw new IllegalArgumentException("El código del inventario no puede ser nulo.");
+        }
+        businessLogic.consultarInventario(codigo);
+    }
+
+    @Override
+    public void eliminarInventario(UUID codigo) throws FondaControlException {
+        if (UtilObjeto.esNulo(codigo)) {
+            throw new IllegalArgumentException("El código del inventario no puede ser nulo.");
+        }
+        try {
+            daoFactory.iniciarTransaccion();
+            businessLogic.eliminarInventario(codigo);
+            daoFactory.confirmarTransaccion();
+        } catch (FondaControlException ex) {
+            daoFactory.cancelarTransaccion();
+            throw ex;
+        } catch (Exception ex) {
+            daoFactory.cancelarTransaccion();
+            throw BusinessLogicFondaControlException.reportar(
+                    "Se ha producido un error al eliminar el inventario.",
+                    "Error técnico al ejecutar la lógica de negocio para eliminar el inventario: " + ex.getMessage(),
+                    ex
             );
         } finally {
             daoFactory.cerrarConexion();

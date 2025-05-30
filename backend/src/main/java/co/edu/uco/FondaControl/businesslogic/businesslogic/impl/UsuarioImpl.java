@@ -10,7 +10,9 @@ import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -29,8 +31,12 @@ public final class UsuarioImpl implements UsuarioBusinessLogic {
         validarNoExistaUsuarioConMismoId(usuarioDomain.getId());
 
         final var nuevoCodigo = generarNuevoCodigoUsuario();
-        final var usuarioARegistrar = new UsuarioDomain(nuevoCodigo, usuarioDomain.getNombre(),
-                usuarioDomain.getCodigoRol(), usuarioDomain.getContrasena());
+        final var usuarioARegistrar = new UsuarioDomain(
+                nuevoCodigo,
+                usuarioDomain.getNombre(),
+                usuarioDomain.getCodigoRol(),
+                usuarioDomain.getContrasena()
+        );
 
         final var entity = UsuarioEntityAssembler.getInstance().toEntity(usuarioARegistrar);
         factory.getUsuarioDAO().create(entity);
@@ -64,7 +70,7 @@ public final class UsuarioImpl implements UsuarioBusinessLogic {
 
         final var usuarioExistente = factory.getUsuarioDAO().findById(usuarioDomain.getId());
 
-        if (UtilObjeto.esNulo(usuarioExistente)) {
+        if (UtilObjeto.getInstancia().esNulo(usuarioExistente)) {
             throw BusinessLogicFondaControlException.reportar(
                     "El usuario no existe.",
                     "No se encontró en base de datos un usuario con ID: " + usuarioDomain.getId()
@@ -75,6 +81,49 @@ public final class UsuarioImpl implements UsuarioBusinessLogic {
             throw BusinessLogicFondaControlException.reportar(
                     "La contraseña es incorrecta.",
                     "Contraseña incorrecta para usuario con ID: " + usuarioDomain.getId()
+            );
+        }
+    }
+
+    @Override
+    public List<UsuarioDomain> consultarUsuarios(UsuarioDomain filtro) throws FondaControlException {
+        if (UtilObjeto.getInstancia().esNulo(filtro)) {
+            filtro = new UsuarioDomain();
+        }
+        try {
+            var entities = factory.getUsuarioDAO()
+                    .listByFilter(UsuarioEntityAssembler.getInstance().toEntity(filtro));
+            return entities.stream()
+                    .map(UsuarioEntityAssembler.getInstance()::toDomain)
+                    .collect(Collectors.toList());
+        } catch (Exception e) {
+            throw BusinessLogicFondaControlException.reportar(
+                    "No se pudieron consultar los usuarios.",
+                    "Error técnico al listar usuarios: " + e.getMessage(),
+                    e
+            );
+        }
+    }
+
+    @Override
+    public UsuarioDomain consultarUsuarioPorCodigo(UsuarioDomain usuarioDomain) throws FondaControlException {
+        validarCodigo(usuarioDomain.getId());
+        try {
+            var entity = factory.getUsuarioDAO().findById(usuarioDomain.getId());
+            if (UtilObjeto.getInstancia().esNulo(entity)) {
+                throw BusinessLogicFondaControlException.reportar(
+                        "Usuario no encontrado.",
+                        "No existe usuario con ID: " + usuarioDomain.getId()
+                );
+            }
+            return UsuarioEntityAssembler.getInstance().toDomain(entity);
+        } catch (FondaControlException ex) {
+            throw ex;
+        } catch (Exception e) {
+            throw BusinessLogicFondaControlException.reportar(
+                    "No se pudo consultar el usuario por código.",
+                    "Error técnico en consultarUsuarioPorCodigo: " + e.getMessage(),
+                    e
             );
         }
     }
@@ -119,7 +168,7 @@ public final class UsuarioImpl implements UsuarioBusinessLogic {
     }
 
     private void validarNoExistaUsuarioConMismoId(final UUID id) throws FondaControlException {
-        final var resultado = factory.getUsuarioDAO().listByCodigo(id);
+        var resultado = factory.getUsuarioDAO().listByCodigo(id);
         if (!resultado.isEmpty()) {
             throw BusinessLogicFondaControlException.reportar(
                     "Ya existe un usuario con el mismo ID. No es posible registrarlo nuevamente.",
@@ -131,13 +180,11 @@ public final class UsuarioImpl implements UsuarioBusinessLogic {
     private UUID generarNuevoCodigoUsuario() throws FondaControlException {
         UUID nuevoCodigo;
         boolean yaExiste;
-
         do {
             nuevoCodigo = UtilUUID.generarNuevoUUID();
-            final var resultado = factory.getUsuarioDAO().listByCodigo(nuevoCodigo);
+            var resultado = factory.getUsuarioDAO().listByCodigo(nuevoCodigo);
             yaExiste = !resultado.isEmpty();
         } while (yaExiste);
-
         return nuevoCodigo;
     }
 }

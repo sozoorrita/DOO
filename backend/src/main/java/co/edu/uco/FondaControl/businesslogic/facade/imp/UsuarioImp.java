@@ -6,9 +6,12 @@ import co.edu.uco.FondaControl.businesslogic.facade.UsuarioFacade;
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
-import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.dto.UsuarioDTO;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public final class UsuarioImp implements UsuarioFacade {
@@ -42,7 +45,7 @@ public final class UsuarioImp implements UsuarioFacade {
 
     @Override
     public void iniciarSesion(final UsuarioDTO usuario, final String tipoUsuario) throws FondaControlException {
-        if (UtilObjeto.esNulo(usuario) || UtilTexto.getInstancia().esNula(tipoUsuario)) {
+        if (UtilObjeto.esNulo(usuario) || UtilObjeto.esNulo(tipoUsuario)) {
             throw new IllegalArgumentException("El usuario y el tipo de usuario no pueden ser nulos o vacíos.");
         }
 
@@ -50,10 +53,56 @@ public final class UsuarioImp implements UsuarioFacade {
             final var domain = UsuarioDTOAssembler.getInstancia().toDomain(usuario);
             businessLogic.iniciarSesion(domain, tipoUsuario);
         } catch (Exception exception) {
-            final var mensajeUsuario = "Se ha producido un error al intentar iniciar sesión.";
-            final var mensajeTecnico = "Error técnico durante el inicio de sesión: " + exception.getMessage();
+            throw BusinessLogicFondaControlException.reportar(
+                    "Se ha producido un error al intentar iniciar sesión.",
+                    "Error técnico durante el inicio de sesión: " + exception.getMessage(),
+                    exception
+            );
+        }
+    }
 
-            throw BusinessLogicFondaControlException.reportar(mensajeUsuario, mensajeTecnico, exception);
+    @Override
+    public List<UsuarioDTO> consultarUsuarios(final UsuarioDTO filtro) throws FondaControlException {
+        try {
+            var assembler = UsuarioDTOAssembler.getInstancia();
+            var domainFilter = UtilObjeto.esNulo(filtro)
+                    ? assembler.toDomain(null)
+                    : assembler.toDomain(filtro);
+            var domainList = businessLogic.consultarUsuarios(domainFilter);
+            return domainList.stream()
+                    .map(assembler::toDto)
+                    .collect(Collectors.toList());
+        } catch (FondaControlException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw BusinessLogicFondaControlException.reportar(
+                    "Se ha producido un error al consultar los usuarios.",
+                    "Error técnico durante consultarUsuarios: " + ex.getMessage(),
+                    ex
+            );
+        }
+    }
+
+    @Override
+    public UsuarioDTO consultarUsuarioPorCodigo(final UUID codigo) throws FondaControlException {
+        if (UtilObjeto.esNulo(codigo)) {
+            throw new IllegalArgumentException("El código del usuario no puede ser nulo.");
+        }
+        try {
+            var assembler = UsuarioDTOAssembler.getInstancia();
+            var tempDto = new UsuarioDTO();
+            tempDto.setCodigoRol(codigo);
+            var domainInput = assembler.toDomain(tempDto);
+            var domainResult = businessLogic.consultarUsuarioPorCodigo(domainInput);
+            return assembler.toDto(domainResult);
+        } catch (FondaControlException ex) {
+            throw ex;
+        } catch (Exception ex) {
+            throw BusinessLogicFondaControlException.reportar(
+                    "Se ha producido un error al consultar el usuario por código.",
+                    "Error técnico durante consultarUsuarioPorCodigo: " + ex.getMessage(),
+                    ex
+            );
         }
     }
 

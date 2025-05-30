@@ -172,6 +172,28 @@ public class InventarioPostgreSQLDAO implements InventarioDAO {
 		}
 	}
 
+	@Override
+	public void delete(UUID codigo) throws DataFondaControlException {
+		if (UtilObjeto.esNulo(codigo)) {
+			throw new IllegalArgumentException("El código del inventario no puede ser nulo.");
+		}
+		var sql = new StringBuilder("DELETE FROM inventario WHERE codigo = ?");
+		try (var ps = connection.prepareStatement(sql.toString())) {
+			ps.setObject(1, codigo);
+			int filas = ps.executeUpdate();
+			if (filas == 0) {
+				throw DataFondaControlException.reportar(
+						"No se encontró el inventario para eliminar.",
+						"No hay registro con el código=[" + codigo + "]"
+				);
+			}
+		} catch (SQLException e) {
+			var msgUsuario = "Error al eliminar el inventario.";
+			var msgTecnico = "SQLException en 'delete'. SQL=[" + sql + "], código=[" + codigo + "]";
+			throw DataFondaControlException.reportar(msgUsuario, msgTecnico, e);
+		}
+	}
+
 	private InventarioEntity mapToEntity(ResultSet rs) throws SQLException {
 		UUID productoId = (UUID) rs.getObject("producto");
 		ProductoEntity producto = new ProductoEntity();

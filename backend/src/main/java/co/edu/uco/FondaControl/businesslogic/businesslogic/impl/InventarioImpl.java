@@ -12,6 +12,7 @@ import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import co.edu.uco.FondaControl.entity.InventarioEntity;
 
+
 public final class InventarioImpl implements InventarioBusinessLogic {
 
 	private final DAOFactory daoFactory;
@@ -70,5 +71,55 @@ public final class InventarioImpl implements InventarioBusinessLogic {
 
 		InventarioEntity entity = InventarioEntityAssembler.getInstance().toEntity(inventarioDomain);
 		daoFactory.getInventarioDAO().createOrUpdate(entity);
+	}
+
+	@Override
+	public void registrarInventario(final InventarioDomain inventarioDomain) throws FondaControlException {
+		if (UtilObjeto.getInstancia().esNulo(inventarioDomain)) {
+			throw BusinessLogicFondaControlException.reportar("El inventario no puede ser nulo.",
+					"Se recibió InventarioDomain null en registrarInventario(...)");
+		}
+		if (UtilObjeto.getInstancia().esNulo(inventarioDomain.getProducto())
+				|| UtilObjeto.getInstancia().esNulo(inventarioDomain.getProducto().getCodigo())
+				|| UtilUUID.esValorDefecto(inventarioDomain.getProducto().getCodigo())) {
+			throw BusinessLogicFondaControlException.reportar(
+					"El producto es obligatorio y debe tener un código válido.",
+					"InventarioDomain.getProducto() o su código son nulos o por defecto en registrarInventario(...)");
+		}
+
+		// Generar y asignar un nuevo código único
+		UUID nuevoCodigo;
+		do {
+			nuevoCodigo = UtilUUID.generarNuevoUUID();
+		} while (!daoFactory.getInventarioDAO().listByCodigo(nuevoCodigo).isEmpty());
+		inventarioDomain.setCodigo(nuevoCodigo);
+
+		InventarioEntity entity = InventarioEntityAssembler.getInstance().toEntity(inventarioDomain);
+		daoFactory.getInventarioDAO().create(entity);
+	}
+
+	@Override
+	public void consultarInventario(final UUID codigo) throws FondaControlException {
+		if (UtilObjeto.getInstancia().esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
+			throw BusinessLogicFondaControlException.reportar(
+					"El código del inventario no puede ser nulo ni por defecto.",
+					"Parámetro codigo inválido en consultarInventario(...)");
+		}
+		var entity = daoFactory.getInventarioDAO().findById(codigo);
+		if (UtilObjeto.getInstancia().esNulo(entity)) {
+			throw BusinessLogicFondaControlException.reportar(
+					"Inventario no encontrado.",
+					"findById devolvió null para código: " + codigo);
+		}
+	}
+
+	@Override
+	public void eliminarInventario(final UUID codigo) throws FondaControlException {
+		if (UtilObjeto.getInstancia().esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
+			throw BusinessLogicFondaControlException.reportar(
+					"El código del inventario no puede ser nulo ni por defecto.",
+					"Parámetro codigo inválido en eliminarInventario(...)");
+		}
+		daoFactory.getInventarioDAO().delete(codigo);
 	}
 }

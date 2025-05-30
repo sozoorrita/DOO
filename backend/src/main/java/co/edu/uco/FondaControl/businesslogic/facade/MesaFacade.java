@@ -14,5 +14,7 @@ public interface MesaFacade {
 
     void registrarMesa(MesaDTO mesa) throws FondaControlException;
 
+    void eliminarMesa(UUID codigo) throws FondaControlException;
+
     List<MesaDTO> consultarMesa(UUID codigo) throws FondaControlException;
 }

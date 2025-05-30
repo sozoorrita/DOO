@@ -9,4 +9,7 @@ public interface InventarioBusinessLogic {
     void actualizarCantidadEnInventario(UUID codigo,InventarioDomain inventario) throws FondaControlException;
     void consultarCantidadInventario(UUID codigo) throws FondaControlException;
     void gestionarInventarioManualmente(InventarioDomain inventarioDomain) throws FondaControlException;
+    void registrarInventario(InventarioDomain inventarioDomain) throws FondaControlException;
+    void consultarInventario(UUID codigo) throws FondaControlException;
+    void eliminarInventario(UUID codigo) throws FondaControlException;
 }

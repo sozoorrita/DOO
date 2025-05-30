@@ -12,6 +12,7 @@ import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Mesa.dto.Me
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
+import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
 import co.edu.uco.FondaControl.businesslogic.facade.MesaFacade;
 import co.edu.uco.FondaControl.dto.MesaDTO;
@@ -51,6 +52,7 @@ public final class MesaImp implements MesaFacade {
             daoFactory.iniciarTransaccion();
             MesaDomain domain = MesaDTOAssembler.getInstancia().toDomain(dto);
             businessLogic.registrarMesa(domain);
+            dto.setCodigo(domain.getCodigo());
             daoFactory.confirmarTransaccion();
         } catch (FondaControlException ex) {
             daoFactory.cancelarTransaccion();
@@ -58,9 +60,33 @@ public final class MesaImp implements MesaFacade {
         } catch (Exception ex) {
             daoFactory.cancelarTransaccion();
             throw BusinessLogicFondaControlException.reportar(
-                "Se ha presentado un error al registrar la mesa.",
-                "Error técnico al registrar la mesa: " + ex.getMessage(),
-                ex
+                    "Se ha presentado un error al registrar la mesa.",
+                    "Error técnico al registrar la mesa: " + ex.getMessage(),
+                    ex
+            );
+        } finally {
+            daoFactory.cerrarConexion();
+        }
+    }
+
+    @Override
+    public void eliminarMesa(UUID codigo) throws FondaControlException {
+        if (UtilObjeto.esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
+            throw new IllegalArgumentException("El código de la mesa no puede ser nulo ni por defecto.");
+        }
+        try {
+            daoFactory.iniciarTransaccion();
+            businessLogic.eliminarmesa(codigo);
+            daoFactory.confirmarTransaccion();
+        } catch (FondaControlException ex) {
+            daoFactory.cancelarTransaccion();
+            throw ex;
+        } catch (Exception ex) {
+            daoFactory.cancelarTransaccion();
+            throw BusinessLogicFondaControlException.reportar(
+                    "Se ha presentado un error al eliminar la mesa.",
+                    "Error técnico al eliminar la mesa: " + ex.getMessage(),
+                    ex
             );
         } finally {
             daoFactory.cerrarConexion();
@@ -69,10 +95,9 @@ public final class MesaImp implements MesaFacade {
 
     @Override
     public List<MesaDTO> consultarMesa(UUID codigo) throws FondaControlException {
-        if (UtilObjeto.esNulo(codigo)) {
-            throw new IllegalArgumentException("El código de la mesa no puede ser nulo.");
+        if (UtilObjeto.esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
+            throw new IllegalArgumentException("El código de la mesa no puede ser nulo ni por defecto.");
         }
-
         List<MesaDomain> domains = businessLogic.consultarMesa(codigo);
         return MesaDTOAssembler.getInstancia().toDtoList(domains);
     }

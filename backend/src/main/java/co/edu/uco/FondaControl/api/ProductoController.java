@@ -21,47 +21,40 @@ public class ProductoController {
         this.productoFacade = productoFacade;
     }
 
-    
-    @GetMapping("/dummy")
-    public ProductoDTO dummy() {
-        return new ProductoDTO();
-    }
-
-    
     @GetMapping
-    public ResponseEntity<List<ProductoDTO>> consultar(
-            @RequestBody(required = false) ProductoDTO filtro) throws FondaControlException {
-        if (filtro == null) {
-            filtro = dummy();
-        }
-        List<ProductoDTO> lista = productoFacade.consultarProducto(filtro);
+    public ResponseEntity<List<ProductoDTO>> listarProductos() throws FondaControlException {
+        List<ProductoDTO> lista = productoFacade.consultarProducto(new ProductoDTO());
         return ResponseEntity.ok(lista);
     }
 
-    
-    @PostMapping
-    public ResponseEntity<String> registrar(@RequestBody ProductoDTO producto)
+    @GetMapping("/{id}")
+    public ResponseEntity<ProductoDTO> obtenerProducto(@PathVariable("id") UUID id)
             throws FondaControlException {
-        productoFacade.registrarProducto(producto);
-        String msg = "El producto \"" + producto.getNombre() + "\" ha sido creado exitosamente.";
-        return ResponseEntity.status(HttpStatus.CREATED).body(msg);
+        ProductoDTO dto = new ProductoDTO();
+        dto.setCodigoProducto(id);
+        productoFacade.consultarProductoPorCodigo(dto);
+        return ResponseEntity.ok(dto);
     }
 
-   
+    @PostMapping
+    public ResponseEntity<ProductoDTO> crearProducto(@RequestBody ProductoDTO producto)
+            throws FondaControlException {
+        productoFacade.registrarProducto(producto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(producto);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<String> modificar(@PathVariable("id") UUID id,
-                                            @RequestBody ProductoDTO producto)
+    public ResponseEntity<ProductoDTO> actualizarProducto(@PathVariable("id") UUID id,
+                                                          @RequestBody ProductoDTO producto)
             throws FondaControlException {
         producto.setCodigoProducto(id);
         productoFacade.modificarProducto(producto);
-        String msg = "El producto \"" + producto.getNombre() + "\" ha sido modificado exitosamente.";
-        return ResponseEntity.ok(msg);
+        return ResponseEntity.ok(producto);
     }
 
-  
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") UUID id) throws FondaControlException {
+    public void eliminarProducto(@PathVariable("id") UUID id) throws FondaControlException {
         ProductoDTO dto = new ProductoDTO();
         dto.setCodigoProducto(id);
         productoFacade.eliminarProducto(dto);

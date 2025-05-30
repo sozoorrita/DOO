@@ -13,4 +13,6 @@ public interface InventarioDAO extends
         RetrieveDAO<InventarioEntity, UUID>,
         UpdateDAO<InventarioEntity, UUID> {
     void createOrUpdate(InventarioEntity entity) throws DataFondaControlException;
+
+    void delete(UUID codigo) throws DataFondaControlException;
 }

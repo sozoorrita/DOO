@@ -1,6 +1,10 @@
 package co.edu.uco.FondaControl.api;
 
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import co.edu.uco.FondaControl.businesslogic.facade.UsuarioFacade;
@@ -13,40 +17,70 @@ public class UsuarioController {
 
     private final UsuarioFacade usuarioFacade;
 
-    
     public UsuarioController(UsuarioFacade usuarioFacade) {
         this.usuarioFacade = usuarioFacade;
     }
 
-   @GetMapping
-    @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)
-    public void consultar() {
-        throw new UnsupportedOperationException("Consulta de usuarios no está soportada.");
+    /**
+     * Lista todos los usuarios.
+     */
+    @GetMapping
+    public ResponseEntity<List<UsuarioDTO>> consultarUsuarios() throws FondaControlException {
+        List<UsuarioDTO> lista = usuarioFacade.consultarUsuarios(new UsuarioDTO());
+        return ResponseEntity.ok(lista);
     }
 
+    /**
+     * Consulta un usuario por su código.
+     */
+    @GetMapping("/{codigo}")
+    public ResponseEntity<UsuarioDTO> consultarUsuarioPorCodigo(@PathVariable UUID codigo)
+            throws FondaControlException {
+        UsuarioDTO resultado = usuarioFacade.consultarUsuarioPorCodigo(codigo);
+        return ResponseEntity.ok(resultado);
+    }
+
+    /**
+     * Registra un nuevo usuario.
+     */
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public void registrar(@RequestBody UsuarioDTO usuario) throws FondaControlException {
+    public ResponseEntity<UsuarioDTO> registrarUsuario(
+            @RequestBody UsuarioDTO usuario) throws FondaControlException {
         usuarioFacade.registrarNuevoUsuario(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
     }
 
-    @PutMapping
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void modificar(@RequestBody UsuarioDTO usuario) throws FondaControlException {
+    /**
+     * Modifica un usuario existente.
+     */
+    @PutMapping("/{codigo}")
+    public ResponseEntity<UsuarioDTO> modificarUsuario(
+            @PathVariable UUID codigo,
+            @RequestBody UsuarioDTO usuario) throws FondaControlException {
+        usuario.setId(codigo);
         usuarioFacade.modificarUsuario(usuario);
+        return ResponseEntity.ok(usuario);
     }
 
-    @DeleteMapping
+    /**
+     * Elimina un usuario.
+     */
+    @DeleteMapping("/{codigo}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@RequestBody UsuarioDTO usuario) throws FondaControlException {
-        usuarioFacade.eliminarUsuario(usuario);
+    public void eliminarUsuario(@PathVariable UUID codigo) throws FondaControlException {
+        UsuarioDTO dto = new UsuarioDTO();
+        dto.setId(codigo);
+        usuarioFacade.eliminarUsuario(dto);
     }
 
+    /**
+     * Inicia sesión de un usuario.
+     */
     @PostMapping("/iniciar-sesion")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void iniciarSesion(@RequestBody UsuarioDTO usuario,
-                              @RequestParam String tipoUsuario)
-            throws FondaControlException {
+    public void iniciarSesion(
+            @RequestBody UsuarioDTO usuario,
+            @RequestParam String tipoUsuario) throws FondaControlException {
         usuarioFacade.iniciarSesion(usuario, tipoUsuario);
     }
 }
