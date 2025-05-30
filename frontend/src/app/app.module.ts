@@ -1,21 +1,27 @@
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule }      from '@angular/core';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from '@angular/forms';
+import { HttpClientModule } from '@angular/common/http';
 
-import { AppComponent }      from './app.component';
-import { AppRoutingModule }  from './app-routing.module';
-import { MaterialModule }    from './material.module';
-import { MainLayoutModule }  from './layout/main-layout/main-layout.module';
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+
+// Guards
+import { AuthGuard } from './guards/auth.guard';
+import { RoleGuard } from './guards/role.guard';
 
 @NgModule({
-  declarations: [AppComponent],
+  declarations: [
+    AppComponent
+    // No pongas los features aquí, los importa cada módulo!
+  ],
   imports: [
     BrowserModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    MaterialModule,
-    MainLayoutModule
+    FormsModule,
+    HttpClientModule,
+    AppRoutingModule
   ],
+  providers: [AuthGuard, RoleGuard],
   bootstrap: [AppComponent]
 })
-export class AppModule {}
+export class AppModule { }

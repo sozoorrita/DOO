@@ -1,25 +1,56 @@
 <div class="mesa-list-container">
   <h2>Mesas</h2>
 
+  <!-- Formulario Crear / Editar Mesa -->
   <form (ngSubmit)="guardarMesa()">
-    <input [(ngModel)]="form.numero" name="numero" placeholder="Número de mesa" type="number" required />
-    <input [(ngModel)]="form.estado" name="estado" placeholder="Estado" required />
-    <button type="submit" class="btn-primary">{{ editando ? 'Actualizar' : 'Crear' }}</button>
-    <button type="button" class="btn-secondary" (click)="cancelar()" *ngIf="editando">Cancelar</button>
+    <input
+      [(ngModel)]="form.nombre"
+      name="nombre"
+      placeholder="Nombre de la mesa"
+      required
+    />
+
+    <select
+      [(ngModel)]="form.codigoEstadoMesa"
+      name="codigoEstadoMesa"
+      required
+    >
+      <option value="" disabled selected>Selecciona estado</option>
+      <option *ngFor="let estado of estados" [value]="estado.codigo">
+        {{ estado.nombre }}
+      </option>
+    </select>
+
+    <button type="submit" class="btn-primary">
+      {{ editando ? 'Actualizar' : 'Crear' }}
+    </button>
+    <button
+      type="button"
+      class="btn-secondary"
+      (click)="cancelar()"
+      *ngIf="editando"
+    >
+      Cancelar
+    </button>
   </form>
 
+  <!-- Tabla de Mesas -->
   <table>
     <thead>
       <tr>
-        <th>Número</th>
+        <th>Nombre</th>
         <th>Estado</th>
         <th>Acciones</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let mesa of mesas">
-        <td>{{ mesa.numero }}</td>
-        <td>{{ mesa.estado }}</td>
+        <td>{{ mesa.nombre }}</td>
+        <td>
+          <!-- Si quieres mostrar el nombre del estado en lugar del código:
+               Busca en `estados.find(e => e.codigo === mesa.codigoEstadoMesa)?.nombre` -->
+          {{ mesa.codigoEstadoMesa }}
+        </td>
         <td>
           <button (click)="editarMesa(mesa)">Editar</button>
           <button (click)="eliminarMesa(mesa.codigo!)">Eliminar</button>

@@ -5,11 +5,16 @@ import { MesaDetailComponent } from './mesa-detail/mesa-detail.component';
 
 const routes: Routes = [
   {
-    path: 'mesas',
+    path: '',
+    redirectTo: 'list',
+    pathMatch: 'full'
+  },
+  {
+    path: 'list',
     component: MesaListComponent
   },
   {
-    path: 'mesas/:codigo',
+    path: ':codigo',
     component: MesaDetailComponent
   }
 ];
@@ -18,4 +23,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class MesaRoutingModule { }
+export class MesaRoutingModule {}

@@ -1,11 +1,26 @@
 <div class="mesa-detail-container" *ngIf="mesa">
   <h2>Detalle de Mesa</h2>
   <form (ngSubmit)="guardarMesa()">
-    <label>Número:</label>
-    <input [(ngModel)]="mesa.numero" name="numero" type="number" required />
+    <label for="nombre">Nombre:</label>
+    <input
+      id="nombre"
+      [(ngModel)]="mesa.nombre"
+      name="nombre"
+      required
+    />
 
-    <label>Estado:</label>
-    <input [(ngModel)]="mesa.estado" name="estado" required />
+    <label for="estado">Estado:</label>
+    <select
+      id="estado"
+      [(ngModel)]="mesa.codigoEstadoMesa"
+      name="codigoEstadoMesa"
+      required
+    >
+      <option value="" disabled selected>Selecciona estado</option>
+      <option *ngFor="let estado of estados" [value]="estado.codigo">
+        {{ estado.nombre }}
+      </option>
+    </select>
 
     <button type="submit" class="btn-primary">Guardar</button>
   </form>

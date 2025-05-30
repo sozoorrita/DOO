@@ -1,103 +1,32 @@
-/* Reutiliza login-page y login-card */
-.login-page {
+.main-layout {
+  display: flex;
   height: 100vh;
-  width: 100%;
-  background: url('/assets/bg-session.png') center/cover no-repeat;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 }
 
-.login-card.layout-card {
-  display: flex;
-  width: 80%;
-  max-width: 800px;
-  height: 500px; /* igual al login */
-  background: rgba(0, 0, 0, 0.6);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-  border-radius: 8px;
-  overflow: hidden;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-/* Flex container horizontal */
-.layout-flex {
-  display: flex;
-  width: 100%;
-  height: 100%;
-}
-
-/* Sidebar: 30% ancho */
-.layout-panel {
-  width: 30%;
-  padding: 2rem;
-  box-sizing: border-box;
+.sidebar {
+  width: 220px;
+  background: #212529;
+  color: #fff;
   display: flex;
   flex-direction: column;
+  padding: 1rem;
 }
 
-/* Título blanco puro */
-.layout-panel h2 {
-  margin: 0 0 1rem;
+.sidebar a {
   color: #fff;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.sidebar a.active,
+.sidebar a:hover {
+  color: #15d4ac;
 }
 
-/* Enlaces verticales */
-.mat-nav-list .mat-list-item {
-  font-size: 1.1rem;
-  margin: 0.5rem 0;
-  /* eliminamos color por defecto aquí */
-}
-
-/* Forzamos que los enlaces sean siempre blancos */
-.layout-panel a.mat-list-item {
-  color: #fff !important;
-  opacity: 1 !important;
-}
-.layout-panel a.mat-list-item:hover,
-.layout-panel a.mat-list-item.router-link-active {
-  background: rgba(255,255,255,0.1) !important;
-  color: #fff !important;
-}
-
-/* Si usas mat-list-item sin <a>, forzamos el texto */
-.mat-nav-list .mat-list-item {
-  color: #fff !important;
-}
-.mat-nav-list .mat-list-item.active,
-.mat-nav-list .mat-list-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff !important;
-}
-
-/* Botón logout outline, ocupa todo el ancho */
-.full-width {
-  width: 100%;
-  margin-top: auto;
-}
-.btn-outline {
-  background: transparent;
-  border: 2px solid var(--color-accent);
-  color: var(--color-accent);
-  padding: 0.75rem 1rem;
-  border-radius: 4px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s, color 0.2s;
-}
-.btn-outline:hover {
-  background: var(--color-accent);
-  color: #222;
-}
-
-/* Content: 70% ancho, centrado interno */
-.layout-content {
-  width: 70%;
+.main-content {
+  flex: 1;
   padding: 2rem;
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
+  background: #f8f9fa;
+  overflow-y: auto;
 }

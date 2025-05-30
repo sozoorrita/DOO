@@ -1,27 +1,71 @@
 <div class="venta-rapida-container">
   <h2>Venta Rápida</h2>
+
   <form (ngSubmit)="realizarVenta()">
-    <label>Producto:</label>
-    <select [(ngModel)]="venta.producto" name="producto" required>
-      <option [ngValue]="null" disabled selected>Selecciona un producto</option>
-      <option *ngFor="let prod of productos" [ngValue]="prod">{{ prod.nombre }}</option>
+    <!-- Seleccionar Mesa -->
+    <label for="mesa">Mesa:</label>
+    <select
+      id="mesa"
+      [(ngModel)]="nuevaVenta.codigoMesa"
+      name="codigoMesa"
+      required
+    >
+      <option value="" disabled selected>Selecciona una mesa</option>
+      <option *ngFor="let m of mesas" [value]="m.codigo">{{ m.nombre }}</option>
     </select>
 
-    <label>Mesa:</label>
-    <select [(ngModel)]="venta.mesa" name="mesa" required>
-      <option [ngValue]="null" disabled selected>Selecciona una mesa</option>
-      <option *ngFor="let m of mesas" [ngValue]="m">Mesa {{ m.numero }}</option>
+    <!-- Seleccionar Sesión de Trabajo -->
+    <label for="sesion">Sesión de Trabajo:</label>
+    <select
+      id="sesion"
+      [(ngModel)]="nuevaVenta.codigoSesionTrabajo"
+      name="codigoSesionTrabajo"
+      required
+    >
+      <option value="" disabled selected>Selecciona una sesión</option>
+      <option *ngFor="let s of sesiones" [value]="s.codigo">
+        {{ s.codigo }} - {{ s.estado }}
+      </option>
     </select>
 
-    <label>Usuario:</label>
-    <select [(ngModel)]="venta.usuario" name="usuario" required>
-      <option [ngValue]="null" disabled selected>Selecciona un usuario</option>
-      <option *ngFor="let u of usuarios" [ngValue]="u">{{ u.nombre }}</option>
+    <!-- Seleccionar Forma de Pago -->
+    <label for="formaPago">Forma de Pago:</label>
+    <select
+      id="formaPago"
+      [(ngModel)]="nuevaVenta.codigoFormaPago"
+      name="codigoFormaPago"
+      required
+    >
+      <option value="" disabled selected>Selecciona forma de pago</option>
+      <option *ngFor="let fp of formasPago" [value]="fp.codigo">{{ fp.nombre }}</option>
     </select>
 
-    <label>Cantidad:</label>
-    <input [(ngModel)]="venta.cantidad" name="cantidad" type="number" min="1" required />
+    <!-- Seleccionar Tipo de Venta -->
+    <label for="tipoVenta">Tipo de Venta:</label>
+    <select
+      id="tipoVenta"
+      [(ngModel)]="nuevaVenta.codigoTipoVenta"
+      name="codigoTipoVenta"
+      required
+    >
+      <option value="" disabled selected>Selecciona tipo de venta</option>
+      <option *ngFor="let tv of tiposVenta" [value]="tv.codigo">{{ tv.nombre }}</option>
+    </select>
 
+    <!-- Ingresar Total de la Venta -->
+    <label for="totalVenta">Total Venta:</label>
+    <input
+      id="totalVenta"
+      type="number"
+      min="0.01"
+      step="0.01"
+      [(ngModel)]="nuevaVenta.totalVenta"
+      name="totalVenta"
+      placeholder="Ej: 125.50"
+      required
+    />
+
+    <!-- Botón de Envío -->
     <button type="submit" class="btn-primary">Registrar Venta</button>
   </form>
 </div>

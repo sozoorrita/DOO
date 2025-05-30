@@ -23,4 +23,4 @@ import { MesaRoutingModule } from './mesa-routing.module';
     MesaDetailComponent
   ]
 })
-export class MesaModule { }
+export class MesaModule {}
