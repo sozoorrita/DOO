@@ -9,7 +9,7 @@ export interface TipoVenta {
 
 @Injectable({ providedIn: 'root' })
 export class TipoVentaService {
-  private apiUrl = '/api/tipo-ventas';
+  private apiUrl = '/api/v1/tipo-ventas';
 
   constructor(private http: HttpClient) {}
 

@@ -4,16 +4,16 @@ import { Observable } from 'rxjs';
 
 export interface DetalleVenta {
   codigo?: string;
-  venta: any;
-  producto: any;
+  codigoventa: string;
+  produc: string;
   cantidad: number;
-  precio: number;
+  precioAplicado: number;
   // agrega otros campos según tu backend
 }
 
 @Injectable({ providedIn: 'root' })
 export class DetalleVentaService {
-  private apiUrl = '/api/detalle-ventas';
+  private apiUrl = '/api/v1/detalle-ventas';
 
   constructor(private http: HttpClient) {}
 

@@ -11,7 +11,7 @@ export interface Usuario {
 
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
-  private apiUrl = '/api/usuarios';
+  private apiUrl = '/api/v1/usuarios';
 
   constructor(private http: HttpClient) {}
 

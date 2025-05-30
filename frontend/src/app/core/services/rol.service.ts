@@ -3,13 +3,13 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Rol {
-  id: string;
+  codigo: string;
   nombre: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class RolService {
-  private apiUrl = '/api/roles';
+  private apiUrl = '/api/v1/roles';
 
   constructor(private http: HttpClient) {}
 

@@ -2,15 +2,24 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+export interface Subcategoria {
+  codigo: string;
+  nombre: string;
+  // otros campos según tu DTO
+}
+
 export interface Producto {
   codigo?: string;
   nombre: string;
-  precio: number;
+  precioLugar: number;
+  precioLlevar: number;
+  codigoSubcategoria: Subcategoria; // o string si solo envías el UUID
+  limiteCantidad: number;
 }
 
 @Injectable({ providedIn: 'root' })
 export class ProductoService {
-  private apiUrl = '/api/productos';
+  private apiUrl = '/api/v1/productos';
 
   constructor(private http: HttpClient) {}
 

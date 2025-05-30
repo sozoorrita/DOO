@@ -4,13 +4,13 @@ import { Observable } from 'rxjs';
 
 export interface Mesa {
   codigo?: string;
-  numero: number;
-  estado: string;
+  nombre: string;
+  codigoEstadoMesa?: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class MesaService {
-  private apiUrl = '/api/mesas';
+  private apiUrl = '/api/v1/mesas';
 
   constructor(private http: HttpClient) {}
 

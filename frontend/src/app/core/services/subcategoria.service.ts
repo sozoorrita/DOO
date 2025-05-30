@@ -5,12 +5,13 @@ import { Observable } from 'rxjs';
 export interface Subcategoria {
   codigo?: string;
   nombre: string;
-  codigocategoria: string;
+  codigoCategoria: string; // <- usa camelCase igual que tu DTO y JSON del backend
 }
+
 
 @Injectable({ providedIn: 'root' })
 export class SubcategoriaService {
-  private apiUrl = '/api/subcategorias';
+  private apiUrl = '/api/v1/subcategorias';
 
   constructor(private http: HttpClient) {}
 

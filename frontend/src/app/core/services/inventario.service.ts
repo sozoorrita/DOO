@@ -4,14 +4,14 @@ import { Observable } from 'rxjs';
 
 export interface Inventario {
   codigo?: string;
-  nombre: string;
+  producto: string;
   cantidad: number;
-  // otros campos
+  codigoIndicador: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class InventarioService {
-  private apiUrl = '/api/inventarios';
+  private apiUrl = '/api/v1/inventarios';
 
   constructor(private http: HttpClient) {}
 

@@ -4,14 +4,16 @@ import { Observable } from 'rxjs';
 
 export interface InformeCaja {
   codigo?: string;
-  sesionTrabajo: any;
-  fechaApertura: string;
-  fechaCierre: string;
+  codigoSesionTrabajo: string;
+  fecha: string;
+  totalVenta: string;
+  pagoEfectivo: string;
+  pagoTransferencia: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class InformeCajaService {
-  private apiUrl = '/api/informe-caja';
+  private apiUrl = '/api/v1/informe-caja'; // Asegúrate que esta es la ruta correcta
 
   constructor(private http: HttpClient) {}
 

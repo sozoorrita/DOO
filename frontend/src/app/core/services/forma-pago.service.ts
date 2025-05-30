@@ -10,7 +10,7 @@ export interface FormaPago {
 
 @Injectable({ providedIn: 'root' })
 export class FormaPagoService {
-  private apiUrl = '/api/formas-pago';
+  private apiUrl = '/api/v1/formas-pago';
 
   constructor(private http: HttpClient) {}
 

@@ -10,7 +10,7 @@ export interface IndicadorInventario {
 
 @Injectable({ providedIn: 'root' })
 export class IndicadorInventarioService {
-  private apiUrl = '/api/indicador-inventarios';
+  private apiUrl = '/api/v1/indicador-inventarios';
 
   constructor(private http: HttpClient) {}
 

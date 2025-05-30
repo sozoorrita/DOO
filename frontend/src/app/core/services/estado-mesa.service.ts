@@ -10,7 +10,7 @@ export interface EstadoMesa {
 
 @Injectable({ providedIn: 'root' })
 export class EstadoMesaService {
-  private apiUrl = '/api/estado-mesas';
+  private apiUrl = '/api/v1/estado-mesas';
 
   constructor(private http: HttpClient) {}
 

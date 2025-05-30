@@ -3,16 +3,17 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface SesionTrabajo {
-  codigo?: string;
-  usuario: any;
-  fechaApertura?: string;
-  fechaCierre?: string;
-  estado: string;
+  codigo?: string;           // UUID
+  idUsuario: string;         // UUID de usuario
+  baseCaja: string;          // BigDecimal, maneja como string (o number si lo parseas)
+  fechaApertura?: string;    // LocalDateTime serializado como string
+  fechaCierre?: string;      // LocalDateTime serializado como string (puede ser null)
 }
+
 
 @Injectable({ providedIn: 'root' })
 export class SesionTrabajoService {
-  private apiUrl = '/api/sesion-trabajo';
+  private apiUrl = '/api/v1/sesion-trabajo';
 
   constructor(private http: HttpClient) {}
 
