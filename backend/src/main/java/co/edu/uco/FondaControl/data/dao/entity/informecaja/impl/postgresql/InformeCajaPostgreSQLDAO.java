@@ -141,6 +141,29 @@ public final class InformeCajaPostgreSQLDAO implements InformeCajaDAO {
     }
 
     @Override
+    public void delete(final UUID codigo) throws DataFondaControlException {
+        if (UtilObjeto.esNulo(codigo)) {
+            throw new IllegalArgumentException("El código no puede ser nulo.");
+        }
+        final var sql = new StringBuilder("DELETE FROM informe_caja WHERE codigo = ?");
+
+        try (var sentencia = conexion.prepareStatement(sql.toString())) {
+            sentencia.setObject(1, codigo);
+            int filasAfectadas = sentencia.executeUpdate();
+            if (filasAfectadas == 0) {
+                throw DataFondaControlException.reportar(
+                        "No se encontró el informe de caja a eliminar.",
+                        "Código no encontrado: " + codigo
+                );
+            }
+        } catch (final SQLException excepcion) {
+            var mensajeUsuario = "Se ha presentado un problema tratando de eliminar el informe de caja.";
+            var mensajeTecnico = "SQLException en 'delete' con SQL=[" + sql + "], código=[" + codigo + "]";
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico, excepcion);
+        }
+    }
+
+    @Override
     public void update(final InformeCajaDTO dto) throws DataFondaControlException {
         if (UtilObjeto.esNulo(dto) || UtilObjeto.esNulo(dto.getCodigo())) {
             throw new IllegalArgumentException("El DTO y su código no pueden ser nulos.");

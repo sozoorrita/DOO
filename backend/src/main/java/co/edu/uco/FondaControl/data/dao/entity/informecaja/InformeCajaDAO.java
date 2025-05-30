@@ -17,4 +17,6 @@ public interface InformeCajaDAO extends
     void update(InformeCajaDTO informeCaja) throws DataFondaControlException;
 
     InformeCajaEntity findById(UUID codigo) throws DataFondaControlException;
+
+    void delete(UUID codigo) throws DataFondaControlException;
 }

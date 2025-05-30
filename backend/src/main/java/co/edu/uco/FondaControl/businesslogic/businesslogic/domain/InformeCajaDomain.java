@@ -46,7 +46,7 @@ public final class InformeCajaDomain {
         return codigo;
     }
 
-    private void setCodigo(final UUID codigo) {
+    public void setCodigo(final UUID codigo) {
         this.codigo = UtilUUID.obtenerValorDefecto(codigo);
     }
 
@@ -54,7 +54,7 @@ public final class InformeCajaDomain {
         return codigoSesionTrabajo;
     }
 
-    private void setCodigoSesionTrabajo(final UUID codigoSesionTrabajo) {
+    public void setCodigoSesionTrabajo(final UUID codigoSesionTrabajo) {
         this.codigoSesionTrabajo = UtilUUID.obtenerValorDefecto(codigoSesionTrabajo);
     }
 
