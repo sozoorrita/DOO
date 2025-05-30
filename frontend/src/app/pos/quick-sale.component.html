@@ -1,0 +1,51 @@
+<div class="quick-sale-container">
+  <h2>Venta Rápida</h2>
+  <div class="controls">
+    <input
+      type="text"
+      [(ngModel)]="searchTerm"
+      placeholder="Buscar producto..."
+      (input)="filterProducts()"
+    />
+    <select [(ngModel)]="selectedCategory" (change)="filterProducts()">
+      <option *ngFor="let cat of categories" [value]="cat">{{ cat }}</option>
+    </select>
+  </div>
+
+  <div class="product-list">
+    <div
+      *ngFor="let product of filteredProducts"
+      class="product-card"
+      (click)="addToCart(product)"
+    >
+      <h4>{{ product.name }}</h4>
+      <p>{{ product.category }} / {{ product.subcategory }}</p>
+      <p>$ {{ product.price }}</p>
+      <p>Stock: {{ product.stock }}</p>
+    </div>
+  </div>
+
+  <div class="cart">
+    <h3>Ítems añadidos:</h3>
+    <div *ngFor="let item of cart" class="cart-item">
+      <span>{{ item.product.name }} x{{ item.quantity }}</span>
+      <button (click)="changeQuantity(item, 1)">+</button>
+      <button (click)="changeQuantity(item, -1)">-</button>
+      <button (click)="removeFromCart(item.product.id)">x</button>
+    </div>
+
+    <div class="payment">
+      <label>Forma de pago:</label>
+      <select [(ngModel)]="paymentMethod">
+        <option>Efectivo</option>
+        <option>Tarjeta</option>
+        <option>Transferencia</option>
+      </select>
+    </div>
+
+    <div class="total">Total: ${{ total.toFixed(2) }}</div>
+    <button (click)="generateInvoice()" [disabled]="cart.length === 0">
+      Generar factura
+    </button>
+  </div>
+</div>
