@@ -21,35 +21,38 @@ public class VentaController {
         this.ventaFacade = ventaFacade;
     }
 
-    @GetMapping("/dummy")
-    public VentaDTO dummy() {
-        return new VentaDTO();
-    }
-
     @GetMapping
-    public ResponseEntity<List<VentaDTO>> consultar(@RequestBody(required = false) VentaDTO filtro)
-            throws FondaControlException {
+    public ResponseEntity<List<VentaDTO>> listar(
+            @RequestBody(required = false) VentaDTO filtro) throws FondaControlException {
         if (filtro == null) {
-            filtro = dummy();
+            filtro = new VentaDTO();
         }
         List<VentaDTO> lista = ventaFacade.consultarVenta(filtro);
         return ResponseEntity.ok(lista);
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<VentaDTO> obtenerPorId(@PathVariable("id") UUID id)
+            throws FondaControlException {
+        VentaDTO dto = new VentaDTO();
+        dto.setCodigo(id);
+        ventaFacade.consultarVentaPorCodigo(dto);
+        return ResponseEntity.ok(dto);
+    }
+
+
     @PostMapping
-    public ResponseEntity<String> registrar(@RequestBody VentaDTO venta) throws FondaControlException {
+    public ResponseEntity<VentaDTO> crear(@RequestBody VentaDTO venta) throws FondaControlException {
         ventaFacade.registrarVenta(venta);
-        String msg = "La venta ha sido registrada exitosamente.";
-        return ResponseEntity.status(HttpStatus.CREATED).body(msg);
+        return ResponseEntity.status(HttpStatus.CREATED).body(venta);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> modificar(@PathVariable("id") UUID id,
-                                            @RequestBody VentaDTO venta) throws FondaControlException {
+    public ResponseEntity<VentaDTO> actualizar(@PathVariable("id") UUID id,
+                                               @RequestBody VentaDTO venta) throws FondaControlException {
         venta.setCodigo(id);
         ventaFacade.modificarVenta(venta);
-        String msg = "La venta con código " + id + " ha sido modificada exitosamente.";
-        return ResponseEntity.ok(msg);
+        return ResponseEntity.ok(venta);
     }
 
     @DeleteMapping("/{id}")

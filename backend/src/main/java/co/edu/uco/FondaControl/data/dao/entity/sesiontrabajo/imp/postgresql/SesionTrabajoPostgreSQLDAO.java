@@ -7,6 +7,7 @@ import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.UUID;
 
 public final class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
@@ -115,6 +116,48 @@ public final class SesionTrabajoPostgreSQLDAO implements SesionTrabajoDAO {
 
         return null;
     }
+
+    @Override
+    public ArrayList<SesionTrabajoEntity> listByFilter(SesionTrabajoEntity entityFilter) throws DataFondaControlException {
+
+        final var resultado = new ArrayList<SesionTrabajoEntity>();
+        final boolean filtrarPorUsuario =
+                !UtilObjeto.esNulo(entityFilter)
+                        && !UtilObjeto.esNulo(entityFilter.getIdUsuario())
+                        && !UtilObjeto.esNulo(entityFilter.getIdUsuario().getCodigo());
+
+        final StringBuilder sql = new StringBuilder();
+        if (filtrarPorUsuario) {
+            sql.append("SELECT codigo, idusuario, fechaapertura, fechacierre, basecaja ")
+                    .append("FROM sesiontrabajo WHERE idusuario = ?");
+        } else {
+            sql.append("SELECT codigo, idusuario, fechaapertura, fechacierre, basecaja ")
+                    .append("FROM sesiontrabajo");
+        }
+
+        try (final var ps = conexion.prepareStatement(sql.toString())) {
+            if (filtrarPorUsuario) {
+                ps.setObject(1, entityFilter.getIdUsuario().getCodigo());
+            }
+            try (final var rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    resultado.add(mapToEntity(rs));
+                }
+            }
+        } catch (final SQLException excepcion) {
+            var mensajeUsuario = "No fue posible consultar las sesiones de trabajo.";
+            var mensajeTecnico = new StringBuilder("SQLException en 'listByFilter' de ")
+                    .append("SesionTrabajoPostgreSQLDAO. SQL=[").append(sql).append("]");
+            if (filtrarPorUsuario) {
+                mensajeTecnico.append(", idUsuario=[").append(entityFilter.getIdUsuario().getCodigo()).append("]");
+            }
+            mensajeTecnico.append(", detalle=[").append(excepcion.getMessage()).append("]");
+            throw DataFondaControlException.reportar(mensajeUsuario, mensajeTecnico.toString(), excepcion);
+        }
+
+        return resultado;
+    }
+
 
     private SesionTrabajoEntity mapToEntity(final ResultSet rs) throws SQLException {
         return new SesionTrabajoEntity(

@@ -1,6 +1,9 @@
 package co.edu.uco.FondaControl.api;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import co.edu.uco.FondaControl.businesslogic.facade.SesionTrabajoFacade;
@@ -17,7 +20,6 @@ public class SesionTrabajoController {
         this.sesionTrabajoFacade = sesionTrabajoFacade;
     }
 
-   
     @PostMapping("/iniciar")
     @ResponseStatus(HttpStatus.CREATED)
     public void iniciarSesionTrabajo(@RequestBody SesionTrabajoDTO sesionDTO) throws FondaControlException {
@@ -28,5 +30,15 @@ public class SesionTrabajoController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void cerrarSesionTrabajo(@RequestBody SesionTrabajoDTO sesionDTO) throws FondaControlException {
         sesionTrabajoFacade.cerrarSesionTrabajo(sesionDTO);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<SesionTrabajoDTO>> consultarSesionTrabajo(
+            @RequestBody(required = false) SesionTrabajoDTO filtro) throws FondaControlException {
+        if (filtro == null) {
+            filtro = new SesionTrabajoDTO();
+        }
+        List<SesionTrabajoDTO> lista = sesionTrabajoFacade.consultarSesionTrabajo(filtro);
+        return ResponseEntity.ok(lista);
     }
 }

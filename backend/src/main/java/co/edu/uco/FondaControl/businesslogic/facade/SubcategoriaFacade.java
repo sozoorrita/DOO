@@ -12,5 +12,7 @@ public interface SubcategoriaFacade {
 
 	void eliminarSubcategoria(SubcategoriaDTO subcategoria) throws FondaControlException;
 
+	void consultarSubcategoriaPorCodigo(SubcategoriaDTO subcategoria) throws FondaControlException;
+
 	List<SubcategoriaDTO> consultarSubcategoria(SubcategoriaDTO filtro) throws FondaControlException;
 }

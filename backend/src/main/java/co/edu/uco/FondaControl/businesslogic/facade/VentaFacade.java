@@ -12,5 +12,7 @@ public interface VentaFacade {
 
 	void eliminarVenta(VentaDTO venta) throws FondaControlException;
 
+	void consultarVentaPorCodigo(VentaDTO venta) throws FondaControlException;
+
 	List<VentaDTO> consultarVenta(VentaDTO filtro) throws FondaControlException;
 }

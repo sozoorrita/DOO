@@ -21,48 +21,41 @@ public class RolController {
         this.rolFacade = rolFacade;
     }
 
-    
-    @GetMapping("/dummy")
-    public RolDTO dummy() {
-        return new RolDTO.Builder().crear();
-    }
 
-    
     @GetMapping
-    public ResponseEntity<List<RolDTO>> consultar(
-            @RequestBody(required = false) RolDTO filtro) throws FondaControlException {
-        if (filtro == null) {
-            filtro = dummy();
-        }
-        List<RolDTO> lista = rolFacade.consultarRol(filtro);
+    public ResponseEntity<List<RolDTO>> listarRoles() throws FondaControlException {
+        List<RolDTO> lista = rolFacade.consultarRol(new RolDTO.Builder().crear());
         return ResponseEntity.ok(lista);
     }
 
-    
-    @PostMapping
-    public ResponseEntity<String> registrar(@RequestBody RolDTO rol)
-            throws FondaControlException {
-        rolFacade.registrarRol(rol);
-        String msg = "El rol \"" + rol.getNombre() + "\" ha sido registrado exitosamente.";
-        return ResponseEntity.status(HttpStatus.CREATED).body(msg);
+    @GetMapping("/{id}")
+    public ResponseEntity<RolDTO> obtenerRol(@PathVariable("id") UUID id) throws FondaControlException {
+        RolDTO filtro = new RolDTO.Builder().codigo(id).crear();
+        List<RolDTO> encontrados = rolFacade.consultarRol(filtro);
+        if (encontrados.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(encontrados.get(0));
     }
 
-    
+    @PostMapping
+    public ResponseEntity<RolDTO> crearRol(@RequestBody RolDTO rol) throws FondaControlException {
+        rolFacade.registrarRol(rol);
+        return ResponseEntity.status(HttpStatus.CREATED).body(rol);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<String> modificar(@PathVariable("id") UUID id,
-                                            @RequestBody RolDTO rol)
-            throws FondaControlException {
+    public ResponseEntity<RolDTO> actualizarRol(@PathVariable("id") UUID id,
+                                                @RequestBody RolDTO rol) throws FondaControlException {
         rol.setCodigo(id);
         rolFacade.modificarRol(rol);
-        String msg = "El rol \"" + rol.getNombre() + "\" ha sido modificado exitosamente.";
-        return ResponseEntity.ok(msg);
+        return ResponseEntity.ok(rol);
     }
 
-    
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminar(@PathVariable("id") UUID id) throws FondaControlException {
-        RolDTO dto = new RolDTO.Builder().codigo(id).crear();
-        rolFacade.eliminarRol(dto);
+    public void eliminarRol(@PathVariable("id") UUID id) throws FondaControlException {
+        RolDTO filtro = new RolDTO.Builder().codigo(id).crear();
+        rolFacade.eliminarRol(filtro);
     }
 }

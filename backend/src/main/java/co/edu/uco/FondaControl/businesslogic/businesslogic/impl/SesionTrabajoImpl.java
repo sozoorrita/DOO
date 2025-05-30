@@ -4,13 +4,14 @@ import co.edu.uco.FondaControl.businesslogic.businesslogic.SesionTrabajoBusiness
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.SesionTrabajo.entity.SesionTrabajoEntityAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.SesionTrabajoDomain;
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
-import co.edu.uco.FondaControl.crosscutting.excepciones.DataFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
+import co.edu.uco.FondaControl.entity.SesionTrabajoEntity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -28,17 +29,18 @@ public final class SesionTrabajoImpl implements SesionTrabajoBusinessLogic {
     public void iniciarSesionTrabajo(final SesionTrabajoDomain sesionTrabajoDomain) throws FondaControlException {
         validarIntegridadSesionParaInicio(sesionTrabajoDomain);
 
-        final var sesionExistente = factory.getSesionTrabajoDAO()
+        final SesionTrabajoEntity sesionExistente = factory.getSesionTrabajoDAO()
                 .findByUsuario(sesionTrabajoDomain.getUsuario().getId());
 
         if (!UtilObjeto.getInstancia().esNulo(sesionExistente) && sesionExistente.getFechaCierre() == null) {
             throw BusinessLogicFondaControlException.reportar(
                     "Ya existe una sesión de trabajo abierta para este usuario.",
-                    "Intento de iniciar nueva sesión con sesión activa para el usuario ID: " + sesionTrabajoDomain.getUsuario().getId()
+                    "Intento de iniciar nueva sesión con sesión activa para el usuario ID: "
+                            + sesionTrabajoDomain.getUsuario().getId()
             );
         }
 
-        final var sesionNueva = SesionTrabajoDomain.crearParaRegistro(
+        final SesionTrabajoDomain sesionNueva = SesionTrabajoDomain.crearParaRegistro(
                 sesionTrabajoDomain.getUsuario(),
                 sesionTrabajoDomain.getBaseCaja(),
                 LocalDateTime.now()
@@ -52,7 +54,8 @@ public final class SesionTrabajoImpl implements SesionTrabajoBusinessLogic {
     public void cerrarSesionTrabajo(final SesionTrabajoDomain sesionTrabajoDomain) throws FondaControlException {
         validarCodigoSesion(sesionTrabajoDomain.getCodigo());
 
-        final var sesionExistente = factory.getSesionTrabajoDAO().findById(sesionTrabajoDomain.getCodigo());
+        final SesionTrabajoEntity sesionExistente = factory.getSesionTrabajoDAO()
+                .findById(sesionTrabajoDomain.getCodigo());
 
         if (UtilObjeto.getInstancia().esNulo(sesionExistente)) {
             throw BusinessLogicFondaControlException.reportar(
@@ -64,7 +67,8 @@ public final class SesionTrabajoImpl implements SesionTrabajoBusinessLogic {
         if (sesionExistente.getFechaCierre() != null) {
             throw BusinessLogicFondaControlException.reportar(
                     "La sesión ya fue cerrada.",
-                    "La sesión de trabajo con ID: " + sesionExistente.getCodigo() + " ya tiene fecha de cierre: " + sesionExistente.getFechaCierre()
+                    "La sesión de trabajo con ID: " + sesionExistente.getCodigo()
+                            + " ya tiene fecha de cierre: " + sesionExistente.getFechaCierre()
             );
         }
 
@@ -72,7 +76,30 @@ public final class SesionTrabajoImpl implements SesionTrabajoBusinessLogic {
         factory.getSesionTrabajoDAO().update(sesionExistente.getCodigo(), sesionExistente);
     }
 
+    @Override
+    public List<SesionTrabajoDomain> consultarSesionTrabajo(SesionTrabajoDomain filtro) throws FondaControlException {
+        if (UtilObjeto.getInstancia().esNulo(filtro)) {
+            filtro = SesionTrabajoDomain.obtenerValorDefecto();
+        }
 
+        try {
+            var entityFilter = SesionTrabajoEntityAssembler.getInstance().toEntity(filtro);
+            // Aquí se usa el tipo correcto en lugar de Object
+            List<SesionTrabajoEntity> entities = factory
+                    .getSesionTrabajoDAO()
+                    .listByFilter(entityFilter);
+
+            return SesionTrabajoEntityAssembler
+                    .getInstance()
+                    .toDomainList(entities);
+        } catch (Exception e) {
+            throw BusinessLogicFondaControlException.reportar(
+                    "No se pudieron consultar las sesiones de trabajo.",
+                    "Error técnico al consultar sesiones: " + e.getMessage(),
+                    e
+            );
+        }
+    }
 
     private void validarCodigoSesion(final UUID codigo) throws BusinessLogicFondaControlException {
         if (UtilObjeto.getInstancia().esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
@@ -83,7 +110,8 @@ public final class SesionTrabajoImpl implements SesionTrabajoBusinessLogic {
         }
     }
 
-    private void validarIntegridadSesionParaInicio(final SesionTrabajoDomain sesion) throws BusinessLogicFondaControlException {
+    private void validarIntegridadSesionParaInicio(final SesionTrabajoDomain sesion)
+            throws BusinessLogicFondaControlException {
         if (UtilObjeto.getInstancia().esNulo(sesion)) {
             throw BusinessLogicFondaControlException.reportar(
                     "La sesión de trabajo no puede ser nula.",

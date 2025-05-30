@@ -21,41 +21,42 @@ public class SubcategoriaController {
         this.subcategoriaFacade = subcategoriaFacade;
     }
 
-    
-    @GetMapping("/dummy")
-    public SubcategoriaDTO dummy() {
-        return new SubcategoriaDTO();
-    }
 
-    
     @GetMapping
-    public ResponseEntity<List<SubcategoriaDTO>> consultar(
-            @RequestBody(required = false) SubcategoriaDTO filtro) throws FondaControlException {
+    public ResponseEntity<List<SubcategoriaDTO>> listar(@RequestBody(required = false) SubcategoriaDTO filtro)
+            throws FondaControlException {
         if (filtro == null) {
-            filtro = dummy();
+            filtro = new SubcategoriaDTO();
         }
         List<SubcategoriaDTO> lista = subcategoriaFacade.consultarSubcategoria(filtro);
         return ResponseEntity.ok(lista);
     }
 
-    
-    @PostMapping
-    public ResponseEntity<String> registrar(@RequestBody SubcategoriaDTO subcategoria)
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SubcategoriaDTO> obtenerPorId(@PathVariable("id") UUID id)
             throws FondaControlException {
-        subcategoriaFacade.registrarSubcategoria(subcategoria);
-        String msg = "La subcategoría \"" + subcategoria.getNombre() + "\" ha sido registrada exitosamente.";
-        return ResponseEntity.status(HttpStatus.CREATED).body(msg);
+        SubcategoriaDTO filtro = new SubcategoriaDTO();
+        filtro.setCodigo(id);
+        subcategoriaFacade.consultarSubcategoriaPorCodigo(filtro);
+        return ResponseEntity.ok(filtro);
     }
 
-    
+
+    @PostMapping
+    public ResponseEntity<SubcategoriaDTO> crear(@RequestBody SubcategoriaDTO subcategoria)
+            throws FondaControlException {
+        subcategoriaFacade.registrarSubcategoria(subcategoria);
+        return ResponseEntity.status(HttpStatus.CREATED).body(subcategoria);
+    }
+
     @PutMapping("/{id}")
-    public ResponseEntity<String> modificar(@PathVariable("id") UUID id,
-                                            @RequestBody SubcategoriaDTO subcategoria)
+    public ResponseEntity<SubcategoriaDTO> actualizar(@PathVariable("id") UUID id,
+                                                      @RequestBody SubcategoriaDTO subcategoria)
             throws FondaControlException {
         subcategoria.setCodigo(id);
         subcategoriaFacade.modificarSubcategoria(subcategoria);
-        String msg = "La subcategoría \"" + subcategoria.getNombre() + "\" ha sido modificada exitosamente.";
-        return ResponseEntity.ok(msg);
+        return ResponseEntity.ok(subcategoria);
     }
 
     @DeleteMapping("/{id}")

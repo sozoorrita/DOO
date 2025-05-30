@@ -13,5 +13,7 @@ public interface SubcategoriaBusinessLogic {
 
 	void eliminarSubcategoria(UUID codigo) throws FondaControlException;
 
+	void consultarSubcategoriaPorCodigo(UUID codigo) throws FondaControlException;
+
 	List<SubcategoriaDomain> consultarSubcategoria(SubcategoriaDomain filtro) throws FondaControlException;
 }

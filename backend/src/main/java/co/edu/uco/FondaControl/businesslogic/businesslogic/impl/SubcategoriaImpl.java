@@ -52,6 +52,27 @@ public final class SubcategoriaImpl implements SubcategoriaBusinessLogic {
     }
 
     @Override
+    public void consultarSubcategoriaPorCodigo(final UUID codigo) throws FondaControlException {
+        if (UtilObjeto.getInstancia().esNulo(codigo) || UtilUUID.esValorDefecto(codigo)) {
+            throw BusinessLogicFondaControlException.reportar(
+                    "El código de la subcategoría no puede ser nulo ni por defecto.",
+                    "Se recibió código inválido: " + codigo
+            );
+        }
+
+        List<SubcategoriaEntity> lista = daoFactory
+                .getSubcategoriaDAO()
+                .listByCodigo(codigo);
+
+        if (lista.isEmpty()) {
+            throw BusinessLogicFondaControlException.reportar(
+                    "No se encontró la subcategoría con el código proporcionado.",
+                    "listByCodigo retornó vacío para código: " + codigo
+            );
+        }
+    }
+
+    @Override
     public List<SubcategoriaDomain> consultarSubcategoria(final SubcategoriaDomain filtro) throws FondaControlException {
         final var entityFiltro = SubcategoriaEntityAssembler.getInstancia().toEntity(filtro);
         final List<SubcategoriaEntity> resultados = daoFactory.getSubcategoriaDAO().listByFilter(entityFiltro);

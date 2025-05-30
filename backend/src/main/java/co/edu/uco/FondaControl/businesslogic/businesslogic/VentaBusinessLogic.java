@@ -13,5 +13,7 @@ public interface VentaBusinessLogic {
 
 	void eliminarVenta(UUID codigo) throws FondaControlException;
 
+	void consultarVentaPorCodigo(UUID codigo) throws FondaControlException;
+
 	List<VentaDomain> consultarVenta(VentaDomain filtro) throws FondaControlException;
 }

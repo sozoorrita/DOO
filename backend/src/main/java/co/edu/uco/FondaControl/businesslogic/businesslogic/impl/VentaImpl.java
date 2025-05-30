@@ -1,15 +1,16 @@
 package co.edu.uco.FondaControl.businesslogic.businesslogic.impl;
 
+import java.util.List;
+import java.util.UUID;
+
 import co.edu.uco.FondaControl.businesslogic.businesslogic.VentaBusinessLogic;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Venta.entity.VentaEntityAssembler;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.VentaDomain;
+import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
-
-import java.util.List;
-import java.util.UUID;
 
 public final class VentaImpl implements VentaBusinessLogic {
 
@@ -34,13 +35,13 @@ public final class VentaImpl implements VentaBusinessLogic {
 
         // Como domain es inmutable, creamos uno nuevo con el código corregido
         var ventaActualizada = new VentaDomain(
-            codigo,
-            venta.getFecha(),
-            venta.getTotalVenta(),
-            venta.getFormaPago(),
-            venta.getTipoVenta(),
-            venta.getSesionTrabajo(),
-            venta.getMesa()
+                codigo,
+                venta.getFecha(),
+                venta.getTotalVenta(),
+                venta.getFormaPago(),
+                venta.getTipoVenta(),
+                venta.getSesionTrabajo(),
+                venta.getMesa()
         );
 
         var entity = VentaEntityAssembler.getInstance().toEntity(ventaActualizada);
@@ -52,6 +53,24 @@ public final class VentaImpl implements VentaBusinessLogic {
         validarCodigoVenta(codigo);
 
         daoFactory.getVentaDAO().delete(codigo);
+    }
+
+    @Override
+    public void consultarVentaPorCodigo(final UUID codigo) throws FondaControlException {
+        if (UtilUUID.esValorDefecto(codigo)) {
+            throw BusinessLogicFondaControlException.reportar(
+                    "El código de la venta no puede ser nulo ni por defecto.",
+                    "Se recibió código inválido de venta: " + codigo
+            );
+        }
+
+        var entity = daoFactory.getVentaDAO().findById(codigo);
+        if (UtilObjeto.getInstancia().esNulo(entity)) {
+            throw BusinessLogicFondaControlException.reportar(
+                    "No se encontró la venta con el código proporcionado.",
+                    "findById retornó null para venta con código: " + codigo
+            );
+        }
     }
 
     @Override
@@ -76,10 +95,12 @@ public final class VentaImpl implements VentaBusinessLogic {
         }
 
         if (venta.getFormaPago() == null || UtilUUID.esValorDefecto(venta.getFormaPago().getCodigo()) ||
-            venta.getTipoVenta() == null || UtilUUID.esValorDefecto(venta.getTipoVenta().getCodigo()) ||
-            venta.getSesionTrabajo() == null || UtilUUID.esValorDefecto(venta.getSesionTrabajo().getCodigo()) ||
-            venta.getMesa() == null || UtilUUID.esValorDefecto(venta.getMesa().getCodigo())) {
-            throw new IllegalArgumentException("La venta debe tener datos válidos en forma de pago, tipo de venta, sesión de trabajo y mesa.");
+                venta.getTipoVenta() == null || UtilUUID.esValorDefecto(venta.getTipoVenta().getCodigo()) ||
+                venta.getSesionTrabajo() == null || UtilUUID.esValorDefecto(venta.getSesionTrabajo().getCodigo()) ||
+                venta.getMesa() == null || UtilUUID.esValorDefecto(venta.getMesa().getCodigo())) {
+            throw new IllegalArgumentException(
+                    "La venta debe tener datos válidos en forma de pago, tipo de venta, sesión de trabajo y mesa."
+            );
         }
     }
 

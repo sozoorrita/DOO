@@ -9,11 +9,11 @@ import co.edu.uco.FondaControl.businesslogic.businesslogic.VentaBusinessLogic;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.VentaDomain;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.impl.VentaImpl;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Venta.dto.VentaDTOAssembler;
+import co.edu.uco.FondaControl.businesslogic.facade.VentaFacade;
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
-import co.edu.uco.FondaControl.businesslogic.facade.VentaFacade;
 import co.edu.uco.FondaControl.dto.VentaDTO;
 
 @Service
@@ -31,8 +31,8 @@ public final class VentaImp implements VentaFacade {
     public void registrarVenta(VentaDTO venta) throws FondaControlException {
         if (UtilObjeto.esNulo(venta)) {
             throw BusinessLogicFondaControlException.reportar(
-                "La venta a registrar no puede ser nula.",
-                "DTO de venta es nulo"
+                    "La venta a registrar no puede ser nula.",
+                    "DTO de venta es nulo"
             );
         }
         try {
@@ -46,9 +46,9 @@ public final class VentaImp implements VentaFacade {
         } catch (Exception ex) {
             daoFactory.cancelarTransaccion();
             throw BusinessLogicFondaControlException.reportar(
-                "Error registrando venta.",
-                ex.getMessage(),
-                ex
+                    "Error registrando venta.",
+                    ex.getMessage(),
+                    ex
             );
         } finally {
             daoFactory.cerrarConexion();
@@ -59,8 +59,8 @@ public final class VentaImp implements VentaFacade {
     public void modificarVenta(VentaDTO venta) throws FondaControlException {
         if (UtilObjeto.esNulo(venta) || UtilObjeto.esNulo(venta.getCodigo())) {
             throw BusinessLogicFondaControlException.reportar(
-                "La venta a modificar no puede ser nula y debe contener un código.",
-                "DTO de venta inválido"
+                    "La venta a modificar no puede ser nula y debe contener un código.",
+                    "DTO de venta inválido"
             );
         }
         UUID codigo = venta.getCodigo();
@@ -75,9 +75,9 @@ public final class VentaImp implements VentaFacade {
         } catch (Exception ex) {
             daoFactory.cancelarTransaccion();
             throw BusinessLogicFondaControlException.reportar(
-                "Error modificando venta.",
-                ex.getMessage(),
-                ex
+                    "Error modificando venta.",
+                    ex.getMessage(),
+                    ex
             );
         } finally {
             daoFactory.cerrarConexion();
@@ -88,8 +88,8 @@ public final class VentaImp implements VentaFacade {
     public void eliminarVenta(VentaDTO venta) throws FondaControlException {
         if (UtilObjeto.esNulo(venta) || UtilObjeto.esNulo(venta.getCodigo())) {
             throw BusinessLogicFondaControlException.reportar(
-                "La venta a eliminar no puede ser nula y debe contener un código.",
-                "DTO de venta inválido"
+                    "La venta a eliminar no puede ser nula y debe contener un código.",
+                    "DTO de venta inválido"
             );
         }
         UUID codigo = venta.getCodigo();
@@ -103,9 +103,37 @@ public final class VentaImp implements VentaFacade {
         } catch (Exception ex) {
             daoFactory.cancelarTransaccion();
             throw BusinessLogicFondaControlException.reportar(
-                "Error eliminando venta.",
-                ex.getMessage(),
-                ex
+                    "Error eliminando venta.",
+                    ex.getMessage(),
+                    ex
+            );
+        } finally {
+            daoFactory.cerrarConexion();
+        }
+    }
+
+    @Override
+    public void consultarVentaPorCodigo(VentaDTO venta) throws FondaControlException {
+        if (UtilObjeto.esNulo(venta) || UtilObjeto.esNulo(venta.getCodigo())) {
+            throw BusinessLogicFondaControlException.reportar(
+                    "La venta a consultar no puede ser nula y debe contener un código.",
+                    "DTO de venta inválido"
+            );
+        }
+        UUID codigo = venta.getCodigo();
+        try {
+            daoFactory.iniciarTransaccion();
+            businessLogic.consultarVentaPorCodigo(codigo);
+            daoFactory.confirmarTransaccion();
+        } catch (FondaControlException ex) {
+            daoFactory.cancelarTransaccion();
+            throw ex;
+        } catch (Exception ex) {
+            daoFactory.cancelarTransaccion();
+            throw BusinessLogicFondaControlException.reportar(
+                    "Error consultando venta.",
+                    ex.getMessage(),
+                    ex
             );
         } finally {
             daoFactory.cerrarConexion();
@@ -116,8 +144,8 @@ public final class VentaImp implements VentaFacade {
     public List<VentaDTO> consultarVenta(VentaDTO filtro) throws FondaControlException {
         if (UtilObjeto.esNulo(filtro)) {
             throw BusinessLogicFondaControlException.reportar(
-                "El filtro de venta no puede ser nulo.",
-                "DTO de filtro inválido"
+                    "El filtro de venta no puede ser nulo.",
+                    "DTO de filtro inválido"
             );
         }
         try {

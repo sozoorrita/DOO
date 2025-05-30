@@ -9,11 +9,11 @@ import co.edu.uco.FondaControl.businesslogic.businesslogic.SubcategoriaBusinessL
 import co.edu.uco.FondaControl.businesslogic.businesslogic.domain.SubcategoriaDomain;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.impl.SubcategoriaImpl;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Subcategoria.dto.SubcategoriaDTOAssembler;
+import co.edu.uco.FondaControl.businesslogic.facade.SubcategoriaFacade;
 import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaControlException;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
-import co.edu.uco.FondaControl.businesslogic.facade.SubcategoriaFacade;
 import co.edu.uco.FondaControl.dto.SubcategoriaDTO;
 
 @Service
@@ -31,8 +31,8 @@ public final class SubcategoriaImp implements SubcategoriaFacade {
     public void registrarSubcategoria(SubcategoriaDTO dto) throws FondaControlException {
         if (UtilObjeto.esNulo(dto)) {
             throw BusinessLogicFondaControlException.reportar(
-                "La subcategoría no puede ser nula.", 
-                "DTO de subcategoría es nulo"
+                    "La subcategoría no puede ser nula.",
+                    "DTO de subcategoría es nulo"
             );
         }
         try {
@@ -46,9 +46,9 @@ public final class SubcategoriaImp implements SubcategoriaFacade {
         } catch (Exception ex) {
             daoFactory.cancelarTransaccion();
             throw BusinessLogicFondaControlException.reportar(
-                "Error registrando subcategoría.", 
-                ex.getMessage(), 
-                ex
+                    "Error registrando subcategoría.",
+                    ex.getMessage(),
+                    ex
             );
         } finally {
             daoFactory.cerrarConexion();
@@ -59,8 +59,8 @@ public final class SubcategoriaImp implements SubcategoriaFacade {
     public void modificarSubcategoria(SubcategoriaDTO dto) throws FondaControlException {
         if (UtilObjeto.esNulo(dto) || UtilObjeto.esNulo(dto.getCodigo())) {
             throw BusinessLogicFondaControlException.reportar(
-                "La subcategoría a modificar no puede ser nula y debe contener un código.", 
-                "DTO de subcategoría inválido"
+                    "La subcategoría a modificar no puede ser nula y debe contener un código.",
+                    "DTO de subcategoría inválido"
             );
         }
         UUID codigo = dto.getCodigo();
@@ -75,9 +75,9 @@ public final class SubcategoriaImp implements SubcategoriaFacade {
         } catch (Exception ex) {
             daoFactory.cancelarTransaccion();
             throw BusinessLogicFondaControlException.reportar(
-                "Error modificando subcategoría.", 
-                ex.getMessage(), 
-                ex
+                    "Error modificando subcategoría.",
+                    ex.getMessage(),
+                    ex
             );
         } finally {
             daoFactory.cerrarConexion();
@@ -88,8 +88,8 @@ public final class SubcategoriaImp implements SubcategoriaFacade {
     public void eliminarSubcategoria(SubcategoriaDTO dto) throws FondaControlException {
         if (UtilObjeto.esNulo(dto) || UtilObjeto.esNulo(dto.getCodigo())) {
             throw BusinessLogicFondaControlException.reportar(
-                "La subcategoría a eliminar no puede ser nula y debe contener un código.", 
-                "DTO de subcategoría inválido"
+                    "La subcategoría a eliminar no puede ser nula y debe contener un código.",
+                    "DTO de subcategoría inválido"
             );
         }
         UUID codigo = dto.getCodigo();
@@ -103,9 +103,36 @@ public final class SubcategoriaImp implements SubcategoriaFacade {
         } catch (Exception ex) {
             daoFactory.cancelarTransaccion();
             throw BusinessLogicFondaControlException.reportar(
-                "Error eliminando subcategoría.", 
-                ex.getMessage(), 
-                ex
+                    "Error eliminando subcategoría.",
+                    ex.getMessage(),
+                    ex
+            );
+        } finally {
+            daoFactory.cerrarConexion();
+        }
+    }
+
+    @Override
+    public void consultarSubcategoriaPorCodigo(SubcategoriaDTO dto) throws FondaControlException {
+        if (UtilObjeto.esNulo(dto) || UtilObjeto.esNulo(dto.getCodigo())) {
+            throw BusinessLogicFondaControlException.reportar(
+                    "La subcategoría a consultar no puede ser nula y debe contener un código.",
+                    "DTO de subcategoría inválido"
+            );
+        }
+        try {
+            daoFactory.iniciarTransaccion();
+            businessLogic.consultarSubcategoriaPorCodigo(dto.getCodigo());
+            daoFactory.confirmarTransaccion();
+        } catch (FondaControlException ex) {
+            daoFactory.cancelarTransaccion();
+            throw ex;
+        } catch (Exception ex) {
+            daoFactory.cancelarTransaccion();
+            throw BusinessLogicFondaControlException.reportar(
+                    "Error consultando subcategoría.",
+                    ex.getMessage(),
+                    ex
             );
         } finally {
             daoFactory.cerrarConexion();
@@ -116,8 +143,8 @@ public final class SubcategoriaImp implements SubcategoriaFacade {
     public List<SubcategoriaDTO> consultarSubcategoria(SubcategoriaDTO filtro) throws FondaControlException {
         if (UtilObjeto.esNulo(filtro)) {
             throw BusinessLogicFondaControlException.reportar(
-                "El filtro de subcategoría no puede ser nulo.", 
-                "DTO de filtro inválido"
+                    "El filtro de subcategoría no puede ser nulo.",
+                    "DTO de filtro inválido"
             );
         }
         try {
