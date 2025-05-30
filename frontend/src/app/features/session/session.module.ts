@@ -1,18 +1,26 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
 
-import { SessionRoutingModule } from './session-routing.module';
 import { SessionListComponent } from './session-list/session-list.component';
-
-// Importa tu MaterialModule en lugar de sólo MatButtonModule
-import { MaterialModule } from '../../material.module';
+import { SessionOpenComponent } from './session-open/session-open.component';
+import { SessionRoutingModule } from './session-routing.module';
 
 @NgModule({
-  declarations: [SessionListComponent],
+  declarations: [
+    SessionListComponent,
+    SessionOpenComponent
+  ],
   imports: [
     CommonModule,
-    SessionRoutingModule,
-    MaterialModule      // <-- aquí
+    FormsModule,
+    RouterModule,
+    SessionRoutingModule
+  ],
+  exports: [
+    SessionListComponent,
+    SessionOpenComponent
   ]
 })
-export class SessionModule {}
+export class SessionModule { }

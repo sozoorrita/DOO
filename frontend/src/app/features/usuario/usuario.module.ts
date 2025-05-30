@@ -1,12 +1,26 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UsuarioRoutingModule } from './usuario-routing.module';
-import { UsuarioCrudComponent } from './usuario-crud/usuario-crud.component';
-import { MaterialModule } from '../../material.module';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+
+import { UsuarioListComponent } from './usuario-list/usuario-list.component';
+import { UsuarioCrudComponent } from './usuario-crud/usuario-crud.component';
+import { UsuarioRoutingModule } from './usuario-routing.module';
 
 @NgModule({
-  declarations: [UsuarioCrudComponent],
-  imports: [CommonModule, UsuarioRoutingModule, MaterialModule, FormsModule]
+  declarations: [
+    UsuarioListComponent,
+    UsuarioCrudComponent
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    UsuarioRoutingModule
+  ],
+  exports: [
+    UsuarioListComponent,
+    UsuarioCrudComponent
+  ]
 })
-export class UsuarioModule {}
+export class UsuarioModule { }

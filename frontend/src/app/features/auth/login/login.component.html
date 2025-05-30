@@ -1,28 +1,11 @@
-<!-- src/app/features/auth/login/login.component.html -->
-<div class="login-page">
-  <div class="login-card">
-    <h1>Inicio de Sesión</h1>
-    <form (ngSubmit)="onSubmit()" #loginForm="ngForm">
-      <input
-        type="text"
-        name="name"
-        [(ngModel)]="name"
-        placeholder="Nombre"
-        required
-      />
-      <input
-        type="password"
-        name="password"
-        [(ngModel)]="password"
-        placeholder="Contraseña"
-        required
-      />
-      <button type="submit" [disabled]="!loginForm.form.valid">
-        Iniciar sesión
-      </button>
-    </form>
-    <a class="register-link" routerLink="/auth/register">
-      ¿No tienes cuenta? Regístrate aquí
-    </a>
-  </div>
+<div class="login-container">
+  <h2>Iniciar sesión</h2>
+  <input [(ngModel)]="nombre" placeholder="Nombre" type="text" required />
+  <select [(ngModel)]="codigoRol" required>
+    <option value="" disabled selected>Selecciona un rol</option>
+    <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.nombre }}</option>
+  </select>
+  <input [(ngModel)]="contrasena" placeholder="Contraseña" type="password" required />
+  <button class="btn-primary" (click)="onLogin()">Iniciar sesión</button>
+  <button class="btn-link" (click)="goToRegister()">¿No tienes cuenta? Regístrate</button>
 </div>

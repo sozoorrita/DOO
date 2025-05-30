@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { VentaRapidaService, VentaItem } from '../../../core/services/venta-rapida.service';
-import { InventoryService, Product }     from '../../../core/services/inventory.service';
-import { Router } from '@angular/router';
+import { VentaService, Venta } from '../../../core/services/venta.service';
+import { ProductoService, Producto } from '../../../core/services/producto.service';
+import { MesaService, Mesa } from '../../../core/services/mesa.service';
+import { UsuarioService, Usuario } from '../../../core/services/usuario.service';
 
 @Component({
   selector: 'app-venta-rapida',
@@ -10,42 +11,47 @@ import { Router } from '@angular/router';
   styleUrls: ['./venta-rapida.component.css']
 })
 export class VentaRapidaComponent implements OnInit {
-  items: VentaItem[] = [];
-  products: Product[] = [];
-  categories: string[] = [];
-  selectedCategory = '';
+  productos: Producto[] = [];
+  mesas: Mesa[] = [];
+  usuarios: Usuario[] = [];
+  venta: Venta = {
+    producto: null,
+    mesa: null,
+    usuario: null,
+    cantidad: 1,
+    // otros campos según tu backend
+  };
 
   constructor(
-    private ventaService: VentaRapidaService,
-    private inventory: InventoryService,
-    private router: Router
+    private ventaService: VentaService,
+    private productoService: ProductoService,
+    private mesaService: MesaService,
+    private usuarioService: UsuarioService
   ) {}
 
-  ngOnInit(): void {
-    this.ventaService.getItems().subscribe(i => this.items = i);
-    this.inventory.getProducts().subscribe(p => {
-      this.products = p;
-      this.categories = Array.from(new Set(p.map(x => x.id.charAt(0))));
-      this.applyFilter();
+  ngOnInit() {
+    this.productoService.getProductos().subscribe({
+      next: productos => this.productos = productos
+    });
+    this.mesaService.getMesas().subscribe({
+      next: mesas => this.mesas = mesas
+    });
+    this.usuarioService.getUsuarios().subscribe({
+      next: usuarios => this.usuarios = usuarios
     });
   }
 
-  applyFilter(): void {
-    this.products = this.selectedCategory
-      ? this.products.filter(x => x.id.startsWith(this.selectedCategory))
-      : this.products;
-  }
-
-  addProduct(prod: Product): void {
-    this.ventaService.addItem({name: prod.name, quantity: 1, price: prod.price});
-  }
-
-  consolidate(): void {
-    // navegación a factura rápida
-    this.router.navigate(['/ventas/factura-rapida']);
-  }
-
-  clear(): void {
-    this.ventaService.clear();
+  realizarVenta() {
+    if (!this.venta.producto || !this.venta.mesa || !this.venta.usuario || !this.venta.cantidad) {
+      alert('Todos los campos son obligatorios');
+      return;
+    }
+    this.ventaService.registrarVenta(this.venta).subscribe({
+      next: () => {
+        alert('Venta realizada exitosamente');
+        this.venta = { producto: null, mesa: null, usuario: null, cantidad: 1 };
+      },
+      error: err => alert('Error al registrar la venta: ' + (err.error?.message || err.message))
+    });
   }
 }

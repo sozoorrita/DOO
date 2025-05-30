@@ -1,39 +1,23 @@
-<div class="session-inner">
-  <h2 class="session-title">Sesión de Trabajo</h2>
-
-  <div class="session-buttons">
-    <button class="btn-primary"
-            (click)="openSession()"
-            [disabled]="hasActiveSession">
-      Abrir Sesión
-    </button>
-    <button class="btn-accent"
-            (click)="closeSession()"
-            [disabled]="!hasActiveSession">
-      Cerrar Sesión de Trabajo
-    </button>
-  </div>
-
-  <h3 *ngIf="sessions.length" class="history-title">Historial de Sesiones</h3>
-
-  <div class="history-table-wrapper" *ngIf="sessions.length">
-    <table class="session-table">
-      <thead>
-        <tr>
-          <th>Fecha Inicio</th>
-          <th>Fecha Fin</th>
-          <th>Ventas Totales</th>
-          <th>Estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let s of sessions">
-          <td>{{ s.start | date:'dd/MM/yyyy' }}</td>
-          <td>{{ s.end ? (s.end | date:'dd/MM/yyyy') : '-' }}</td>
-          <td>{{ s.totalSales | currency:'COP':'symbol':'1.0-0' }}</td>
-          <td>{{ s.status }}</td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+<div class="session-list-container">
+  <h2>Sesiones de Trabajo</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Usuario</th>
+        <th>Fecha Apertura</th>
+        <th>Fecha Cierre</th>
+        <th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let sesion of sesiones">
+        <td>{{ sesion.codigo }}</td>
+        <td>{{ sesion.usuario?.nombre }}</td>
+        <td>{{ sesion.fechaApertura }}</td>
+        <td>{{ sesion.fechaCierre }}</td>
+        <td>{{ sesion.estado }}</td>
+      </tr>
+    </tbody>
+  </table>
 </div>

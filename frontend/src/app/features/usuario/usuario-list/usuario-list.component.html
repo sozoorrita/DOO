@@ -1,0 +1,22 @@
+<div class="usuario-list-container">
+  <h2>Usuarios</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let usuario of usuarios">
+        <td>{{ usuario.nombre }}</td>
+        <td>{{ usuario.codigoRol }}</td>
+        <td>
+          <!-- Si usas router para editar, por ejemplo -->
+          <a [routerLink]="['/usuarios/crud', usuario.id]">Editar</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

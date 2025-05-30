@@ -1,0 +1,11 @@
+<div class="informe-caja-detail-container" *ngIf="informe">
+  <h2>Detalle Informe de Caja</h2>
+  <div>
+    <strong>Código:</strong> {{ informe.codigo }}<br>
+    <strong>Sesión Trabajo:</strong> {{ informe.sesionTrabajo?.codigo }}<br>
+    <strong>Fecha Apertura:</strong> {{ informe.fechaApertura }}<br>
+    <strong>Fecha Cierre:</strong> {{ informe.fechaCierre }}<br>
+    <!-- Agrega otros campos aquí según tu backend -->
+  </div>
+  <button class="btn-primary" (click)="consolidarInforme()">Consolidar Informe</button>
+</div>

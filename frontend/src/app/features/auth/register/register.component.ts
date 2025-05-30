@@ -5,7 +5,7 @@ import { RolService, Rol } from '../../../core/services/rol.service';
 
 @Component({
   selector: 'app-register',
-  standalone: false,
+    standalone: false,
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })

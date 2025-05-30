@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SessionService, WorkSession } from '../../../core/services/session.service';
+import { SesionTrabajoService, SesionTrabajo } from '../../../core/services/sesion-trabajo.service';
 
 @Component({
   selector: 'app-session-list',
@@ -8,29 +8,18 @@ import { SessionService, WorkSession } from '../../../core/services/session.serv
   styleUrls: ['./session-list.component.css']
 })
 export class SessionListComponent implements OnInit {
-  sessions: WorkSession[] = [];
+  sesiones: SesionTrabajo[] = [];
 
-  constructor(private sessionService: SessionService) {}
+  constructor(private sesionTrabajoService: SesionTrabajoService) {}
 
-  ngOnInit(): void {
-    this.loadSessions();
+  ngOnInit() {
+    this.cargarSesiones();
   }
 
-  loadSessions(): void {
-    this.sessionService.getSessions().subscribe(data => this.sessions = data);
-  }
-
-  get hasActiveSession(): boolean {
-    return this.sessions.some(s => s.status === 'Abierta');
-  }
-
-  openSession(): void {
-    this.sessionService.openSession();
-    this.loadSessions();
-  }
-
-  closeSession(): void {
-    this.sessionService.closeCurrentSession();
-    this.loadSessions();
+  cargarSesiones() {
+    this.sesionTrabajoService.getSesiones().subscribe({
+      next: sesiones => this.sesiones = sesiones,
+      error: err => alert('Error al cargar sesiones: ' + (err.error?.message || err.message))
+    });
   }
 }

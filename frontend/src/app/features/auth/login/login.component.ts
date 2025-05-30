@@ -5,6 +5,7 @@ import { RolService, Rol } from '../../../core/services/rol.service';
 
 @Component({
   selector: 'app-login',
+  standalone: false,
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -12,7 +13,7 @@ export class LoginComponent implements OnInit {
   nombre = '';
   contrasena = '';
   codigoRol = '';
-  tipoUsuario = 'mesero'; // o 'administrador' según tu flujo
+  tipoUsuario = 'mesero'; // O 'administrador' según tu lógica
   roles: Rol[] = [];
 
   constructor(
@@ -44,7 +45,7 @@ export class LoginComponent implements OnInit {
       next: () => {
         localStorage.setItem('usuario', JSON.stringify(usuario));
         alert('Bienvenido');
-        this.router.navigate(['/dashboard']);
+        this.router.navigate(['/dashboard']); // Cambia a la ruta principal de tu app
       },
       error: err => {
         alert('Error al iniciar sesión: ' + (err.error?.message || err.message));

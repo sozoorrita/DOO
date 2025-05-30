@@ -1,12 +1,23 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { InventarioRoutingModule } from './inventario-routing.module';
-import { InventoryListComponent } from './inventory-list/inventory-list.component';
-import { MaterialModule } from '../../material.module';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+
+import { InventoryListComponent } from './inventory-list/inventory-list.component';
+import { InventarioRoutingModule } from './inventario-routing.module';
 
 @NgModule({
-  declarations: [InventoryListComponent],
-  imports: [CommonModule, InventarioRoutingModule, MaterialModule, FormsModule]
+  declarations: [
+    InventoryListComponent
+  ],
+  imports: [
+    CommonModule,
+    FormsModule,
+    RouterModule,
+    InventarioRoutingModule
+  ],
+  exports: [
+    InventoryListComponent
+  ]
 })
-export class InventarioModule {}
+export class InventarioModule { }

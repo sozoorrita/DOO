@@ -1,0 +1,25 @@
+<div class="informe-caja-list-container">
+  <h2>Informes de Caja</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Código</th>
+        <th>Sesión Trabajo</th>
+        <th>Fecha Apertura</th>
+        <th>Fecha Cierre</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let informe of informes">
+        <td>{{ informe.codigo }}</td>
+        <td>{{ informe.sesionTrabajo?.codigo }}</td>
+        <td>{{ informe.fechaApertura }}</td>
+        <td>{{ informe.fechaCierre }}</td>
+        <td>
+          <a [routerLink]="['/informe-caja', informe.codigo]">Ver Detalle</a>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

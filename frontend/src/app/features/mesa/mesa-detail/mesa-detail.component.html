@@ -1,27 +1,12 @@
-<div class="detail-content" *ngIf="mesa">
-  <button mat-button (click)="goBack()">← Volver a Mesas</button>
-  <h2 class="detail-title">{{ mesa.name }}</h2>
+<div class="mesa-detail-container" *ngIf="mesa">
+  <h2>Detalle de Mesa</h2>
+  <form (ngSubmit)="guardarMesa()">
+    <label>Número:</label>
+    <input [(ngModel)]="mesa.numero" name="numero" type="number" required />
 
-  <div class="product-filter">
-    <mat-form-field appearance="fill">
-      <mat-label>Categoría</mat-label>
-      <mat-select [(value)]="selectedCategory" (selectionChange)="applyFilter()">
-        <mat-option value="">Todas</mat-option>
-        <mat-option *ngFor="let c of categories" [value]="c">{{ c }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+    <label>Estado:</label>
+    <input [(ngModel)]="mesa.estado" name="estado" required />
 
-  <div class="product-grid">
-    <button mat-raised-button class="product-btn btn-accent"
-            *ngFor="let p of filteredProducts"
-            [disabled]="p.stock === 0"
-            (click)="addProduct(p)">
-      {{ p.name }} ({{ p.stock }})
-    </button>
-  </div>
-
-  <button mat-raised-button class="btn-accent consolidate-btn" (click)="consolidate()">
-    Consolidar Venta
-  </button>
+    <button type="submit" class="btn-primary">Guardar</button>
+  </form>
 </div>

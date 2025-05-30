@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UsuarioService, Usuario } from '../../../core/services/usuario.service';
 import { RolService, Rol } from '../../../core/services/rol.service';
 
@@ -9,72 +10,60 @@ import { RolService, Rol } from '../../../core/services/rol.service';
   styleUrls: ['./usuario-crud.component.css']
 })
 export class UsuarioCrudComponent implements OnInit {
-  usuarios: Usuario[] = [];
+  usuario: Usuario = { nombre: '', codigoRol: '', contrasena: '' };
   roles: Rol[] = [];
-  form: Usuario = { nombre: '', codigoRol: '', contrasena: '' };
-  editando: Usuario | null = null;
+  esEdicion: boolean = false;
+  idUsuario?: string;
 
   constructor(
     private usuarioService: UsuarioService,
-    private rolService: RolService
+    private rolService: RolService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnInit() {
-    this.cargarUsuarios();
     this.rolService.getRoles().subscribe({
       next: roles => this.roles = roles,
       error: err => alert('Error al cargar roles: ' + (err.error?.message || err.message))
     });
-  }
 
-  cargarUsuarios() {
-    this.usuarioService.getUsuarios().subscribe({
-      next: usuarios => this.usuarios = usuarios,
-      error: err => alert('Error al cargar usuarios: ' + (err.error?.message || err.message))
-    });
+    this.idUsuario = this.route.snapshot.paramMap.get('id') || undefined;
+    if (this.idUsuario) {
+      this.esEdicion = true;
+      this.usuarioService.getUsuarios().subscribe({
+        next: usuarios => {
+          const found = usuarios.find(u => u.id === this.idUsuario);
+          if (found) {
+            this.usuario = { ...found };
+          }
+        }
+      });
+    }
   }
 
   guardarUsuario() {
-    if (!this.form.nombre || !this.form.contrasena || !this.form.codigoRol) {
+    if (!this.usuario.nombre || !this.usuario.codigoRol || !this.usuario.contrasena) {
       alert('Todos los campos son obligatorios');
       return;
     }
 
-    if (this.editando) {
-      this.usuarioService.modificar(this.editando.id!, this.form).subscribe({
+    if (this.esEdicion && this.idUsuario) {
+      this.usuarioService.modificar(this.idUsuario, this.usuario).subscribe({
         next: () => {
-          this.cancelar();
-          this.cargarUsuarios();
+          alert('Usuario actualizado');
+          this.router.navigate(['/usuarios/list']);
         },
-        error: err => alert('Error al editar usuario: ' + (err.error?.message || err.message))
+        error: err => alert('Error al actualizar usuario: ' + (err.error?.message || err.message))
       });
     } else {
-      this.usuarioService.registrar(this.form).subscribe({
+      this.usuarioService.registrar(this.usuario).subscribe({
         next: () => {
-          this.form = { nombre: '', codigoRol: '', contrasena: '' };
-          this.cargarUsuarios();
+          alert('Usuario creado');
+          this.router.navigate(['/usuarios/list']);
         },
         error: err => alert('Error al crear usuario: ' + (err.error?.message || err.message))
       });
     }
-  }
-
-  editarUsuario(usuario: Usuario) {
-    this.editando = usuario;
-    this.form = { ...usuario };
-  }
-
-  eliminarUsuario(id: string) {
-    if (confirm('¿Seguro que deseas eliminar este usuario?')) {
-      this.usuarioService.eliminar(id).subscribe({
-        next: () => this.cargarUsuarios(),
-        error: err => alert('Error al eliminar usuario: ' + (err.error?.message || err.message))
-      });
-    }
-  }
-
-  cancelar() {
-    this.editando = null;
-    this.form = { nombre: '', codigoRol: '', contrasena: '' };
   }
 }

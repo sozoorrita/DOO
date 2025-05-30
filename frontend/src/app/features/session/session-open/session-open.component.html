@@ -1,0 +1,12 @@
+<div class="session-open-container">
+  <h2>Abrir Sesión de Trabajo</h2>
+  <form (ngSubmit)="abrirSesion()">
+    <label for="usuario">Usuario</label>
+    <input id="usuario" [(ngModel)]="usuarioId" name="usuarioId" placeholder="ID de Usuario" required />
+
+    <label for="fecha">Fecha Apertura</label>
+    <input id="fecha" [(ngModel)]="fechaApertura" name="fechaApertura" type="datetime-local" required />
+
+    <button type="submit" class="btn-primary">Abrir Sesión</button>
+  </form>
+</div>

@@ -1,31 +1,27 @@
-<div class="venta-content">
-  <h2 class="venta-title">Venta Rápida</h2>
+<div class="venta-rapida-container">
+  <h2>Venta Rápida</h2>
+  <form (ngSubmit)="realizarVenta()">
+    <label>Producto:</label>
+    <select [(ngModel)]="venta.producto" name="producto" required>
+      <option [ngValue]="null" disabled selected>Selecciona un producto</option>
+      <option *ngFor="let prod of productos" [ngValue]="prod">{{ prod.nombre }}</option>
+    </select>
 
-  <div class="product-filter">
-    <mat-form-field appearance="fill">
-      <mat-label>Categoría</mat-label>
-      <mat-select [(value)]="selectedCategory" (selectionChange)="applyFilter()">
-        <mat-option value="">Todas</mat-option>
-        <mat-option *ngFor="let c of categories" [value]="c">{{ c }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-  </div>
+    <label>Mesa:</label>
+    <select [(ngModel)]="venta.mesa" name="mesa" required>
+      <option [ngValue]="null" disabled selected>Selecciona una mesa</option>
+      <option *ngFor="let m of mesas" [ngValue]="m">Mesa {{ m.numero }}</option>
+    </select>
 
-  <div class="product-grid">
-    <button mat-raised-button class="product-btn btn-accent"
-            *ngFor="let p of products"
-            [disabled]="p.stock === 0"
-            (click)="addProduct(p)">
-      {{ p.name }} ({{ p.stock }})
-    </button>
-  </div>
+    <label>Usuario:</label>
+    <select [(ngModel)]="venta.usuario" name="usuario" required>
+      <option [ngValue]="null" disabled selected>Selecciona un usuario</option>
+      <option *ngFor="let u of usuarios" [ngValue]="u">{{ u.nombre }}</option>
+    </select>
 
-  <div class="venta-actions">
-    <button mat-raised-button class="btn-accent" (click)="consolidate()">
-      Consolidar Venta
-    </button>
-    <button mat-stroked-button class="btn-accent" (click)="clear()">
-      Limpiar
-    </button>
-  </div>
+    <label>Cantidad:</label>
+    <input [(ngModel)]="venta.cantidad" name="cantidad" type="number" min="1" required />
+
+    <button type="submit" class="btn-primary">Registrar Venta</button>
+  </form>
 </div>

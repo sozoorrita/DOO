@@ -4,12 +4,18 @@ import { MesaListComponent } from './mesa-list/mesa-list.component';
 import { MesaDetailComponent } from './mesa-detail/mesa-detail.component';
 
 const routes: Routes = [
-  { path: '',   component: MesaListComponent },
-  { path: ':id', component: MesaDetailComponent }
+  {
+    path: 'mesas',
+    component: MesaListComponent
+  },
+  {
+    path: 'mesas/:codigo',
+    component: MesaDetailComponent
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class MesaRoutingModule {}
+export class MesaRoutingModule { }

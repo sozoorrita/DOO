@@ -1,0 +1,70 @@
+.user-table {
+  width: 100%;
+  min-width: 800px; /* Amplía la base mínima de la tabla para que no se comprima */
+  border-collapse: collapse;
+}
+
+/* Ajusta el tamaño de fuente y espacio para mantener todo visible */
+.user-table th,
+.user-table td {
+  padding: 1.1rem 1.3rem;       /* Más espacio horizontal para columnas */
+  font-size: 1.12em;            /* Letras más grandes y legibles */
+  border-bottom: 1px solid var(--color-light-grey);
+  color: #fff;
+  text-align: left;
+  background: transparent;
+  word-break: break-word;
+}
+
+.user-table th {
+  background: rgba(255,255,255,0.07);
+  color: var(--color-accent);
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  font-size: 1.15em;            /* Ligero aumento en el header */
+}
+
+.user-table tr:last-of-type td {
+  border-bottom: none;
+}
+
+/* Asegura que los iconos de las acciones sean visibles y tengan buen tamaño */
+.acciones {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.acciones button {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 1em;
+  min-width: 95px;
+  padding: 0 0.65em;
+color: var(--color-accent);}
+
+.acciones mat-icon {
+  margin-right: 0.35em;
+}
+.acciones button[mat-icon-button] {
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+}
+.acciones button mat-icon {
+  font-size: 1.2em;
+}
+
+/* Si la pantalla es muy pequeña, permite scroll horizontal */
+.usuario-table-wrapper {
+  overflow-x: auto;
+}
+
+.btn-agregar {
+  background: #17a2b8; /* celeste, puedes cambiar por cualquier color */
+  color: #fff;
+}
+.btn-agregar:hover {
+  background: #138496;
+}
