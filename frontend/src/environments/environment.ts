@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: '/api'   
+  // aquí podrías añadir URLs de tu backend cuando llegue el momento
 };

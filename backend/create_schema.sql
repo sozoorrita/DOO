@@ -129,5 +129,5 @@ CREATE TABLE DetalleVenta (
     REFERENCES Producto(codigo),
   cantidad INT NOT NULL,
   nombreProducto VARCHAR(50),
-  precioUnitario NUMERIC(12,2) NOT NULL
+  precioAplicado NUMERIC(12,2) NOT NULL
 );
