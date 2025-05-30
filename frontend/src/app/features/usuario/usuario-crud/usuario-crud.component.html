@@ -1,30 +1,34 @@
-<div class="usuario-container">
-  <h1>Usuarios</h1>
-  <button mat-flat-button class="btn-accent" (click)="startAdd()">Agregar Usuario</button>
-  <table class="user-table">
-    <thead><tr><th>Nombre</th><th>Rol</th><th>Acciones</th></tr></thead>
+<div class="usuario-crud-container">
+  <h2>Gestión de usuarios</h2>
+  
+  <form (ngSubmit)="guardarUsuario()" #usuarioForm="ngForm">
+    <input [(ngModel)]="form.nombre" name="nombre" placeholder="Nombre" required />
+    <select [(ngModel)]="form.codigoRol" name="codigoRol" required>
+      <option value="" disabled selected>Selecciona un rol</option>
+      <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.nombre }}</option>
+    </select>
+    <input [(ngModel)]="form.contrasena" name="contrasena" placeholder="Contraseña" type="password" required />
+    <button type="submit" class="btn-primary">{{ editando ? 'Actualizar' : 'Crear' }}</button>
+    <button type="button" class="btn-secondary" (click)="cancelar()" *ngIf="editando">Cancelar</button>
+  </form>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Rol</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
     <tbody>
-      <tr *ngFor="let u of users">
-        <td>{{u.name}}</td>
-        <td>{{u.role}}</td>
+      <tr *ngFor="let usuario of usuarios">
+        <td>{{ usuario.nombre }}</td>
+        <td>{{ usuario.codigoRol }}</td>
         <td>
-          <button mat-icon-button (click)="startEdit(u)"><mat-icon>edit</mat-icon></button>
-          <button mat-icon-button color="warn" (click)="delete(u)"><mat-icon>delete</mat-icon></button>
+          <button (click)="editarUsuario(usuario)">Editar</button>
+          <button (click)="eliminarUsuario(usuario.id!)">Eliminar</button>
         </td>
       </tr>
     </tbody>
   </table>
-
-  <div class="form">
-    <h2 *ngIf="editing">Editar Usuario</h2>
-    <h2 *ngIf="!editing">Nuevo Usuario</h2>
-    <mat-form-field appearance="fill"><mat-label>Nombre</mat-label>
-      <input matInput [(ngModel)]="form.name" />
-    </mat-form-field>
-    <mat-form-field appearance="fill"><mat-label>Rol</mat-label>
-      <input matInput [(ngModel)]="form.role" />
-    </mat-form-field>
-    <button mat-raised-button class="btn-accent" (click)="save()">Guardar</button>
-  </div>
 </div>
-

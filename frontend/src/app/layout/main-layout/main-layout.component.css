@@ -1,49 +1,103 @@
-/* Contenedor centrado */
-.layout-root {
+/* Reutiliza login-page y login-card */
+.login-page {
   height: 100vh;
   width: 100%;
+  background: url('/assets/bg-session.png') center/cover no-repeat;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: url('/assets/bg-session.png') center/cover no-repeat;
 }
 
-/* Tarjeta única con dos paneles, tamaño fijo en altura */
-.layout-card {
+.login-card.layout-card {
   display: flex;
-  width: 90%;
-  max-width: 1200px;
-  height: 500px;                                   /* altura fija */
+  width: 80%;
+  max-width: 800px;
+  height: 500px; /* igual al login */
   background: rgba(0, 0, 0, 0.6);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
   border-radius: 8px;
   overflow: hidden;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-/* Panel lateral */
+/* Flex container horizontal */
+.layout-flex {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* Sidebar: 30% ancho */
 .layout-panel {
-  width: 300px;
-  padding: 1.5rem;
+  width: 30%;
+  padding: 2rem;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  background: rgba(0, 0, 0, 0.6);
+}
+
+/* Título blanco puro */
+.layout-panel h2 {
+  margin: 0 0 1rem;
   color: #fff;
 }
 
-/* Botón logout grande naranja */
-.logout-btn {
+/* Enlaces verticales */
+.mat-nav-list .mat-list-item {
+  font-size: 1.1rem;
+  margin: 0.5rem 0;
+  /* eliminamos color por defecto aquí */
+}
+
+/* Forzamos que los enlaces sean siempre blancos */
+.layout-panel a.mat-list-item {
+  color: #fff !important;
+  opacity: 1 !important;
+}
+.layout-panel a.mat-list-item:hover,
+.layout-panel a.mat-list-item.router-link-active {
+  background: rgba(255,255,255,0.1) !important;
+  color: #fff !important;
+}
+
+/* Si usas mat-list-item sin <a>, forzamos el texto */
+.mat-nav-list .mat-list-item {
+  color: #fff !important;
+}
+.mat-nav-list .mat-list-item.active,
+.mat-nav-list .mat-list-item:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff !important;
+}
+
+/* Botón logout outline, ocupa todo el ancho */
+.full-width {
+  width: 100%;
   margin-top: auto;
-  align-self: center;
-  padding: 0.75rem 1.5rem;
-  border: none;
+}
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--color-accent);
+  color: var(--color-accent);
+  padding: 0.75rem 1rem;
   border-radius: 4px;
-  background: var(--color-accent);
-  color: #222;
-  font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: filter 0.2s;
+  transition: background 0.2s, color 0.2s;
 }
-.logout-btn:hover {
-  filter: brightness(1.1);
+.btn-outline:hover {
+  background: var(--color-accent);
+  color: #222;
+}
+
+/* Content: 70% ancho, centrado interno */
+.layout-content {
+  width: 70%;
+  padding: 2rem;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
 }

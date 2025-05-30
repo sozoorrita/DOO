@@ -1,33 +1,40 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface Usuario {
-  id: string;
-  name: string;
-  role: string;
+  id?: string;
+  nombre: string;
+  codigoRol: string;
+  contrasena: string;
 }
 
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
-  private usersSubject = new BehaviorSubject<Usuario[]>([
-    { id: 'u1', name: 'Admin', role: 'Administrador' },
-    { id: 'u2', name: 'Cajero1', role: 'Cajero' }
-  ]);
+  private apiUrl = '/api/usuarios';
 
-  getUsers(): Observable<Usuario[]> {
-    return this.usersSubject.asObservable();
+  constructor(private http: HttpClient) {}
+
+  getUsuarios(): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(this.apiUrl);
   }
 
-  addUser(u: Usuario): void {
-    this.usersSubject.next([...this.usersSubject.getValue(), u]);
+  registrar(usuario: Usuario): Observable<Usuario> {
+    return this.http.post<Usuario>(this.apiUrl, usuario);
   }
 
-  updateUser(u: Usuario): void {
-    const updated = this.usersSubject.getValue().map(x => x.id === u.id ? u : x);
-    this.usersSubject.next(updated);
+  modificar(id: string, usuario: Usuario): Observable<Usuario> {
+    return this.http.put<Usuario>(`${this.apiUrl}/${id}`, usuario);
   }
 
-  deleteUser(id: string): void {
-    this.usersSubject.next(this.usersSubject.getValue().filter(x => x.id !== id));
+  eliminar(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  iniciarSesion(usuario: Usuario, tipoUsuario: string): Observable<void> {
+    return this.http.post<void>(
+      `${this.apiUrl}/iniciar-sesion?tipoUsuario=${tipoUsuario}`,
+      usuario
+    );
   }
 }

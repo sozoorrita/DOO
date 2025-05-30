@@ -1,44 +1,80 @@
 import { Component, OnInit } from '@angular/core';
 import { UsuarioService, Usuario } from '../../../core/services/usuario.service';
+import { RolService, Rol } from '../../../core/services/rol.service';
 
 @Component({
   selector: 'app-usuario-crud',
-    standalone: false,
+  standalone: false,
   templateUrl: './usuario-crud.component.html',
   styleUrls: ['./usuario-crud.component.css']
 })
 export class UsuarioCrudComponent implements OnInit {
-  users: Usuario[] = [];
-  editing: Usuario | null = null;
-  form = { name: '', role: '' };
+  usuarios: Usuario[] = [];
+  roles: Rol[] = [];
+  form: Usuario = { nombre: '', codigoRol: '', contrasena: '' };
+  editando: Usuario | null = null;
 
-  constructor(private userService: UsuarioService) {}
+  constructor(
+    private usuarioService: UsuarioService,
+    private rolService: RolService
+  ) {}
 
-  ngOnInit(): void {
-    this.userService.getUsers().subscribe(data => this.users = data);
+  ngOnInit() {
+    this.cargarUsuarios();
+    this.rolService.getRoles().subscribe({
+      next: roles => this.roles = roles,
+      error: err => alert('Error al cargar roles: ' + (err.error?.message || err.message))
+    });
   }
 
-  startAdd(): void {
-    this.editing = null;
-    this.form = { name: '', role: '' };
+  cargarUsuarios() {
+    this.usuarioService.getUsuarios().subscribe({
+      next: usuarios => this.usuarios = usuarios,
+      error: err => alert('Error al cargar usuarios: ' + (err.error?.message || err.message))
+    });
   }
 
-  startEdit(u: Usuario): void {
-    this.editing = u;
-    this.form = { name: u.name, role: u.role };
-  }
-
-  save(): void {
-    if (this.editing) {
-      this.userService.updateUser({ ...this.editing, ...this.form });
-    } else {
-      this.userService.addUser({ id: Date.now().toString(), ...this.form });
+  guardarUsuario() {
+    if (!this.form.nombre || !this.form.contrasena || !this.form.codigoRol) {
+      alert('Todos los campos son obligatorios');
+      return;
     }
-    this.form = { name: '', role: '' };
-    this.editing = null;
+
+    if (this.editando) {
+      this.usuarioService.modificar(this.editando.id!, this.form).subscribe({
+        next: () => {
+          this.cancelar();
+          this.cargarUsuarios();
+        },
+        error: err => alert('Error al editar usuario: ' + (err.error?.message || err.message))
+      });
+    } else {
+      this.usuarioService.registrar(this.form).subscribe({
+        next: () => {
+          this.form = { nombre: '', codigoRol: '', contrasena: '' };
+          this.cargarUsuarios();
+        },
+        error: err => alert('Error al crear usuario: ' + (err.error?.message || err.message))
+      });
+    }
   }
 
-  delete(u: Usuario): void {
-    this.userService.deleteUser(u.id);
+  editarUsuario(usuario: Usuario) {
+    this.editando = usuario;
+    this.form = { ...usuario };
+  }
+
+  eliminarUsuario(id: string) {
+    if (confirm('¿Seguro que deseas eliminar este usuario?')) {
+      this.usuarioService.eliminar(id).subscribe({
+        next: () => this.cargarUsuarios(),
+        error: err => alert('Error al eliminar usuario: ' + (err.error?.message || err.message))
+      });
+    }
+  }
+
+  cancelar() {
+    this.editando = null;
+    this.form = { nombre: '', codigoRol: '', contrasena: '' };
   }
 }
