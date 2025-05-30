@@ -6,7 +6,6 @@ export interface Producto {
   codigo?: string;
   nombre: string;
   precio: number;
-  // agrega los demás campos según tu backend
 }
 
 @Injectable({ providedIn: 'root' })

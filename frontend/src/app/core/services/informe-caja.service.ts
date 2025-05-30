@@ -7,7 +7,6 @@ export interface InformeCaja {
   sesionTrabajo: any;
   fechaApertura: string;
   fechaCierre: string;
-  // agrega los demás campos según tu backend
 }
 
 @Injectable({ providedIn: 'root' })

@@ -6,7 +6,6 @@ export interface Mesa {
   codigo?: string;
   numero: number;
   estado: string;
-  // agrega los demás campos según tu backend
 }
 
 @Injectable({ providedIn: 'root' })
