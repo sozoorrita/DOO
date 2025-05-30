@@ -1,0 +1,10 @@
+<div class="map-container">
+  <h2>Mesas</h2>
+  <div class="grid">
+    <div *ngFor="let table of tables" class="table-card {{table.status}}" (click)="selectTable(table)">
+      <span>{{table.label}}</span>
+      <span *ngIf="table.status === 'libre'" class="add">+</span>
+      <small>{{table.status | uppercase}}</small>
+    </div>
+  </div>
+</div>

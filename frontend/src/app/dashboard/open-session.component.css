@@ -1,0 +1,81 @@
+.session-container {
+  max-width: 960px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+.session-container h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+/* Bloque de apertura */
+.open-block {
+  text-align: center;
+}
+.open-block button {
+  padding: 1rem 2rem;
+  font-size: 1rem;
+  background: #388e3c;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+/* Menú principal */
+.main-menu .menu-actions {
+  margin-bottom: 1rem;
+  text-align: right;
+}
+.main-menu .menu-actions button {
+  padding: 0.5rem 1rem;
+  background: #1976d2;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.main-menu .grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 1rem;
+}
+.table-card {
+  position: relative;
+  padding: 1rem;
+  background: #f9f9f9;
+  border-radius: 6px;
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  text-align: center;
+}
+.table-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.table-card .label {
+  font-weight: bold;
+}
+.table-card .icons button {
+  margin-left: 0.5rem;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+.table-card.LIBRE {
+  border: 2px solid #388e3c;
+}
+.table-card.OCUPADA {
+  border: 2px solid #d32f2f;
+}
+.table-card.RESERVADA {
+  border: 2px solid #f9a825;
+}
+.table-card small {
+  display: block;
+  margin-top: 0.5rem;
+  color: #555;
+}

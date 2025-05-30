@@ -1,0 +1,38 @@
+<!-- src/app/invoice/invoice-view.component.html -->
+<div class="invoice-container">
+  <h2>Detalle Venta</h2>
+  <small>#{{ saleId }}</small>
+  <p>Fecha: {{ date }}</p>
+  <p *ngIf="tableId">Mesa: {{ tableId }}</p>
+
+  <table class="invoice-table" *ngIf="cart.length > 0">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Precio</th>
+        <th>Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of cart">
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>$ {{ item.product.price }}</td>
+        <td>$ {{ (item.product.price * item.quantity).toFixed(2) }}</td>
+      </tr>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3">Total general:</td>
+        <td>$ {{ total.toFixed(2) }}</td>
+      </tr>
+      <tr>
+        <td colspan="3">Forma de pago:</td>
+        <td>{{ paymentMethod }}</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <button (click)="goBack()">Volver</button>
+</div>

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import co.edu.uco.FondaControl.businesslogic.facade.CategoriaFacade;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.CategoriaDTO;
+import co.edu.uco.FondaControl.dto.VentaDTO;
 
 @RestController
 @RequestMapping("/api/v1/categorias")
@@ -19,6 +20,11 @@ public class CategoriaController {
 
     public CategoriaController(CategoriaFacade categoriaFacade) {
         this.categoriaFacade = categoriaFacade;
+    }
+    
+    @GetMapping("/dummy")
+    public CategoriaDTO dummy() {
+        return new CategoriaDTO();
     }
 
     @GetMapping
@@ -65,11 +71,7 @@ public class CategoriaController {
             );
         }
 
-        // NO getFirst(), uso el primer elemento si existe
-        String nombre = "";
-        if (!encontrados.isEmpty()) {
-            nombre = encontrados.get(0).getNombre();
-        }
+        String nombre = encontrados.get(0).getNombre();
 
         CategoriaDTO aEliminar = new CategoriaDTO();
         aEliminar.setCodigo(id);
@@ -79,13 +81,12 @@ public class CategoriaController {
         return ResponseEntity.ok(mensaje);
     }
 
-    // Endpoint para validar existencia de la categoría por código
-    @GetMapping("/{id}/exists")
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void consultarPorCodigo(@PathVariable("id") UUID id)
-            throws FondaControlException {
+    public void consultarPorCodigo(@PathVariable("id") UUID id) throws FondaControlException {
         CategoriaDTO consulta = new CategoriaDTO();
         consulta.setCodigo(id);
         categoriaFacade.consultarCategoriaPorCodigo(consulta);
+       
     }
 }

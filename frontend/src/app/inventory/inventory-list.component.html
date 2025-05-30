@@ -1,0 +1,34 @@
+<div class="inventory-container">
+  <h2>Inventario</h2>
+  <div class="controls">
+    <input type="text" placeholder="Buscar producto..." disabled />
+    <select disabled>
+      <option>Todas las categorías</option>
+    </select>
+    <button (click)="onCreate()">Nuevo producto</button>
+  </div>
+
+  <table class="inventory-table">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Categoría/Subcat.</th>
+        <th>Stock</th>
+        <th>Estado</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of products">
+        <td>{{ p.name }}</td>
+        <td>{{ p.category }} / {{ p.subcategory }}</td>
+        <td>{{ p.stock }}</td>
+        <td>{{ getStatus(p.stock) }}</td>
+        <td>
+          <button (click)="onEdit(p)">Editar</button>
+          <button (click)="onDelete(p)">Eliminar</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

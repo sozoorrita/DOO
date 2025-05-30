@@ -1,0 +1,24 @@
+<div class="register-container">
+  <h2>Registro</h2>
+  <input
+    [(ngModel)]="name"
+    placeholder="Nombre"
+    type="text"
+  />
+  <select [(ngModel)]="role">
+    <option value="mesero">Mesero</option>
+    <option value="administrador">Administrador</option>
+  </select>
+  <input
+    [(ngModel)]="password"
+    placeholder="Contraseña"
+    type="password"
+  />
+  <input
+    [(ngModel)]="confirmPassword"
+    placeholder="Confirmar contraseña"
+    type="password"
+  />
+  <button (click)="onRegister()">Crear cuenta</button>
+  <button class="back" (click)="goToLogin()">Volver al login</button>
+</div>

@@ -1,0 +1,34 @@
+<div class="session-container">
+  <h2>Fonda Control</h2>
+
+  <!-- Antes de iniciar -->
+  <div *ngIf="!isSessionOpen" class="open-block">
+    <button (click)="openSession()">Iniciar Sesión de Trabajo</button>
+  </div>
+
+  <!-- Menú principal -->
+  <div *ngIf="isSessionOpen" class="main-menu">
+    <div class="menu-actions">
+      <button (click)="createTable()">+ Mesa</button>
+      <button routerLink="/quick-sale">Venta Rápida</button>
+      <button routerLink="/inventory">Inventario</button>
+      <button (click)="closeSession()">Cerrar Sesión</button>
+    </div>
+
+    <div class="grid">
+      <div *ngFor="let table of tables"
+           class="table-card {{table.status}}">
+        <div class="card-header">
+          <span (click)="selectTable(table)" class="label">
+            {{table.label}}
+          </span>
+          <div class="icons">
+            <button (click)="editTable(table)">✎</button>
+            <button (click)="deleteTable(table)">🗑</button>
+          </div>
+        </div>
+        <small>{{table.status | uppercase}}</small>
+      </div>
+    </div>
+  </div>
+</div>

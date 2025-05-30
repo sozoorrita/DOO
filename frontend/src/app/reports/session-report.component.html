@@ -1,0 +1,15 @@
+<div class="report-container" *ngIf="session">
+  <h2>Informe Sesión #{{session.id}} – {{session.date}}</h2>
+  <p>Abrió: {{session.user}} – {{session.startTime}}   Cerró: {{session.user}} – {{session.endTime}}</p>
+  <hr />
+  <p>Ventas Totales: ${{session.total}}</p>
+  <ul>
+    <li>Efectivo: ${{session.cash}}</li>
+    <li>Tarjeta: ${{session.card}}</li>
+  </ul>
+  <p>Productos Agotados: {{session.productsOutOfStock.join(', ')}}</p>
+  <button (click)="downloadReport()">Descargar informe</button>
+</div>
+<div *ngIf="!session">
+  <p>Sesión no encontrada.</p>
+</div>

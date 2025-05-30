@@ -20,6 +20,11 @@ public class IndicadorInventarioController {
     public IndicadorInventarioController(IndicadorInventarioFacade facade) {
         this.facade = facade;
     }
+    
+    @GetMapping("/dummy")
+    public IndicadorInventarioDTO dummy() {
+		return new IndicadorInventarioDTO();
+	}
 
     @GetMapping
     public List<IndicadorInventarioDTO> consultar(@RequestParam(required = false) UUID codigo)
