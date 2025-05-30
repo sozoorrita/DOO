@@ -1,16 +1,33 @@
-.inventory-container { max-width: 800px; margin:2rem auto; }
-.prod-table {
-  width:100%;
+/* inventory-list.component.css */
+
+/* Asegúrate de que coincida con <div class="inventory-list-container"> */
+.inventory-list-container {
+  max-width: 800px;
+  margin: 2rem auto;
+}
+
+/* Aplica estilo a la tabla dentro de .inventory-list-container */
+.inventory-list-container table {
+  width: 100%;
   border-collapse: collapse;
-  margin-bottom:1rem;
+  margin-bottom: 1rem;
 }
-.prod-table th, .prod-table td {
-  padding:0.5rem;
-  border-bottom:1px solid var(--color-light-grey);
+
+.inventory-list-container th,
+.inventory-list-container td {
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--color-light-grey);
 }
-.form {
+
+/* Si tu <form> no tiene clase, puedes apuntar directamente al form dentro del contenedor */
+.inventory-list-container form {
   background: var(--color-card);
-  padding:1rem;
-  border-radius:8px;
+  padding: 1rem;
+  border-radius: 8px;
 }
-.form mat-form-field { width:100%; margin-bottom:1rem; }
+
+/* Si usas Angular Material y mat-form-field dentro del form */
+.inventory-list-container form mat-form-field {
+  width: 100%;
+  margin-bottom: 1rem;
+}

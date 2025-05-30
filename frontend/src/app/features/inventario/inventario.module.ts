@@ -8,13 +8,14 @@ import { InventarioRoutingModule } from './inventario-routing.module';
 
 @NgModule({
   declarations: [
-    InventoryListComponent
+
   ],
   imports: [
     CommonModule,
     FormsModule,
     RouterModule,
-    InventarioRoutingModule
+    InventarioRoutingModule,
+    InventoryListComponent
   ],
   exports: [
     InventoryListComponent

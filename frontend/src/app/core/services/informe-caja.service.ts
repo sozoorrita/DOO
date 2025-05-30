@@ -3,6 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface InformeCaja {
+  sesionTrabajo: string;
+  fechaCierre: string;
+  fechaApertura: string;
   codigo?: string;
   codigoSesionTrabajo: string;
   fecha: string;

@@ -1,22 +1,40 @@
 import { Component, OnInit } from '@angular/core';
 import { InventarioService, Inventario } from '../../../core/services/inventario.service';
+import { ProductoService, Producto } from '../../../core/services/producto.service';
+import { IndicadorInventarioService, IndicadorInventario } from '../../../core/services/indicador-inventario.service';
+import {FormsModule} from '@angular/forms';
 
 @Component({
   selector: 'app-inventory-list',
-  standalone: false,
   templateUrl: './inventory-list.component.html',
+  imports: [
+    FormsModule
+  ],
   styleUrls: ['./inventory-list.component.css']
 })
 export class InventoryListComponent implements OnInit {
   inventarios: Inventario[] = [];
-  // Para crear/editar inventarios:
-  form: Inventario = { nombre: '', cantidad: 0 };
+  productos: Producto[] = [];
+  indicadores: IndicadorInventario[] = [];
+
+  // Formulario básico para crear/editar
+  form = {
+    producto: '',        // UUID del producto
+    cantidad: 0,
+    codigoIndicador: ''  // UUID del indicador de inventario
+  };
   editando: Inventario | null = null;
 
-  constructor(private inventarioService: InventarioService) {}
+  constructor(
+    private inventarioService: InventarioService,
+    private productoService: ProductoService,
+    private indicadorInventarioService: IndicadorInventarioService
+  ) {}
 
   ngOnInit() {
     this.cargarInventarios();
+    this.productoService.getProductos().subscribe(data => this.productos = data);
+    this.indicadorInventarioService.getIndicadorInventarios().subscribe(data => this.indicadores = data);
   }
 
   cargarInventarios() {
@@ -27,13 +45,19 @@ export class InventoryListComponent implements OnInit {
   }
 
   guardarInventario() {
-    if (!this.form.nombre || this.form.cantidad == null) {
+    if (!this.form.producto || this.form.cantidad == null || !this.form.codigoIndicador) {
       alert('Todos los campos son obligatorios');
       return;
     }
 
+    const inventario: Inventario = {
+      producto: this.form.producto,                // Solo UUID
+      cantidad: this.form.cantidad,
+      codigoIndicador: this.form.codigoIndicador   // Solo UUID
+    };
+
     if (this.editando) {
-      this.inventarioService.modificar(this.editando.codigo!, this.form).subscribe({
+      this.inventarioService.modificar(this.editando.codigo!, inventario).subscribe({
         next: () => {
           this.cancelar();
           this.cargarInventarios();
@@ -41,9 +65,9 @@ export class InventoryListComponent implements OnInit {
         error: err => alert('Error al editar inventario: ' + (err.error?.message || err.message))
       });
     } else {
-      this.inventarioService.registrar(this.form).subscribe({
+      this.inventarioService.registrar(inventario).subscribe({
         next: () => {
-          this.form = { nombre: '', cantidad: 0 };
+          this.resetForm();
           this.cargarInventarios();
         },
         error: err => alert('Error al crear inventario: ' + (err.error?.message || err.message))
@@ -53,7 +77,11 @@ export class InventoryListComponent implements OnInit {
 
   editarInventario(inventario: Inventario) {
     this.editando = inventario;
-    this.form = { ...inventario };
+    this.form = {
+      producto: inventario.producto,            // Solo UUID
+      cantidad: inventario.cantidad,
+      codigoIndicador: inventario.codigoIndicador // Solo UUID
+    };
   }
 
   eliminarInventario(codigo: string) {
@@ -67,6 +95,14 @@ export class InventoryListComponent implements OnInit {
 
   cancelar() {
     this.editando = null;
-    this.form = { nombre: '', cantidad: 0 };
+    this.resetForm();
+  }
+
+  resetForm() {
+    this.form = {
+      producto: '',
+      cantidad: 0,
+      codigoIndicador: ''
+    };
   }
 }

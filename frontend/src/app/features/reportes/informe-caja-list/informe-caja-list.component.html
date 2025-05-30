@@ -13,8 +13,7 @@
     <tbody>
       <tr *ngFor="let informe of informes">
         <td>{{ informe.codigo }}</td>
-        <td>{{ informe.sesionTrabajo?.codigo }}</td>
-        <td>{{ informe.fechaApertura }}</td>
+        <td>{{ informe.sesionTrabajo?.codigo }}{{ informe.fechaApertura }}</td>
         <td>{{ informe.fechaCierre }}</td>
         <td>
           <a [routerLink]="['/informe-caja', informe.codigo]">Ver Detalle</a>

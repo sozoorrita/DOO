@@ -2,29 +2,65 @@
   <h2>Inventario</h2>
 
   <form (ngSubmit)="guardarInventario()">
-    <input [(ngModel)]="form.nombre" name="nombre" placeholder="Nombre" required />
-    <input [(ngModel)]="form.cantidad" name="cantidad" placeholder="Cantidad" type="number" required />
-    <button type="submit" class="btn-primary">{{ editando ? 'Actualizar' : 'Crear' }}</button>
-    <button type="button" class="btn-secondary" (click)="cancelar()" *ngIf="editando">Cancelar</button>
+    <select [(ngModel)]="form.producto" name="producto" required>
+      <option value="" disabled selected>Seleccione producto</option>
+      <option *ngFor="let p of productos" [value]="p.codigo">{{ p.nombre }}</option>
+    </select>
+
+    <select [(ngModel)]="form.codigoIndicador" name="codigoIndicador" required>
+      <option value="" disabled selected>Seleccione indicador</option>
+      <option *ngFor="let i of indicadores" [value]="i.codigo">{{ i.nombre }}</option>
+    </select>
+
+    <input
+      [(ngModel)]="form.cantidad"
+      name="cantidad"
+      placeholder="Cantidad"
+      type="number"
+      required
+    />
+
+    <button type="submit" class="btn-primary">
+      {{ editando ? 'Actualizar' : 'Crear' }}
+    </button>
+    <button
+      type="button"
+      class="btn-secondary"
+      (click)="cancelar()"
+      *ngIf="editando"
+    >
+      Cancelar
+    </button>
   </form>
 
   <table>
     <thead>
-      <tr>
-        <th>Nombre</th>
-        <th>Cantidad</th>
-        <th>Acciones</th>
-      </tr>
+    <tr>
+      <th>Producto</th>
+      <th>Indicador</th>
+      <th>Cantidad</th>
+      <th>Acciones</th>
+    </tr>
     </thead>
     <tbody>
-      <tr *ngFor="let inventario of inventarios">
-        <td>{{ inventario.nombre }}</td>
-        <td>{{ inventario.cantidad }}</td>
-        <td>
-          <button (click)="editarInventario(inventario)">Editar</button>
-          <button (click)="eliminarInventario(inventario.codigo!)">Eliminar</button>
-        </td>
-      </tr>
+    <tr *ngFor="let inventario of inventarios">
+      <td>
+        {{
+        productos.find(p => p.codigo === inventario.producto)?.nombre
+        || '—'
+        }}
+
+        {{
+        indicadores.find(i => i.codigo === inventario.codigoIndicador)?.nombre
+        || '—'
+        }}
+        {{ inventario.cantidad }}
+      </td>
+      <td>
+        <button (click)="editarInventario(inventario)">Editar</button>
+        <button (click)="eliminarInventario(inventario.codigo!)">Eliminar</button>
+      </td>
+    </tr>
     </tbody>
   </table>
 </div>
