@@ -65,7 +65,11 @@ public class CategoriaController {
             );
         }
 
-        String nombre = encontrados.getFirst().getNombre();
+        // NO getFirst(), uso el primer elemento si existe
+        String nombre = "";
+        if (!encontrados.isEmpty()) {
+            nombre = encontrados.get(0).getNombre();
+        }
 
         CategoriaDTO aEliminar = new CategoriaDTO();
         aEliminar.setCodigo(id);
@@ -75,7 +79,7 @@ public class CategoriaController {
         return ResponseEntity.ok(mensaje);
     }
 
-    // Nuevo endpoint: consultarCategoriaPorCodigo (según el facade, es void)
+    // Endpoint para validar existencia de la categoría por código
     @GetMapping("/{id}/exists")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void consultarPorCodigo(@PathVariable("id") UUID id)
@@ -83,7 +87,5 @@ public class CategoriaController {
         CategoriaDTO consulta = new CategoriaDTO();
         consulta.setCodigo(id);
         categoriaFacade.consultarCategoriaPorCodigo(consulta);
-        // Si no existe, lanza excepción y retorna 404 por manejo global o por @ExceptionHandler.
-        // Si existe, retorna 204 No Content.
     }
 }
