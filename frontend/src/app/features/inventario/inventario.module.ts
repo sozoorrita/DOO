@@ -1,24 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
-
-import { InventoryListComponent } from './inventory-list/inventory-list.component';
 import { InventarioRoutingModule } from './inventario-routing.module';
+import { InventoryListComponent } from './inventory-list/inventory-list.component';
 
 @NgModule({
-  declarations: [
-
-  ],
+  declarations: [InventoryListComponent],
   imports: [
     CommonModule,
     FormsModule,
-    RouterModule,
-    InventarioRoutingModule,
-    InventoryListComponent
-  ],
-  exports: [
-    InventoryListComponent
+    InventarioRoutingModule
   ]
 })
-export class InventarioModule { }
+export class InventarioModule {}

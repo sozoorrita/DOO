@@ -1,9 +1,9 @@
 <div class="login-container">
   <h2>Iniciar sesión</h2>
   <input [(ngModel)]="nombre" placeholder="Nombre" type="text" required />
-  <select [(ngModel)]="codigoRol" required>
-    <option value="" disabled selected>Selecciona un rol</option>
-    <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.nombre }}</option>
+  <select [(ngModel)]="codigoRol">
+    <option value="" disabled selected>Rol</option>
+    <option *ngFor="let rol of roles" [value]="rol.codigo">{{ rol.nombre }}</option>
   </select>
   <input [(ngModel)]="contrasena" placeholder="Contraseña" type="password" required />
   <button class="btn-primary" (click)="onLogin()">Iniciar sesión</button>

@@ -5,15 +5,15 @@
       <tr>
         <th>Código</th>
         <th>Usuario</th>
-        <th>Fecha Apertura</th>
-        <th>Fecha Cierre</th>
+        <th>Apertura</th>
+        <th>Cierre</th>
         <th>Estado</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let sesion of sesiones">
         <td>{{ sesion.codigo }}</td>
-        <td>{{ sesion.usuario?.nombre }}</td>
+        <td>{{ sesion.idUsuario }}</td>
         <td>{{ sesion.fechaApertura }}</td>
         <td>{{ sesion.fechaCierre }}</td>
         <td>{{ sesion.estado }}</td>

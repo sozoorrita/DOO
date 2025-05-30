@@ -5,7 +5,8 @@
     <input [(ngModel)]="usuario.nombre" name="nombre" required />
     <label>Rol:</label>
     <select [(ngModel)]="usuario.codigoRol" name="codigoRol" required>
-      <option *ngFor="let rol of roles" [value]="rol.id">{{ rol.nombre }}</option>
+      <option value="" disabled selected>Rol</option>
+      <option *ngFor="let rol of roles" [value]="rol.codigo">{{ rol.nombre }}</option>
     </select>
     <label>Contraseña:</label>
     <input [(ngModel)]="usuario.contrasena" name="contrasena" type="password" required />
