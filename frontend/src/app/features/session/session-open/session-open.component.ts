@@ -9,9 +9,7 @@ import { SesionTrabajoService, SesionTrabajo } from '../../../core/services/sesi
 })
 export class SessionOpenComponent {
   usuarioId: string = '';
-  estado: string = 'Abierta';
   fechaApertura: string = '';
-  // Si quieres más campos, agrégalos aquí
 
   constructor(private sesionTrabajoService: SesionTrabajoService) {}
 
@@ -21,16 +19,15 @@ export class SessionOpenComponent {
       return;
     }
     const sesion: SesionTrabajo = {
-      usuario: { id: this.usuarioId },
-      fechaApertura: new Date().toISOString(),
-      estado: this.estado
+      idUsuario: this.usuarioId,
+      baseCaja: '0',
+      fechaApertura: new Date().toISOString()
     };
     this.sesionTrabajoService.abrirSesion(sesion).subscribe({
       next: () => {
         alert('Sesión abierta exitosamente');
-        // Opcional: recargar lista o navegar
       },
-      error: err => alert('Error al abrir sesión: ' + (err.error?.message || err.message))
+      error: (err: any) => alert('Error al abrir sesión: ' + (err.error?.message || err.message))
     });
   }
 }
