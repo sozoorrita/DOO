@@ -1,49 +1,37 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
-
-export interface MesaItem {
-  name: string;
-  quantity: number;
-  price: number;
-}
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 export interface Mesa {
-  id: string;
-  name: string;
-  occupied: boolean;
-  items: MesaItem[];
+  codigo?: string;
+  numero: number;
+  estado: string;
+  // agrega los demás campos según tu backend
 }
 
 @Injectable({ providedIn: 'root' })
 export class MesaService {
-  private mesasSubject = new BehaviorSubject<Mesa[]>([]);
+  private apiUrl = '/api/mesas';
+
+  constructor(private http: HttpClient) {}
 
   getMesas(): Observable<Mesa[]> {
-    return this.mesasSubject.asObservable();
+    return this.http.get<Mesa[]>(this.apiUrl);
   }
 
-  createMesa(name: string): void {
-    const newMesa: Mesa = { id: Date.now().toString(), name, occupied: false, items: [] };
-    this.mesasSubject.next([...this.mesasSubject.getValue(), newMesa]);
+  getMesaPorId(codigo: string): Observable<Mesa> {
+    return this.http.get<Mesa>(`${this.apiUrl}/${codigo}`);
   }
 
-  updateMesa(mesa: Mesa): void {
-    const updated = this.mesasSubject.getValue().map(m => m.id === mesa.id ? mesa : m);
-    this.mesasSubject.next(updated);
+  registrar(mesa: Mesa): Observable<Mesa> {
+    return this.http.post<Mesa>(this.apiUrl, mesa);
   }
 
-  deleteMesa(id: string): void {
-    this.mesasSubject.next(this.mesasSubject.getValue().filter(m => m.id !== id));
+  modificar(codigo: string, mesa: Mesa): Observable<Mesa> {
+    return this.http.put<Mesa>(`${this.apiUrl}/${codigo}`, mesa);
   }
 
-  addItemToMesa(id: string, item: MesaItem): void {
-    const updated = this.mesasSubject.getValue().map(m => {
-      if (m.id === id) {
-        m.items.push(item);
-        m.occupied = true;
-      }
-      return m;
-    });
-    this.mesasSubject.next(updated);
+  eliminar(codigo: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${codigo}`);
   }
 }

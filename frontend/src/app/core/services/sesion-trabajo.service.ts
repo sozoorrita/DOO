@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 export interface SesionTrabajo {
   codigo?: string;
-  usuario: any; // Usa el DTO de usuario si lo necesitas más tipado
+  usuario: any;
   fechaApertura?: string;
   fechaCierre?: string;
   estado: string;

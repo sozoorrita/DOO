@@ -6,7 +6,7 @@ export interface Venta {
   codigo?: string;
   sesionTrabajo: any;
   usuario: any;
-  // agrega los demás campos de la venta
+  // agrega los demás campos de la venta según tu backend (productos, total, etc)
 }
 
 @Injectable({ providedIn: 'root' })

@@ -1,36 +1,37 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Product } from '../../models/product.model';
+
+export interface Producto {
+  codigo?: string;
+  nombre: string;
+  precio: number;
+  // agrega los demás campos según tu backend
+}
 
 @Injectable({ providedIn: 'root' })
-export class ProductService {
-  private apiUrl = 'http://localhost:8080/api/v1/productos';
+export class ProductoService {
+  private apiUrl = '/api/productos';
 
   constructor(private http: HttpClient) {}
 
-  // Obtener todos los productos
-  getAll(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.apiUrl);
+  getProductos(): Observable<Producto[]> {
+    return this.http.get<Producto[]>(this.apiUrl);
   }
 
-  // Obtener producto por id (UUID)
-  getById(id: string): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`);
+  getProductoPorId(codigo: string): Observable<Producto> {
+    return this.http.get<Producto>(`${this.apiUrl}/${codigo}`);
   }
 
-  // Crear producto
-  create(product: Product): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, product);
+  registrar(producto: Producto): Observable<Producto> {
+    return this.http.post<Producto>(this.apiUrl, producto);
   }
 
-  // Actualizar producto
-  update(id: string, product: Product): Observable<Product> {
-    return this.http.put<Product>(`${this.apiUrl}/${id}`, product);
+  modificar(codigo: string, producto: Producto): Observable<Producto> {
+    return this.http.put<Producto>(`${this.apiUrl}/${codigo}`, producto);
   }
 
-  // Eliminar producto
-  delete(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  eliminar(codigo: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${codigo}`);
   }
 }
