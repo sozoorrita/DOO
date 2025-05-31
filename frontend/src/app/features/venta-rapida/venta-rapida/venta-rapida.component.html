@@ -1,38 +1,42 @@
 <div class="venta-rapida-container">
   <h2>Venta Rápida</h2>
   <form (ngSubmit)="realizarVenta()">
+    <label>Mesa</label>
     <select [(ngModel)]="nuevaVenta.codigoMesa" name="codigoMesa" required>
-      <option value="" disabled selected>Mesa</option>
+      <option value="" disabled selected>Selecciona Mesa</option>
       <option *ngFor="let m of mesas" [value]="m.codigo">{{ m.nombre }}</option>
     </select>
 
+    <label>Sesión Trabajo</label>
     <select [(ngModel)]="nuevaVenta.codigoSesionTrabajo" name="codigoSesionTrabajo" required>
-      <option value="" disabled selected>Sesión</option>
+      <option value="" disabled selected>Selecciona Sesión</option>
       <option *ngFor="let s of sesiones" [value]="s.codigo">
-        {{ s.codigo }} - {{ s.estado }}
+        {{ s.codigo }} - Caja: {{ s.baseCaja }}
       </option>
     </select>
 
+    <label>Forma de Pago</label>
     <select [(ngModel)]="nuevaVenta.codigoFormaPago" name="codigoFormaPago" required>
-      <option value="" disabled selected>Forma de Pago</option>
+      <option value="" disabled selected>Selecciona Forma Pago</option>
       <option *ngFor="let fp of formasPago" [value]="fp.codigo">{{ fp.nombre }}</option>
     </select>
 
+    <label>Tipo de Venta</label>
     <select [(ngModel)]="nuevaVenta.codigoTipoVenta" name="codigoTipoVenta" required>
-      <option value="" disabled selected>Tipo de Venta</option>
+      <option value="" disabled selected>Selecciona Tipo Venta</option>
       <option *ngFor="let tv of tiposVenta" [value]="tv.codigo">{{ tv.nombre }}</option>
     </select>
 
+    <label>Total Venta</label>
     <input
       type="number"
-      min="0.01"
-      step="0.01"
       [(ngModel)]="nuevaVenta.totalVenta"
       name="totalVenta"
-      placeholder="Total"
+      min="0.01"
+      step="0.01"
       required
     />
 
-    <button type="submit">Registrar Venta</button>
+    <button type="submit" class="btn-primary">Registrar Venta</button>
   </form>
 </div>

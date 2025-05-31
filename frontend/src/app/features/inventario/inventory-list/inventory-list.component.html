@@ -2,19 +2,42 @@
   <h2>Inventario</h2>
 
   <form (ngSubmit)="guardar()">
-    <select [(ngModel)]="form.codigoProducto" name="codigoProducto" required>
-      <option value="" disabled selected>Producto</option>
-      <option *ngFor="let p of productos" [value]="p.codigo">{{ p.nombreProducto }}</option>
+    <label for="producto">Producto</label>
+    <select
+      id="producto"
+      [(ngModel)]="form.codigoProducto"
+      name="codigoProducto"
+      required
+    >
+      <option value="" disabled selected>Selecciona Producto</option>
+      <option *ngFor="let p of productos" [value]="p.codigo">{{ p.nombre }}</option>
     </select>
 
-    <input type="number" [(ngModel)]="form.cantidad" name="cantidad" placeholder="Cantidad" required />
+    <label for="cantidad">Cantidad</label>
+    <input
+      id="cantidad"
+      type="number"
+      [(ngModel)]="form.cantidad"
+      name="cantidad"
+      min="1"
+      placeholder="Cantidad"
+      required
+    />
 
-    <select [(ngModel)]="form.codigoIndicador" name="codigoIndicador" required>
-      <option value="" disabled selected>Indicador</option>
+    <label for="indicador">Indicador</label>
+    <select
+      id="indicador"
+      [(ngModel)]="form.codigoIndicador"
+      name="codigoIndicador"
+      required
+    >
+      <option value="" disabled selected>Selecciona Indicador</option>
       <option *ngFor="let i of indicadores" [value]="i.codigo">{{ i.nombre }}</option>
     </select>
 
-    <button type="submit">{{ editando ? 'Actualizar' : 'Crear' }}</button>
+    <button type="submit" class="btn-primary">
+      {{ editando ? 'Actualizar' : 'Crear' }}
+    </button>
     <button type="button" *ngIf="editando" (click)="cancelar()">Cancelar</button>
   </form>
 
@@ -29,9 +52,9 @@
     </thead>
     <tbody>
       <tr *ngFor="let inv of inventarios">
-        <td>{{ nombreProducto(inv.codigoProducto) }}</td>
+        <td>{{ inv.producto }}</td>
         <td>{{ inv.cantidad }}</td>
-        <td>{{ nombreIndicador(inv.codigoIndicador) }}</td>
+        <td>{{ inv.codigoIndicador }}</td>
         <td>
           <button (click)="editar(inv)">Editar</button>
           <button (click)="eliminar(inv.codigo!)">Eliminar</button>
