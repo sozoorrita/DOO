@@ -1,70 +1,135 @@
-.user-table {
+/* Overlay semitransparente para el modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
-  min-width: 800px; /* Amplía la base mínima de la tabla para que no se comprima */
-  border-collapse: collapse;
-}
-
-/* Ajusta el tamaño de fuente y espacio para mantener todo visible */
-.user-table th,
-.user-table td {
-  padding: 1.1rem 1.3rem;       /* Más espacio horizontal para columnas */
-  font-size: 1.12em;            /* Letras más grandes y legibles */
-  border-bottom: 1px solid var(--color-light-grey);
-  color: #fff;
-  text-align: left;
-  background: transparent;
-  word-break: break-word;
-}
-
-.user-table th {
-  background: rgba(255,255,255,0.07);
-  color: var(--color-accent);
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  font-size: 1.15em;            /* Ligero aumento en el header */
-}
-
-.user-table tr:last-of-type td {
-  border-bottom: none;
-}
-
-/* Asegura que los iconos de las acciones sean visibles y tengan buen tamaño */
-.acciones {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.acciones button {
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Ventana del modal */
+.modal-window {
+  background: #fff;
+  width: 500px;
+  max-width: 90%;
+  border-radius: 13px;
+  box-shadow: 0 2px 32px #24242436;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Cabecera del modal */
+.modal-header {
+  background: #f8fafc;
+  padding: 1rem 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #e0e6ed;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #2196f3;
+  font-weight: 600;
+}
+
+.modal-header .close-btn {
+  background: transparent;
+  border: none;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  color: #2d343f;
+  transition: color 0.18s;
+}
+
+.modal-header .close-btn:hover {
+  color: #1769aa;
+}
+
+/* Contenido del formulario dentro del modal */
+.usuario-form {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: #fff;
+}
+
+.usuario-form label {
+  font-size: 1rem;
+  color: #2d343f;
+  margin-bottom: 0.25rem;
+}
+
+.usuario-form input,
+.usuario-form select {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccd1d9;
+  border-radius: 7px;
+  background: #f8fafc;
+  color: #2d343f;
+  outline: none;
+  transition: border-color 0.18s;
+}
+
+.usuario-form input:focus,
+.usuario-form select:focus {
+  border-color: #2196f3;
+}
+
+/* Botones del formulario */
+.botones-form {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.botones-form .btn-primary,
+.acciones .btn-primary {
+  background: #2196f3;
+  color: #fff;
   font-weight: 600;
   font-size: 1em;
   min-width: 95px;
-  padding: 0 0.65em;
-color: var(--color-accent);}
-
-.acciones mat-icon {
-  margin-right: 0.35em;
-}
-.acciones button[mat-icon-button] {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  min-height: 40px;
-}
-.acciones button mat-icon {
-  font-size: 1.2em;
+  padding: 0.6rem 1.2rem;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s;
 }
 
-/* Si la pantalla es muy pequeña, permite scroll horizontal */
-.usuario-table-wrapper {
-  overflow-x: auto;
+.botones-form .btn-primary:hover,
+.acciones .btn-primary:hover {
+  background: #1769aa;
 }
 
-.btn-agregar {
-  background: #17a2b8; /* celeste, puedes cambiar por cualquier color */
-  color: #fff;
+.botones-form .btn-secondary,
+.acciones .btn-secondary {
+  background: #e0e6ed;
+  color: #226;
+  font-weight: 600;
+  font-size: 1em;
+  min-width: 95px;
+  padding: 0.6rem 1.2rem;
+  border-radius: 7px;
+  border: none;
+  cursor: pointer;
+  transition: background 0.18s;
 }
-.btn-agregar:hover {
-  background: #138496;
+
+.botones-form .btn-secondary:hover,
+.acciones .btn-secondary:hover {
+  background: #ccd1d9;
 }

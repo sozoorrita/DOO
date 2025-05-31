@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UsuarioService, Usuario } from '../../../core/services/usuario.service';
 import { RolService, Rol } from '../../../core/services/rol.service';
@@ -14,6 +14,9 @@ export class UsuarioCrudComponent implements OnInit {
   roles: Rol[] = [];
   esEdicion: boolean = false;
   idUsuario?: string;
+  modalVisible: boolean = true;
+
+  @Output() cerrar = new EventEmitter<void>();
 
   constructor(
     private usuarioService: UsuarioService,
@@ -52,7 +55,7 @@ export class UsuarioCrudComponent implements OnInit {
       this.usuarioService.modificar(this.idUsuario, this.usuario).subscribe({
         next: () => {
           alert('Usuario actualizado');
-          this.router.navigate(['/usuarios/list']);
+          this.cerrarVentana();
         },
         error: err => alert('Error al actualizar usuario: ' + (err.error?.message || err.message))
       });
@@ -60,10 +63,17 @@ export class UsuarioCrudComponent implements OnInit {
       this.usuarioService.registrar(this.usuario).subscribe({
         next: () => {
           alert('Usuario creado');
-          this.router.navigate(['/usuarios/list']);
+          this.cerrarVentana();
         },
         error: err => alert('Error al crear usuario: ' + (err.error?.message || err.message))
       });
     }
+  }
+
+  cerrarVentana() {
+    this.modalVisible = false;
+    this.cerrar.emit();
+    // Si lo usas como ruta, también puedes redirigir:
+    // this.router.navigate(['/usuarios/list']);
   }
 }

@@ -1,15 +1,59 @@
-<div class="usuario-crud-container">
-  <h2>{{ esEdicion ? 'Editar Usuario' : 'Crear Usuario' }}</h2>
-  <form (ngSubmit)="guardarUsuario()">
-    <label>Nombre:</label>
-    <input [(ngModel)]="usuario.nombre" name="nombre" required />
-    <label>Rol:</label>
-    <select [(ngModel)]="usuario.codigoRol" name="codigoRol" required>
-      <option value="" disabled selected>Rol</option>
-      <option *ngFor="let rol of roles" [value]="rol.codigo">{{ rol.nombre }}</option>
-    </select>
-    <label>Contraseña:</label>
-    <input [(ngModel)]="usuario.contrasena" name="contrasena" type="password" required />
-    <button type="submit" class="btn-primary">{{ esEdicion ? 'Actualizar' : 'Crear' }}</button>
-  </form>
+<!-- Modal para Crear/Editar Usuario -->
+<div class="modal-overlay" *ngIf="modalVisible">
+  <div class="modal-window">
+    <div class="modal-header">
+      <h2>{{ esEdicion ? 'Editar Usuario' : 'Crear Usuario' }}</h2>
+      <button class="close-btn" (click)="cerrarVentana()" title="Cerrar">×</button>
+    </div>
+
+    <form (ngSubmit)="guardarUsuario()" class="usuario-form">
+      <!-- Campo Nombre -->
+      <label for="nombre">Nombre:</label>
+      <input
+        id="nombre"
+        type="text"
+        [(ngModel)]="usuario.nombre"
+        name="nombre"
+        required
+      />
+
+      <!-- Selector de Rol -->
+      <label for="codigoRol">Rol:</label>
+      <select
+        id="codigoRol"
+        [(ngModel)]="usuario.codigoRol"
+        name="codigoRol"
+        required
+      >
+        <option value="" disabled selected>Seleccionar rol</option>
+        <option *ngFor="let rol of roles" [value]="rol.codigo">
+          {{ rol.nombre }}
+        </option>
+      </select>
+
+      <!-- Campo Contraseña -->
+      <label for="contrasena">Contraseña:</label>
+      <input
+        id="contrasena"
+        type="password"
+        [(ngModel)]="usuario.contrasena"
+        name="contrasena"
+        required
+      />
+
+      <!-- Botones del formulario -->
+      <div class="botones-form">
+        <button type="submit" class="btn-primary">
+          {{ esEdicion ? 'Actualizar' : 'Crear' }}
+        </button>
+        <button
+          type="button"
+          class="btn-secondary"
+          (click)="cerrarVentana()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

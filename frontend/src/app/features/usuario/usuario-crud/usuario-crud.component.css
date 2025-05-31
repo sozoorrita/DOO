@@ -1,70 +1,119 @@
-.user-table {
-  width: 100%;
-  min-width: 800px; /* Amplía la base mínima de la tabla para que no se comprima */
-  border-collapse: collapse;
-}
-
-/* Ajusta el tamaño de fuente y espacio para mantener todo visible */
-.user-table th,
-.user-table td {
-  padding: 1.1rem 1.3rem;       /* Más espacio horizontal para columnas */
-  font-size: 1.12em;            /* Letras más grandes y legibles */
-  border-bottom: 1px solid var(--color-light-grey);
-  color: #fff;
-  text-align: left;
-  background: transparent;
-  word-break: break-word;
-}
-
-.user-table th {
-  background: rgba(255,255,255,0.07);
-  color: var(--color-accent);
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  font-size: 1.15em;            /* Ligero aumento en el header */
-}
-
-.user-table tr:last-of-type td {
-  border-bottom: none;
-}
-
-/* Asegura que los iconos de las acciones sean visibles y tengan buen tamaño */
-.acciones {
-  display: flex;
-  gap: 0.5rem;
-}
-
-.acciones button {
+/* ---- Modal Overlay ---- */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: rgba(47, 62, 70, 0.55);
   display: flex;
   align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* ---- Modal Window ---- */
+.modal-window {
+  background: #fff;
+  padding: 2.3rem 2rem 1.7rem 2rem;
+  border-radius: 13px;
+  box-shadow: 0 2px 48px #24242450;
+  min-width: 370px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+  animation: fadeInDown 0.33s;
+}
+
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-40px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.4rem;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.28em;
+  color: #2d343f;
+  font-weight: 700;
+}
+
+.close-btn {
+  font-size: 1.7em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #888;
+  transition: color 0.2s;
+}
+.close-btn:hover {
+  color: #e74c3c;
+}
+
+.usuario-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.usuario-form label {
   font-weight: 600;
+  color: #37506c;
+}
+
+.usuario-form input,
+.usuario-form select {
+  padding: 0.63rem 0.8rem;
+  border-radius: 7px;
+  border: 1px solid #bfc5cd;
   font-size: 1em;
-  min-width: 95px;
-  padding: 0 0.65em;
-color: var(--color-accent);}
-
-.acciones mat-icon {
-  margin-right: 0.35em;
-}
-.acciones button[mat-icon-button] {
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  min-height: 40px;
-}
-.acciones button mat-icon {
-  font-size: 1.2em;
+  outline: none;
+  background: #f8fafc;
+  color: #333;
+  margin-top: 0.1rem;
+  transition: border 0.18s;
 }
 
-/* Si la pantalla es muy pequeña, permite scroll horizontal */
-.usuario-table-wrapper {
-  overflow-x: auto;
+.usuario-form input:focus,
+.usuario-form select:focus {
+  border-color: #2196f3;
 }
 
-.btn-agregar {
-  background: #17a2b8; /* celeste, puedes cambiar por cualquier color */
+.botones-form {
+  display: flex;
+  gap: 1.1rem;
+  justify-content: flex-end;
+  margin-top: 1.2rem;
+}
+
+.btn-primary {
+  background: #2196f3;
   color: #fff;
+  font-weight: 600;
+  border: none;
+  border-radius: 7px;
+  padding: 0.63rem 1.5rem;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.18s;
 }
-.btn-agregar:hover {
-  background: #138496;
+.btn-primary:hover {
+  background: #1769aa;
+}
+.btn-secondary {
+  background: #e0e6ed;
+  color: #226;
+  border: none;
+  border-radius: 7px;
+  padding: 0.62rem 1.3rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.15s;
+}
+.btn-secondary:hover {
+  background: #ccd1d9;
 }
