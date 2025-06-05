@@ -1,6 +1,8 @@
-// src/main/java/co/edu/uco/FondaControl/data/dao/factory/postgresql/PostgreSQLDAOFactory.java
 package co.edu.uco.FondaControl.data.dao.factory.postgresql;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
@@ -38,6 +40,7 @@ import co.edu.uco.FondaControl.data.dao.entity.Usuario.imp.postgresql.UsuarioPos
 import co.edu.uco.FondaControl.data.dao.entity.venta.VentaDAO;
 import co.edu.uco.FondaControl.data.dao.entity.venta.impl.VentaPostgreSQLDAO;
 import co.edu.uco.FondaControl.data.dao.factory.DAOFactory;
+
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
@@ -52,14 +55,14 @@ public class PostgreSQLDAOFactory extends DAOFactory {
     }
 
     @Override
-	public void abrirConexion() throws FondaControlException {
+    public void abrirConexion() throws FondaControlException {
         try {
             this.connection = dataSource.getConnection();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "No fue posible abrir la conexión",
-                "PostgreSQLDAOFactory.abrirConexion: " + e.getMessage(),
-                e
+                    "No fue posible abrir la conexión",
+                    "PostgreSQLDAOFactory.abrirConexion: " + e.getMessage(),
+                    e
             );
         }
     }
@@ -72,9 +75,9 @@ public class PostgreSQLDAOFactory extends DAOFactory {
             }
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "No fue posible cerrar la conexión",
-                "PostgreSQLDAOFactory.cerrarConexion: " + e.getMessage(),
-                e
+                    "No fue posible cerrar la conexión",
+                    "PostgreSQLDAOFactory.cerrarConexion: " + e.getMessage(),
+                    e
             );
         }
     }
@@ -86,9 +89,9 @@ public class PostgreSQLDAOFactory extends DAOFactory {
             connection.setAutoCommit(false);
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al iniciar transacción",
-                "PostgreSQLDAOFactory.iniciarTransaccion: " + e.getMessage(),
-                e
+                    "Error al iniciar transacción",
+                    "PostgreSQLDAOFactory.iniciarTransaccion: " + e.getMessage(),
+                    e
             );
         }
     }
@@ -99,9 +102,9 @@ public class PostgreSQLDAOFactory extends DAOFactory {
             connection.commit();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al confirmar transacción",
-                "PostgreSQLDAOFactory.confirmarTransaccion: " + e.getMessage(),
-                e
+                    "Error al confirmar transacción",
+                    "PostgreSQLDAOFactory.confirmarTransaccion: " + e.getMessage(),
+                    e
             );
         } finally {
             cerrarConexion();
@@ -114,9 +117,9 @@ public class PostgreSQLDAOFactory extends DAOFactory {
             connection.rollback();
         } catch (SQLException e) {
             throw DataFondaControlException.reportar(
-                "Error al cancelar transacción",
-                "PostgreSQLDAOFactory.cancelarTransaccion: " + e.getMessage(),
-                e
+                    "Error al cancelar transacción",
+                    "PostgreSQLDAOFactory.cancelarTransaccion: " + e.getMessage(),
+                    e
             );
         } finally {
             cerrarConexion();
@@ -126,90 +129,134 @@ public class PostgreSQLDAOFactory extends DAOFactory {
     @Override
     public CategoriaDAO getCategoriaDAO() throws FondaControlException {
         abrirConexion();
-        return new CategoriaPostgreSQLDAO(connection);
+        CategoriaPostgreSQLDAO daoReal = new CategoriaPostgreSQLDAO(connection);
+        return crearProxy(CategoriaDAO.class, daoReal);
     }
 
     @Override
     public DetalleVentaDAO getDetalleVentaDAO() throws FondaControlException {
         abrirConexion();
-        return new DetalleVentaPostgreSQLDAO(connection);
+        DetalleVentaPostgreSQLDAO daoReal = new DetalleVentaPostgreSQLDAO(connection);
+        return crearProxy(DetalleVentaDAO.class, daoReal);
     }
 
     @Override
     public EstadoMesaDAO getEstadoMesaDAO() throws FondaControlException {
         abrirConexion();
-        return new EstadoMesaPostgreSQLDAO(connection);
+        EstadoMesaPostgreSQLDAO daoReal = new EstadoMesaPostgreSQLDAO(connection);
+        return crearProxy(EstadoMesaDAO.class, daoReal);
     }
 
     @Override
     public FormaPagoDAO getFormaPagoDAO() throws FondaControlException {
         abrirConexion();
-        return new FormaPagoPostgreSQLDAO(connection);
+        FormaPagoPostgreSQLDAO daoReal = new FormaPagoPostgreSQLDAO(connection);
+        return crearProxy(FormaPagoDAO.class, daoReal);
     }
 
     @Override
     public IndicadorInventarioDAO getIndicadorInventarioDAO() throws FondaControlException {
         abrirConexion();
-        return new IndicadorInventarioPostgreSQLDAO(connection);
+        IndicadorInventarioPostgreSQLDAO daoReal = new IndicadorInventarioPostgreSQLDAO(connection);
+        return crearProxy(IndicadorInventarioDAO.class, daoReal);
     }
 
     @Override
     public InformeCajaDAO getInformeCajaDAO() throws FondaControlException {
         abrirConexion();
-        return new InformeCajaPostgreSQLDAO(connection);
+        InformeCajaPostgreSQLDAO daoReal = new InformeCajaPostgreSQLDAO(connection);
+        return crearProxy(InformeCajaDAO.class, daoReal);
     }
 
     @Override
     public InventarioDAO getInventarioDAO() throws FondaControlException {
         abrirConexion();
-        return new InventarioPostgreSQLDAO(connection);
+        InventarioPostgreSQLDAO daoReal = new InventarioPostgreSQLDAO(connection);
+        return crearProxy(InventarioDAO.class, daoReal);
     }
 
     @Override
     public MesaDAO getMesaDAO() throws FondaControlException {
         abrirConexion();
-        return new MesaPostgreSQLDAO(connection);
+        MesaPostgreSQLDAO daoReal = new MesaPostgreSQLDAO(connection);
+        return crearProxy(MesaDAO.class, daoReal);
     }
 
     @Override
     public ProductoDAO getProductoDAO() throws FondaControlException {
         abrirConexion();
-        return new ProductoPostgreSQLDAO(connection);
+        ProductoPostgreSQLDAO daoReal = new ProductoPostgreSQLDAO(connection);
+        return crearProxy(ProductoDAO.class, daoReal);
     }
 
     @Override
     public RolDAO getRolDAO() throws FondaControlException {
         abrirConexion();
-        return new RolPostgreSQLDAO(connection);
+        RolPostgreSQLDAO daoReal = new RolPostgreSQLDAO(connection);
+        return crearProxy(RolDAO.class, daoReal);
     }
 
     @Override
     public SesionTrabajoDAO getSesionTrabajoDAO() throws FondaControlException {
         abrirConexion();
-        return new SesionTrabajoPostgreSQLDAO(connection);
+        SesionTrabajoPostgreSQLDAO daoReal = new SesionTrabajoPostgreSQLDAO(connection);
+        return crearProxy(SesionTrabajoDAO.class, daoReal);
     }
 
     @Override
     public SubcategoriaDAO getSubcategoriaDAO() throws FondaControlException {
         abrirConexion();
-        return new SubcategoriaPostgreSQLDAO(connection);
+        SubcategoriaPostgreSQLDAO daoReal = new SubcategoriaPostgreSQLDAO(connection);
+        return crearProxy(SubcategoriaDAO.class, daoReal);
     }
 
     @Override
     public TipoVentaDAO getTipoVentaDAO() throws FondaControlException {
         abrirConexion();
-        return new TipoVentaPostgreSQLDAO(connection);
+        TipoVentaPostgreSQLDAO daoReal = new TipoVentaPostgreSQLDAO(connection);
+        return crearProxy(TipoVentaDAO.class, daoReal);
     }
 
     @Override
     public UsuarioDAO getUsuarioDAO() throws FondaControlException {
         abrirConexion();
-        return new UsuarioPostgreSQLDAO(connection);
+        UsuarioPostgreSQLDAO daoReal = new UsuarioPostgreSQLDAO(connection);
+        return crearProxy(UsuarioDAO.class, daoReal);
     }
 
     @Override
     public VentaDAO getVentaDAO() throws FondaControlException {
         abrirConexion();
-        return new VentaPostgreSQLDAO(connection);
+        VentaPostgreSQLDAO daoReal = new VentaPostgreSQLDAO(connection);
+        return crearProxy(VentaDAO.class, daoReal);
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T crearProxy(Class<T> daoInterface, Object daoReal) {
+        InvocationHandler handler = (proxy, method, args) -> {
+            try {
+                return method.invoke(daoReal, args);
+            } finally {
+                // Solo cierra conexión si está en modo auto-commit (no hay transacción activa)
+                try {
+                    if (connection != null && connection.getAutoCommit()) {
+                        cerrarConexion();
+                    }
+                } catch (SQLException e) {
+                    // Si falla al verificar o cerrar, lanzamos excepción de DAO
+                    throw DataFondaControlException.reportar(
+                            "Error al cerrar conexión tras invocar método DAO",
+                            "PostgreSQLDAOFactory.crearProxy: " + e.getMessage(),
+                            e
+                    );
+                }
+            }
+        };
+
+        return (T) Proxy.newProxyInstance(
+                daoInterface.getClassLoader(),
+                new Class<?>[]{daoInterface},
+                handler
+        );
     }
 }

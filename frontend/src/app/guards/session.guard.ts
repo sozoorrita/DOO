@@ -1,17 +1,25 @@
 import { Injectable } from '@angular/core';
-import { CanActivate, Router }    from '@angular/router';
-import { SessionService }         from '../core/services/session.service';
+import { CanActivate, Router, UrlTree, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
+import { AuthService } from '../core/services/auth.service';
 
 @Injectable({ providedIn: 'root' })
 export class SessionGuard implements CanActivate {
-  constructor(private session: SessionService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  canActivate(): boolean {
-    if (this.session.hasActiveSession()) {
+  canActivate(
+    next: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): boolean | UrlTree {
+    if (this.authService.isLoggedIn()) {
+      // Si hay sesión activa, permite el acceso
+      return true;
+    } else {
+      // Si NO hay sesión, y NO estamos ya en login, redirige
+      if (state.url !== '/auth/login') {
+        return this.router.parseUrl('/auth/login');
+      }
+      // Si ya estamos en login, permite el acceso a esa ruta
       return true;
     }
-    // si no hay sesión abierta, vamos primero a la lista
-    this.router.navigate(['/session/list']);
-    return false;
   }
 }

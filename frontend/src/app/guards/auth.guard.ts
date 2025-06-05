@@ -1,17 +1,30 @@
+// src/app/guards/auth.guard.ts
+
 import { Injectable } from '@angular/core';
-import { CanActivate, Router, UrlTree } from '@angular/router';
+import {
+  CanActivate,
+  Router,
+  ActivatedRouteSnapshot,
+  RouterStateSnapshot,
+  UrlTree
+} from '@angular/router';
+import { AuthService } from '../core/services/auth.service';
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthGuard implements CanActivate {
-  constructor(private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
-  canActivate(): boolean | UrlTree {
-    // Puedes mejorar esto usando un servicio de Auth real
-    const usuario = localStorage.getItem('usuario');
-    if (usuario) {
+  canActivate(
+    route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot
+  ): boolean | UrlTree {
+    // Si hay sesión activa → permitimos acceso
+    if (this.authService.isLoggedIn()) {
       return true;
     }
-    // Redirige al login si no está autenticado
-    return this.router.createUrlTree(['/login']);
+    // Si no hay sesión → redirigimos a /auth/login
+    return this.router.parseUrl('/auth/login');
   }
 }

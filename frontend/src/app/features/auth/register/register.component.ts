@@ -1,11 +1,19 @@
+// src/app/features/auth/register/register.component.ts
+
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UsuarioService, Usuario } from '../../../core/services/usuario.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { UsuarioService } from '../../../core/services/usuario.service'; // o donde manejes el registro
 import { RolService, Rol } from '../../../core/services/rol.service';
 
 @Component({
   selector: 'app-register',
-    standalone: false,
+  standalone: true,
+  imports: [
+    CommonModule,
+    FormsModule
+  ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
@@ -15,6 +23,7 @@ export class RegisterComponent implements OnInit {
   confirmarContrasena = '';
   codigoRol = '';
   roles: Rol[] = [];
+  errorMsg = '';
 
   constructor(
     private usuarioService: UsuarioService,
@@ -24,39 +33,29 @@ export class RegisterComponent implements OnInit {
 
   ngOnInit() {
     this.rolService.getRoles().subscribe({
-      next: roles => this.roles = roles,
-      error: err => alert('Error al cargar roles: ' + (err.error?.message || err.message))
+      next: (roles) => (this.roles = roles),
+      error: (err) =>
+        alert('Error al cargar roles: ' + (err.error?.message || err.message))
     });
   }
 
   onRegister() {
-    if (!this.nombre || !this.contrasena || !this.codigoRol) {
-      alert('Todos los campos son obligatorios');
+    this.errorMsg = '';
+
+    if (!this.nombre || !this.contrasena || !this.confirmarContrasena || !this.codigoRol) {
+      this.errorMsg = 'Todos los campos son obligatorios';
       return;
     }
+
     if (this.contrasena !== this.confirmarContrasena) {
-      alert('Las contraseñas no coinciden');
+      this.errorMsg = 'Las contraseñas no coinciden';
       return;
     }
 
-    const usuario: Usuario = {
-      nombre: this.nombre,
-      contrasena: this.contrasena,
-      codigoRol: this.codigoRol
-    };
 
-    this.usuarioService.registrar(usuario).subscribe({
-      next: () => {
-        alert('Registro exitoso, ahora inicia sesión.');
-        this.router.navigate(['/login']);
-      },
-      error: err => {
-        alert('Error al registrar: ' + (err.error?.message || err.message));
-      }
-    });
   }
 
   goToLogin() {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
   }
 }

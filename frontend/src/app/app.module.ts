@@ -2,29 +2,34 @@
 
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 
+// Módulos propios del proyecto
+import { AuthModule } from './features/auth/auth.module';
+import { CategoriaModule } from './features/categoria/categoria.module';
+import { MainLayoutModule } from './layout/main-layout/main-layout.module';
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
 
-import { MainLayoutModule } from './layout/main-layout/main-layout.module';  // <-- Importa el módulo
-import { AuthGuard } from './guards/auth.guard';
-import { RoleGuard } from './guards/role.guard';
+// Componente raíz
+import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [
     AppComponent
-    // No necesitas declarar MainLayoutComponent aquí, porque ya está declarado en MainLayoutModule
   ],
   imports: [
     BrowserModule,
-    FormsModule,
     HttpClientModule,
-    AppRoutingModule,
-    MainLayoutModule    // <-- Agrégalo aquí
+
+    // Módulos de funcionalidad
+
+    CategoriaModule,
+    MainLayoutModule,
+
+    // Módulo de enrutamiento (debe ir último para respetar el orden de rutas)
+    AppRoutingModule
   ],
-  providers: [AuthGuard, RoleGuard],
+  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

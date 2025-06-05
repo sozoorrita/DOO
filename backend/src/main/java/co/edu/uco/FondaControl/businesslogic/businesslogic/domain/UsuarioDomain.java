@@ -19,10 +19,10 @@ public final class UsuarioDomain {
 	}
 
 	public UsuarioDomain(UUID id, String nombre, UUID codigoRol, String contrasena) {
-		this.id = UtilUUID.obtenerValorDefecto(id);
-		this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
-		this.codigoRol = UtilUUID.obtenerValorDefecto(codigoRol);
-		this.contrasena = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(contrasena);
+		setId(id);
+		setNombre(nombre);
+		setCodigoRol(codigoRol);
+		setContrasena(contrasena);
 	}
 
 	public static UsuarioDomain obtenerValorDefecto() {
@@ -37,7 +37,7 @@ public final class UsuarioDomain {
 		return id;
 	}
 
-	private void setId(final UUID id) {
+	public void setId(final UUID id) {
 		this.id = UtilUUID.obtenerValorDefecto(id);
 	}
 
@@ -45,7 +45,7 @@ public final class UsuarioDomain {
 		return nombre;
 	}
 
-	private void setNombre(final String nombre) {
+	public void setNombre(final String nombre) {
 		this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(nombre);
 	}
 
@@ -53,7 +53,7 @@ public final class UsuarioDomain {
 		return codigoRol;
 	}
 
-	private void setCodigoRol(final UUID codigoRol) {
+	public void setCodigoRol(final UUID codigoRol) {
 		this.codigoRol = UtilUUID.obtenerValorDefecto(codigoRol);
 	}
 
@@ -61,7 +61,7 @@ public final class UsuarioDomain {
 		return contrasena;
 	}
 
-	private void setContrasena(final String contrasena) {
+	public void setContrasena(final String contrasena) {
 		this.contrasena = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(contrasena);
 	}
 }

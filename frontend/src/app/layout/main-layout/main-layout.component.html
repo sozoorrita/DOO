@@ -1,14 +1,10 @@
+<!-- src/app/layout/main-layout/main-layout.component.html -->
+
 <div class="main-layout">
-  <!-- Navbar o sidebar aquí -->
-  <nav class="sidebar">
-    <a routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
-    <a routerLink="/usuarios/list" routerLinkActive="active">Usuarios</a>
-    <a routerLink="/inventario" routerLinkActive="active">Inventario</a>
-    <a routerLink="/mesas" routerLinkActive="active">Mesas</a>
-    <a routerLink="/reportes/informe-caja" routerLinkActive="active">Informe de Caja</a>
-    <a routerLink="/venta-rapida" routerLinkActive="active">Venta Rápida</a>
-    <!-- Agrega más links según tu app -->
-    <a routerLink="/login" (click)="logout()">Cerrar sesión</a>
+  <!-- Sidebar: solo se muestra si NO estamos en /auth/login ni en /auth/register -->
+  <nav class="sidebar" *ngIf="!isAuthRoute()">
+    <a routerLink="/categorias" routerLinkActive="active">Categorías</a>
+    <a (click)="logout()">Cerrar sesión</a>
   </nav>
 
   <div class="main-content">

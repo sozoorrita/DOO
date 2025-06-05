@@ -1,11 +1,65 @@
-<div class="login-container">
-  <h2>Iniciar sesión</h2>
-  <input [(ngModel)]="nombre" placeholder="Nombre" type="text" required />
-  <select [(ngModel)]="codigoRol">
-    <option value="" disabled selected>Rol</option>
-    <option *ngFor="let rol of roles" [value]="rol.codigo">{{ rol.nombre }}</option>
-  </select>
-  <input [(ngModel)]="contrasena" placeholder="Contraseña" type="password" required />
-  <button class="btn-primary" (click)="onLogin()">Iniciar sesión</button>
-  <button class="btn-link" (click)="goToRegister()">¿No tienes cuenta? Regístrate</button>
+<!-- src/app/features/auth/login/login.component.html -->
+
+<div class="login-card">
+  <h2>Iniciar Sesión</h2>
+
+  <!-- Mensaje de error -->
+  <div *ngIf="errorMsg" class="error">{{ errorMsg }}</div>
+
+  <form (ngSubmit)="onLogin()">
+    <!-- Nombre de usuario -->
+    <div class="form-group">
+      <label for="nombre">Usuario</label>
+      <input
+        id="nombre"
+        [(ngModel)]="nombre"
+        name="nombre"
+        class="form-control"
+        placeholder="Ingresa tu usuario"
+        required
+      />
+    </div>
+
+    <!-- Contraseña -->
+    <div class="form-group">
+      <label for="contrasena">Contraseña</label>
+      <input
+        id="contrasena"
+        type="password"
+        [(ngModel)]="contrasena"
+        name="contrasena"
+        class="form-control"
+        placeholder="Ingresa tu contraseña"
+        required
+      />
+    </div>
+
+    <!-- Selección de rol (usando rol.codigo) -->
+    <div class="form-group">
+      <label for="rol">Rol</label>
+      <select
+        id="rol"
+        [(ngModel)]="codigoRol"
+        name="codigoRol"
+        class="form-control"
+        required
+      >
+        <option value="" disabled>Selecciona un rol</option>
+        <option *ngFor="let rol of roles" [value]="rol.codigo">
+          {{ rol.nombre }}
+        </option>
+      </select>
+    </div>
+
+    <!-- Botón de ingreso; se desactiva si está cargando -->
+    <button type="submit" class="btn btn-primary" [disabled]="cargando">
+      {{ cargando ? 'Ingresando...' : 'Ingresar' }}
+    </button>
+
+    <!-- Enlace para ir a registro -->
+    <p class="mt-2">
+      ¿No tienes cuenta?
+      <a routerLink="/auth/register" class="register-link">Regístrate aquí</a>
+    </p>
+  </form>
 </div>

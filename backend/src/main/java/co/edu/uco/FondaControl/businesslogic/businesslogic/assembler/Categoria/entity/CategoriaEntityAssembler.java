@@ -25,13 +25,23 @@ public final class CategoriaEntityAssembler implements EntityAssembler<Categoria
 		if (UtilObjeto.esNulo(domain)) {
 			return CategoriaEntity.obtenerValorDefecto();
 		}
-		return CategoriaEntity.builder().codigo(domain.getCodigo()).nombre(domain.getNombre()).crear();
+		return CategoriaEntity.builder()
+				.codigo(domain.getCodigo())
+				.nombre(domain.getNombre())
+				.fechaCreacion(domain.getFechaCreacion())
+				.fechaEliminacion(domain.getFechaEliminacion())
+				.crear();
 	}
 
 	@Override
 	public CategoriaDomain toDomain(final CategoriaEntity entity) {
 		final var safe = CategoriaEntity.obtenerValorDefecto(entity);
-		return new CategoriaDomain(safe.getCodigo(), safe.getNombre());
+		return new CategoriaDomain(
+				safe.getCodigo(),
+				safe.getNombre(),
+				safe.getFechaCreacion(),
+				safe.getFechaEliminacion()
+		);
 	}
 
 	@Override

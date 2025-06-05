@@ -10,9 +10,9 @@ public interface UsuarioFacade {
     void registrarNuevoUsuario(UsuarioDTO usuario) throws FondaControlException;
     void modificarUsuario(UsuarioDTO usuario) throws FondaControlException;
     void eliminarUsuario(UsuarioDTO usuario) throws FondaControlException;
-    void iniciarSesion(UsuarioDTO usuario, String tipoUsuario) throws FondaControlException;
+
+    UUID iniciarSesion(UsuarioDTO usuario) throws FondaControlException;
 
     List<UsuarioDTO> consultarUsuarios(UsuarioDTO filtro) throws FondaControlException;
-
     UsuarioDTO consultarUsuarioPorCodigo(UUID codigo) throws FondaControlException;
 }

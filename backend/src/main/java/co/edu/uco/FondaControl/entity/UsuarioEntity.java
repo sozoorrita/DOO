@@ -41,6 +41,10 @@ public final class UsuarioEntity {
         return new UsuarioEntity(idUsuario);
     }
 
+    public static Builder builder() {
+        return new Builder();
+    }
+
     public UUID getId() {
         return id;
     }
@@ -76,5 +80,36 @@ public final class UsuarioEntity {
     // Alias
     public UUID getCodigo() {
         return getId();
+    }
+
+    public static class Builder {
+        private UUID id = UtilUUID.obtenerValorDefecto();
+        private String nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+        private UUID codigoRol = UtilUUID.obtenerValorDefecto();
+        private String contrasena = UtilTexto.getInstancia().obtenerValorDefecto();
+
+        public Builder id(UUID id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder nombre(String nombre) {
+            this.nombre = nombre;
+            return this;
+        }
+
+        public Builder codigoRol(UUID codigoRol) {
+            this.codigoRol = codigoRol;
+            return this;
+        }
+
+        public Builder contrasena(String contrasena) {
+            this.contrasena = contrasena;
+            return this;
+        }
+
+        public UsuarioEntity crear() {
+            return new UsuarioEntity(id, nombre, codigoRol, contrasena);
+        }
     }
 }

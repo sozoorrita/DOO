@@ -1,5 +1,7 @@
+// src/app/core/services/usuario.service.ts
+
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Usuario {
@@ -9,32 +11,53 @@ export interface Usuario {
   contrasena: string;
 }
 
+export interface UsuarioResponse {
+  id: string;
+  nombre: string;
+  codigoRol: string;
+}
+
 @Injectable({ providedIn: 'root' })
 export class UsuarioService {
-  private apiUrl = '/api/v1/usuarios';
+  private baseUrl = '/api/v1/usuarios';
 
   constructor(private http: HttpClient) {}
 
-  getUsuarios(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(this.apiUrl);
+  registrar(usuario: Usuario): Observable<UsuarioResponse> {
+    return this.http.post<UsuarioResponse>(
+      this.baseUrl,
+      usuario,
+      {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+      }
+    );
   }
 
-  registrar(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(this.apiUrl, usuario);
+  iniciarSesion(credentials: { nombre: string; contrasena: string; codigoRol: string }): Observable<UsuarioResponse> {
+    return this.http.post<UsuarioResponse>(
+      `${this.baseUrl}/iniciar-sesion`,
+      credentials,
+      {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+      }
+    );
   }
 
-  modificar(id: string, usuario: Usuario): Observable<Usuario> {
-    return this.http.put<Usuario>(`${this.apiUrl}/${id}`, usuario);
+  getUsuarios(): Observable<UsuarioResponse[]> {
+    return this.http.get<UsuarioResponse[]>(this.baseUrl);
+  }
+
+  modificar(id: string, usuario: Usuario): Observable<UsuarioResponse> {
+    return this.http.put<UsuarioResponse>(
+      `${this.baseUrl}/${id}`,
+      usuario,
+      {
+        headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+      }
+    );
   }
 
   eliminar(id: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
-  }
-
-  iniciarSesion(usuario: Usuario, tipoUsuario: string): Observable<void> {
-    return this.http.post<void>(
-      `${this.apiUrl}/iniciar-sesion?tipoUsuario=${tipoUsuario}`,
-      usuario
-    );
+    return this.http.delete<void>(`${this.baseUrl}/${id}`);
   }
 }

@@ -13,6 +13,7 @@ import co.edu.uco.FondaControl.dto.UsuarioDTO;
 
 @RestController
 @RequestMapping("/api/v1/usuarios")
+@CrossOrigin(origins = "http://localhost:4200", allowCredentials = "true")
 public class UsuarioController {
 
     private final UsuarioFacade usuarioFacade;
@@ -21,66 +22,81 @@ public class UsuarioController {
         this.usuarioFacade = usuarioFacade;
     }
 
-    /**
-     * Lista todos los usuarios.
-     */
-    @GetMapping
-    public ResponseEntity<List<UsuarioDTO>> consultarUsuarios() throws FondaControlException {
-        List<UsuarioDTO> lista = usuarioFacade.consultarUsuarios(new UsuarioDTO());
-        return ResponseEntity.ok(lista);
+    // Clase interna para el cuerpo del login
+    public static class LoginRequest {
+        public String nombre;
+        public String contrasena;
+        public String codigoRol;
     }
 
-    /**
-     * Consulta un usuario por su código.
-     */
-    @GetMapping("/{codigo}")
-    public ResponseEntity<UsuarioDTO> consultarUsuarioPorCodigo(@PathVariable UUID codigo)
-            throws FondaControlException {
-        UsuarioDTO resultado = usuarioFacade.consultarUsuarioPorCodigo(codigo);
-        return ResponseEntity.ok(resultado);
-    }
-
-    /**
-     * Registra un nuevo usuario.
-     */
-    @PostMapping
-    public ResponseEntity<UsuarioDTO> registrarUsuario(
-            @RequestBody UsuarioDTO usuario) throws FondaControlException {
-        usuarioFacade.registrarNuevoUsuario(usuario);
-        return ResponseEntity.status(HttpStatus.CREATED).body(usuario);
-    }
-
-    /**
-     * Modifica un usuario existente.
-     */
-    @PutMapping("/{codigo}")
-    public ResponseEntity<UsuarioDTO> modificarUsuario(
-            @PathVariable UUID codigo,
-            @RequestBody UsuarioDTO usuario) throws FondaControlException {
-        usuario.setId(codigo);
-        usuarioFacade.modificarUsuario(usuario);
-        return ResponseEntity.ok(usuario);
-    }
-
-    /**
-     * Elimina un usuario.
-     */
-    @DeleteMapping("/{codigo}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void eliminarUsuario(@PathVariable UUID codigo) throws FondaControlException {
-        UsuarioDTO dto = new UsuarioDTO();
-        dto.setId(codigo);
-        usuarioFacade.eliminarUsuario(dto);
-    }
-
-    /**
-     * Inicia sesión de un usuario.
-     */
     @PostMapping("/iniciar-sesion")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void iniciarSesion(
-            @RequestBody UsuarioDTO usuario,
-            @RequestParam String tipoUsuario) throws FondaControlException {
-        usuarioFacade.iniciarSesion(usuario, tipoUsuario);
+    public ResponseEntity<UUID> iniciarSesion(@RequestBody LoginRequest request) {
+        try {
+            UsuarioDTO usuario = UsuarioDTO.builder()
+                    .nombre(request.nombre)
+                    .contrasena(request.contrasena)
+                    .codigoRol(UUID.fromString(request.codigoRol))
+                    .crear();
+
+            UUID uuidSesion = usuarioFacade.iniciarSesion(usuario);
+            return ResponseEntity.ok(uuidSesion);
+        } catch (FondaControlException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<String> registrar(@RequestBody UsuarioDTO usuario) {
+        try {
+            usuarioFacade.registrarNuevoUsuario(usuario);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("Usuario registrado exitosamente.");
+        } catch (FondaControlException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<String> modificar(@PathVariable UUID id, @RequestBody UsuarioDTO usuario) {
+        try {
+            usuario.setId(id);
+            usuarioFacade.modificarUsuario(usuario);
+            return ResponseEntity.ok("Usuario modificado correctamente.");
+        } catch (FondaControlException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> eliminar(@PathVariable UUID id) {
+        try {
+            UsuarioDTO usuario = UsuarioDTO.builder().id(id).crear();
+            usuarioFacade.eliminarUsuario(usuario);
+            return ResponseEntity.ok("Usuario eliminado exitosamente.");
+        } catch (FondaControlException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioDTO> consultarPorCodigo(@PathVariable UUID id) {
+        try {
+            UsuarioDTO usuario = usuarioFacade.consultarUsuarioPorCodigo(id);
+            return ResponseEntity.ok(usuario);
+        } catch (FondaControlException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UsuarioDTO>> consultarTodos() {
+        try {
+            List<UsuarioDTO> usuarios = usuarioFacade.consultarUsuarios(new UsuarioDTO());
+            return ResponseEntity.ok(usuarios);
+        } catch (FondaControlException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 }

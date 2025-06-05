@@ -1,11 +1,19 @@
+// src/app/features/auth/login/login.component.ts
+
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { UsuarioService, Usuario } from '../../../core/services/usuario.service';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { AuthService, LoginRequest } from '../../../core/services/auth.service';
 import { RolService, Rol } from '../../../core/services/rol.service';
 
 @Component({
   selector: 'app-login',
-  standalone: false,
+  standalone: true,              // marcamos standalone
+  imports: [
+    CommonModule,                 // para poder usar *ngIf
+    FormsModule                   // para poder usar [(ngModel)]
+  ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
@@ -13,47 +21,48 @@ export class LoginComponent implements OnInit {
   nombre = '';
   contrasena = '';
   codigoRol = '';
-  tipoUsuario = 'mesero'; // O 'administrador' según tu lógica
   roles: Rol[] = [];
+  cargando = false;
+  errorMsg = '';
 
   constructor(
-    private usuarioService: UsuarioService,
+    private authService: AuthService,
     private rolService: RolService,
     private router: Router
   ) {}
 
   ngOnInit() {
     this.rolService.getRoles().subscribe({
-      next: roles => this.roles = roles,
-      error: err => alert('Error al cargar roles: ' + (err.error?.message || err.message))
+      next: (roles) => (this.roles = roles),
+      error: (err) =>
+        alert('Error al cargar roles: ' + (err.error?.message || err.message))
     });
   }
 
   onLogin() {
+    this.errorMsg = '';
+
     if (!this.nombre || !this.contrasena || !this.codigoRol) {
-      alert('Todos los campos son obligatorios');
+      this.errorMsg = 'Todos los campos son obligatorios';
       return;
     }
 
-    const usuario: Usuario = {
+    this.cargando = true;
+    const credentials: LoginRequest = {
       nombre: this.nombre,
       contrasena: this.contrasena,
       codigoRol: this.codigoRol
     };
 
-    this.usuarioService.iniciarSesion(usuario, this.tipoUsuario).subscribe({
-      next: () => {
-        localStorage.setItem('usuario', JSON.stringify(usuario));
-        alert('Bienvenido');
-        this.router.navigate(['/dashboard']); // Cambia a la ruta principal de tu app
+    this.authService.login(credentials).subscribe({
+      next: (uuid: string) => {
+        this.authService.storeUserId(uuid);
+        this.router.navigate(['/categorias']);
       },
-      error: err => {
-        alert('Error al iniciar sesión: ' + (err.error?.message || err.message));
+      error: (err) => {
+        this.cargando = false;
+        this.errorMsg = 'Credenciales incorrectas.';
       }
     });
-  }
-
-  goToRegister() {
-    this.router.navigate(['/register']);
   }
 }

@@ -1,3 +1,5 @@
+// src/main/java/co/edu/uco/FondaControl/api/RolController.java
+
 package co.edu.uco.FondaControl.api;
 
 import java.util.List;
@@ -11,6 +13,12 @@ import co.edu.uco.FondaControl.businesslogic.facade.RolFacade;
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.dto.RolDTO;
 
+/**
+ * Controlador REST para operaciones CRUD sobre Roles.
+ *
+ * Ahora delega toda la apertura y cierre de conexiones a RolFacade,
+ * que internamente invoca a DAOFactory y se encarga de cerrar siempre.
+ */
 @RestController
 @RequestMapping("/api/v1/roles")
 public class RolController {
@@ -21,9 +29,9 @@ public class RolController {
         this.rolFacade = rolFacade;
     }
 
-
     @GetMapping
     public ResponseEntity<List<RolDTO>> listarRoles() throws FondaControlException {
+        // RolFacade se encarga de abrir y cerrar la conexión internamente
         List<RolDTO> lista = rolFacade.consultarRol(new RolDTO.Builder().crear());
         return ResponseEntity.ok(lista);
     }

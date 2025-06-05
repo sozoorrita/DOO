@@ -1,6 +1,8 @@
 package co.edu.uco.FondaControl.entity;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
+
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilTexto;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
@@ -8,15 +10,21 @@ import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilUUID;
 public final class CategoriaEntity {
     private UUID codigo;
     private String nombre;
+    private LocalDateTime fechaCreacion;
+    private LocalDateTime fechaEliminacion;
 
-    private CategoriaEntity() {
+    public CategoriaEntity() {
         setCodigo(UtilUUID.obtenerValorDefecto());
         setNombre(UtilTexto.getInstancia().obtenerValorDefecto());
+        setFechaCreacion(LocalDateTime.now());
+        setFechaEliminacion(null);
     }
 
     private CategoriaEntity(final Builder builder) {
         setCodigo(builder.codigo);
         setNombre(builder.nombre);
+        setFechaCreacion(builder.fechaCreacion);
+        setFechaEliminacion(builder.fechaEliminacion);
     }
 
     public static CategoriaEntity obtenerValorDefecto() {
@@ -44,6 +52,22 @@ public final class CategoriaEntity {
         this.nombre = UtilTexto.getInstancia().quitarEspaciosBlancoInicioFin(valor);
     }
 
+    public LocalDateTime getFechaCreacion() {
+        return fechaCreacion;
+    }
+
+    public void setFechaCreacion(final LocalDateTime fechaCreacion) {
+        this.fechaCreacion = (fechaCreacion == null ? LocalDateTime.now() : fechaCreacion);
+    }
+
+    public LocalDateTime getFechaEliminacion() {
+        return fechaEliminacion;
+    }
+
+    public void setFechaEliminacion(final LocalDateTime fechaEliminacion) {
+        this.fechaEliminacion = fechaEliminacion;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -51,6 +75,8 @@ public final class CategoriaEntity {
     public static final class Builder {
         private UUID codigo = UtilUUID.obtenerValorDefecto();
         private String nombre = UtilTexto.getInstancia().obtenerValorDefecto();
+        private LocalDateTime fechaCreacion = LocalDateTime.now();
+        private LocalDateTime fechaEliminacion = null;
 
         private Builder() {}
 
@@ -61,6 +87,16 @@ public final class CategoriaEntity {
 
         public Builder nombre(final String nombre) {
             this.nombre = nombre;
+            return this;
+        }
+
+        public Builder fechaCreacion(final LocalDateTime fecha) {
+            this.fechaCreacion = fecha;
+            return this;
+        }
+
+        public Builder fechaEliminacion(final LocalDateTime fechaEliminacion) {
+            this.fechaEliminacion = fechaEliminacion;
             return this;
         }
 

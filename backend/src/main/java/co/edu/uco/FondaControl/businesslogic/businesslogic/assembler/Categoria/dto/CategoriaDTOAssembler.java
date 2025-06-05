@@ -26,7 +26,12 @@ public final class CategoriaDTOAssembler implements DTOAssembler<CategoriaDTO, C
 		if (UtilObjeto.esNulo(dto)) {
 			return CategoriaDomain.obtenerValorDefecto();
 		}
-		return new CategoriaDomain(dto.getCodigo(), dto.getNombre());
+		return new CategoriaDomain(
+				dto.getCodigo(),
+				dto.getNombre(),
+				dto.getFechaCreacion() ,
+				dto.getFechaEliminacion()
+		);
 	}
 
 	@Override
@@ -34,8 +39,12 @@ public final class CategoriaDTOAssembler implements DTOAssembler<CategoriaDTO, C
 		if (UtilObjeto.esNulo(domain)) {
 			return CategoriaDTO.obtenerValorDefecto();
 		}
-		return CategoriaDTO.builder().codigo(domain.getCodigo())
-				.nombre(UtilTexto.getInstancia().obtenerValorDefecto(domain.getNombre())).crear();
+		return CategoriaDTO.builder()
+				.codigo(domain.getCodigo())
+				.nombre(UtilTexto.getInstancia().obtenerValorDefecto(domain.getNombre()))
+				.fechaCreacion(domain.getFechaCreacion())
+				.fechaEliminacion(domain.getFechaEliminacion())
+				.crear();
 	}
 
 	@Override

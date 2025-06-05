@@ -1,4 +1,4 @@
-// src/app/layout/main-layout.module.ts
+// src/app/layout/main-layout/main-layout.module.ts
 
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -18,4 +18,4 @@ import { MainLayoutComponent } from './main-layout.component';
     MainLayoutComponent
   ]
 })
-export class MainLayoutModule {}
+export class MainLayoutModule { }

@@ -1,5 +1,11 @@
 package co.edu.uco.FondaControl.businesslogic.facade.imp;
 
+import java.util.List;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
 import co.edu.uco.FondaControl.businesslogic.businesslogic.UsuarioBusinessLogic;
 import co.edu.uco.FondaControl.businesslogic.businesslogic.assembler.Usuario.dto.UsuarioDTOAssembler;
 import co.edu.uco.FondaControl.businesslogic.facade.UsuarioFacade;
@@ -7,11 +13,6 @@ import co.edu.uco.FondaControl.crosscutting.excepciones.BusinessLogicFondaContro
 import co.edu.uco.FondaControl.crosscutting.excepciones.FondaControlException;
 import co.edu.uco.FondaControl.crosscutting.utilitarios.UtilObjeto;
 import co.edu.uco.FondaControl.dto.UsuarioDTO;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 public final class UsuarioImp implements UsuarioFacade {
@@ -25,38 +26,39 @@ public final class UsuarioImp implements UsuarioFacade {
     @Override
     public void registrarNuevoUsuario(final UsuarioDTO usuario) throws FondaControlException {
         validarUsuario(usuario);
-        final var domain = UsuarioDTOAssembler.getInstancia().toDomain(usuario);
+        var domain = UsuarioDTOAssembler.getInstancia().toDomain(usuario);
         businessLogic.registrarNuevoUsuario(domain);
     }
 
     @Override
     public void modificarUsuario(final UsuarioDTO usuario) throws FondaControlException {
         validarUsuario(usuario);
-        final var domain = UsuarioDTOAssembler.getInstancia().toDomain(usuario);
+        var domain = UsuarioDTOAssembler.getInstancia().toDomain(usuario);
         businessLogic.modificarUsuario(domain);
     }
 
     @Override
     public void eliminarUsuario(final UsuarioDTO usuario) throws FondaControlException {
         validarUsuario(usuario);
-        final var domain = UsuarioDTOAssembler.getInstancia().toDomain(usuario);
+        var domain = UsuarioDTOAssembler.getInstancia().toDomain(usuario);
         businessLogic.eliminarUsuario(domain);
     }
 
     @Override
-    public void iniciarSesion(final UsuarioDTO usuario, final String tipoUsuario) throws FondaControlException {
-        if (UtilObjeto.esNulo(usuario) || UtilObjeto.esNulo(tipoUsuario)) {
-            throw new IllegalArgumentException("El usuario y el tipo de usuario no pueden ser nulos o vacíos.");
+    public UUID iniciarSesion(final UsuarioDTO usuario) throws FondaControlException {
+        if (UtilObjeto.esNulo(usuario)) {
+            throw new IllegalArgumentException("El DTO de usuario no puede ser nulo.");
         }
-
         try {
-            final var domain = UsuarioDTOAssembler.getInstancia().toDomain(usuario);
-            businessLogic.iniciarSesion(domain, tipoUsuario);
-        } catch (Exception exception) {
+            var domain = UsuarioDTOAssembler.getInstancia().toDomain(usuario);
+            return businessLogic.iniciarSesion(domain);
+        } catch (FondaControlException ex) {
+            throw ex;
+        } catch (Exception ex) {
             throw BusinessLogicFondaControlException.reportar(
                     "Se ha producido un error al intentar iniciar sesión.",
-                    "Error técnico durante el inicio de sesión: " + exception.getMessage(),
-                    exception
+                    "Error técnico durante iniciarSesion: " + ex.getMessage(),
+                    ex
             );
         }
     }
@@ -66,8 +68,9 @@ public final class UsuarioImp implements UsuarioFacade {
         try {
             var assembler = UsuarioDTOAssembler.getInstancia();
             var domainFilter = UtilObjeto.esNulo(filtro)
-                    ? assembler.toDomain(null)
+                    ? assembler.toDomain(new UsuarioDTO())
                     : assembler.toDomain(filtro);
+
             var domainList = businessLogic.consultarUsuarios(domainFilter);
             return domainList.stream()
                     .map(assembler::toDto)
@@ -90,10 +93,11 @@ public final class UsuarioImp implements UsuarioFacade {
         }
         try {
             var assembler = UsuarioDTOAssembler.getInstancia();
-            var tempDto = new UsuarioDTO();
-            tempDto.setCodigoRol(codigo);
-            var domainInput = assembler.toDomain(tempDto);
-            var domainResult = businessLogic.consultarUsuarioPorCodigo(domainInput);
+            UsuarioDTO tempDto = UsuarioDTO.builder()
+                    .id(codigo)
+                    .crear();
+
+            var domainResult = businessLogic.consultarUsuarioPorCodigo(assembler.toDomain(tempDto));
             return assembler.toDto(domainResult);
         } catch (FondaControlException ex) {
             throw ex;

@@ -1,36 +1,63 @@
+// src/app/core/services/categoria.service.ts
+
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface Categoria {
-  codigo?: string;
+  codigo: string;
   nombre: string;
-  // agrega otros campos según tu backend
+  fechaCreacion?: string;     // ← ahora opcional
+  fechaEliminacion?: string;  // ← ahora opcional
 }
 
-@Injectable({ providedIn: 'root' })
+@Injectable({
+  providedIn: 'root'
+})
 export class CategoriaService {
   private apiUrl = '/api/v1/categorias';
 
   constructor(private http: HttpClient) {}
 
-  getCategorias(): Observable<Categoria[]> {
+  /** Listar todas las categorías (activas e inactivas) */
+  listar(): Observable<Categoria[]> {
     return this.http.get<Categoria[]>(this.apiUrl);
   }
 
-  getCategoriaPorId(codigo: string): Observable<Categoria> {
-    return this.http.get<Categoria>(`${this.apiUrl}/${codigo}`);
+  /** Obtener una categoría por su ID */
+  obtenerPorId(id: string): Observable<Categoria> {
+    return this.http.get<Categoria>(`${this.apiUrl}/${id}`);
   }
 
-  registrar(categoria: Categoria): Observable<Categoria> {
-    return this.http.post<Categoria>(this.apiUrl, categoria);
+  /** Crear una nueva categoría */
+  crear(categoria: Partial<Categoria>): Observable<string> {
+    return this.http.post<string>(
+      this.apiUrl,
+      categoria,
+      {
+        responseType: 'text' as 'json'
+      }
+    );
   }
 
-  modificar(codigo: string, categoria: Categoria): Observable<Categoria> {
-    return this.http.put<Categoria>(`${this.apiUrl}/${codigo}`, categoria);
+  /** Actualizar una categoría existente */
+  actualizar(id: string, categoria: Partial<Categoria>): Observable<string> {
+    return this.http.put<string>(
+      `${this.apiUrl}/${id}`,
+      categoria,
+      {
+        responseType: 'text' as 'json'
+      }
+    );
   }
 
-  eliminar(codigo: string): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${codigo}`);
+  /** Eliminar lógicamente una categoría (soft delete) */
+  eliminar(id: string): Observable<string> {
+    return this.http.delete<string>(
+      `${this.apiUrl}/${id}`,
+      {
+        responseType: 'text' as 'json'
+      }
+    );
   }
 }
